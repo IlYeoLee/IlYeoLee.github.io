@@ -88,8 +88,8 @@
   .vwrap video { margin:0; }
   .vbar { position:absolute; left:8px; right:8px; bottom:8px; height:28px; display:flex; align-items:center; gap:10px; padding:0 6px 0 4px; background:rgba(255,255,255,.92); border-radius:999px; font-size:12px; }
   .vbar button { font:inherit; font-size:12px; line-height:1; padding:6px 10px; border:0; border-radius:999px; background:var(--fg); color:var(--bg); cursor:pointer; min-width:56px; }
-  .vbar .snd, .sndonly { background:none !important; color:var(--fg) !important; border:1px solid var(--fg) !important; }
-  .sndonly { position:absolute; right:8px; bottom:8px; font:inherit; font-size:12px; line-height:1; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.92) !important; cursor:pointer; }
+  .vbar .snd, .sndonly { background:none !important; color:var(--fg) !important; border:1px solid var(--fg) !important; width:28px; height:28px; min-width:0 !important; padding:0 !important; display:inline-flex; align-items:center; justify-content:center; }
+  .sndonly { position:absolute; right:8px; bottom:8px; border-radius:999px; background:rgba(255,255,255,.92) !important; cursor:pointer; }
   .vbar .pp { width:28px; height:28px; min-width:0; padding:0; position:relative; }
   .vbar .pp::before, .vbar .pp::after { content:''; position:absolute; top:50%; left:50%; background:var(--bg); }
   .vbar .pp::before { width:3px; height:10px; transform:translate(-5px,-50%); }
@@ -299,16 +299,17 @@
         aboutCol=document.getElementById('about'), tplHost=document.createElement('div');
   fetch('projects.html?v='+Date.now()).then(r=>r.text()).then(t=>{ tplHost.innerHTML=t; });
   const vio=new IntersectionObserver(es=>{ for(const e of es){ const v=e.target; if(e.isIntersecting){ if(!v.dataset.userPaused) v.play().catch(()=>{}); } else v.pause(); } }, {threshold:.25});
+  const SND_ON='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 6h3l4-3v10l-4-3H2z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5" stroke-linecap="round"/><path d="M12.8 3.5a6 6 0 0 1 0 9" stroke-linecap="round"/></svg>', SND_OFF='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 6h3l4-3v10l-4-3H2z"/><path d="M11 6l3.5 3.5M14.5 6L11 9.5" stroke-linecap="round"/></svg>';
   function setupVideos(root){
     root.querySelectorAll('video').forEach(v=>{
       v.removeAttribute('autoplay'); v.muted=true; v.loop=true; v.playsInline=true;
       const wrap=document.createElement('div'); wrap.className='vwrap'; v.replaceWith(wrap); wrap.appendChild(v);
       const fmt=t=>{t=Math.floor(t||0); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
       const addBar=()=>{ if(wrap.querySelector('.vbar, .sndonly')) return;
-        if(!(v.duration>=20)){ if(v.dataset.audio){ const sb=document.createElement('button'); sb.type='button'; sb.className='sndonly'; sb.textContent='Sound Off';
-            sb.addEventListener('click',()=>{ v.muted=!v.muted; sb.textContent=v.muted?'Sound Off':'Sound On'; }); wrap.appendChild(sb); } return; }
+        if(!(v.duration>=20)){ if(v.dataset.audio){ const sb=document.createElement('button'); sb.type='button'; sb.className='sndonly'; sb.innerHTML=SND_OFF;
+            sb.addEventListener('click',()=>{ v.muted=!v.muted; sb.innerHTML=v.muted?SND_OFF:SND_ON; }); wrap.appendChild(sb); } return; }
         const bar=document.createElement('div'); bar.className='vbar';
-        bar.innerHTML='<button type="button" class="pp" aria-label="Play/Pause"></button><div class="track"><i></i></div><span class="time"></span>'+(v.dataset.audio?'<button type="button" class="snd">Sound Off</button>':'');
+        bar.innerHTML='<button type="button" class="pp" aria-label="Play/Pause"></button><div class="track"><i></i></div><span class="time"></span>'+(v.dataset.audio?'<button type="button" class="snd" aria-label="Sound">'+SND_OFF+'</button>':'');
         const b=bar.querySelector('button'), fill=bar.querySelector('i'), tm=bar.querySelector('.time'), track=bar.querySelector('.track');
         const sync=()=>{ b.classList.toggle('paused', v.paused); fill.style.width=(v.currentTime/v.duration*100)+'%'; track.style.setProperty('--p',(v.currentTime/v.duration*100)+'%'); tm.textContent=fmt(v.currentTime)+' / '+fmt(v.duration); };
         b.addEventListener('click',()=>{ if(v.paused){ delete v.dataset.userPaused; v.play(); } else { v.dataset.userPaused='1'; v.pause(); } sync(); });
@@ -316,7 +317,7 @@
         let drag=false; track.addEventListener('pointerdown',e=>{ drag=true; track.setPointerCapture(e.pointerId); seek(e); });
         track.addEventListener('pointermove',e=>{ if(drag) seek(e); }); track.addEventListener('pointerup',()=>{ drag=false; }); track.addEventListener('pointercancel',()=>{ drag=false; });
         v.addEventListener('timeupdate',sync); v.addEventListener('play',sync); v.addEventListener('pause',sync);
-        const snd=bar.querySelector('.snd'); if(snd){ snd.addEventListener('click',()=>{ v.muted=!v.muted; snd.textContent=v.muted?'Sound Off':'Sound On'; }); }
+        const snd=bar.querySelector('.snd'); if(snd){ snd.addEventListener('click',()=>{ v.muted=!v.muted; snd.innerHTML=v.muted?SND_OFF:SND_ON; }); }
         wrap.appendChild(bar); sync(); };
       v.preload='metadata';
       if(v.readyState>=1) addBar(); else v.addEventListener('loadedmetadata', addBar, {once:true});
