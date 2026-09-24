@@ -89,10 +89,10 @@
   .vbar, .sndonly { opacity:0; transition:opacity .2s; }
   .vwrap:hover .vbar, .vwrap:hover .sndonly, .vwrap.paused .vbar { opacity:1; }
   @media (hover:none) { .vbar, .sndonly { opacity:1; } }
-  .vbar { position:absolute; left:8px; right:8px; bottom:8px; height:28px; display:flex; align-items:center; gap:10px; padding:0 6px 0 4px; background:rgba(255,255,255,.92); border-radius:999px; font-size:12px; }
+  .vbar { position:absolute; left:12px; right:12px; bottom:12px; height:36px; display:flex; align-items:center; gap:14px; padding:0 4px; background:rgba(255,255,255,.92); border-radius:999px; font-size:12px; }
   .vbar button { font:inherit; font-size:12px; line-height:1; padding:6px 10px; border:0; border-radius:999px; background:var(--fg); color:var(--bg); cursor:pointer; min-width:56px; }
   .vbar .snd, .sndonly { background:none !important; color:var(--fg) !important; border:1px solid var(--fg) !important; width:28px; height:28px; min-width:0 !important; padding:0 !important; display:inline-flex; align-items:center; justify-content:center; }
-  .sndonly { position:absolute; right:8px; bottom:8px; border-radius:999px; background:rgba(255,255,255,.92) !important; cursor:pointer; }
+  .sndonly { position:absolute; right:12px; bottom:12px; border-radius:999px; background:rgba(255,255,255,.92) !important; cursor:pointer; }
   .vbar .pp { width:28px; height:28px; min-width:0; padding:0; position:relative; }
   .vbar .pp::before, .vbar .pp::after { content:''; position:absolute; top:50%; left:50%; background:var(--bg); }
   .vbar .pp::before { width:3px; height:10px; transform:translate(-5px,-50%); }
@@ -103,7 +103,8 @@
   .vbar .track::before { content:''; position:absolute; left:0; right:0; top:50%; height:2px; margin-top:-1px; background:#d0d0d0; }
   .vbar .track i { position:absolute; left:0; top:50%; height:2px; margin-top:-1px; width:0; background:var(--fg); }
   .vbar .track::after { content:''; position:absolute; top:50%; left:var(--p,0%); width:10px; height:10px; margin:-5px 0 0 -5px; border-radius:50%; background:var(--fg); }
-  .vbar .time { color:var(--muted); font-variant-numeric:tabular-nums; min-width:70px; text-align:right; }
+  .vbar .time { color:var(--muted); font-variant-numeric:tabular-nums; min-width:70px; text-align:right; margin-right:6px; }
+  .vbar .time:last-child { margin-right:12px; }
   #project-panel .plabel { color:var(--muted); margin:56px 0 18px; padding-top:18px; border-top:1px solid var(--line); }
   #project-panel .plabel:first-of-type { margin-top:0; padding-top:0; border-top:0; }
   #project-panel .pcap { display:grid; grid-template-columns:1fr 2fr; gap:16px; margin:22px 0 10px; }
