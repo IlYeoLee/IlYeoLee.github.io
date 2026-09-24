@@ -169,12 +169,12 @@
       <button class="chip" data-f="product">Concept UX</button>
     </div>
     <div class="col-body index" id="works-index" hidden>
-      <a class="thumb" href="#" data-i="0"><img src="img/hotcake.jpg" alt="Hotcake"></a>
-      <a class="thumb" href="#" data-i="1"><img src="img/comong/01.jpg" alt="COMONG"></a>
-      <a class="thumb" href="#" data-i="2"><img src="img/newton/Newton_0_main.webp" alt="NEWTON"></a>
-      <a class="thumb" href="#" data-i="3"><img src="img/spot.png" alt="SPOT!"></a>
-      <a class="thumb" href="#" data-i="4"><img src="img/bbibbi.png" alt="삐삐"></a>
-      <a class="thumb" href="#" data-i="5"><img src="img/spurt.png" alt="SPURT"></a>
+      <a class="thumb" href="#" data-i="0" data-tags="product"><img src="img/hotcake.jpg" alt="Hotcake"></a>
+      <a class="thumb" href="#" data-i="1" data-tags="product"><img src="img/comong/01.jpg" alt="COMONG"></a>
+      <a class="thumb" href="#" data-i="2" data-tags="product"><img src="img/newton/Newton_0_main.webp" alt="NEWTON"></a>
+      <a class="thumb" href="#" data-i="3" data-tags="uxui"><img src="img/spot.png" alt="SPOT!"></a>
+      <a class="thumb" href="#" data-i="4" data-tags="uxui"><img src="img/bbibbi.png" alt="삐삐"></a>
+      <a class="thumb" href="#" data-i="5" data-tags="uxui"><img src="img/spurt.png" alt="SPURT"></a>
     </div>
     <div class="col-body grid" id="works-grid">
       <article class="work" data-key="hotcake" data-tags="product">
@@ -380,8 +380,8 @@
   const chips=document.getElementById('chips');
   chips.addEventListener('click',e=>{ const b=e.target.closest('.chip'); if(!b) return;
     chips.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===b)); const f=b.dataset.f;
-    grid.querySelectorAll('.work').forEach(w=>{ w.hidden = f!=='all' && !(w.dataset.tags||'').split(' ').includes(f); });
-    col.scrollTop=0; stagger(grid.querySelectorAll('.work:not([hidden])'), 45); });
+    document.querySelectorAll('#works-grid .work, #works-index .thumb').forEach(w=>{ w.hidden = f!=='all' && !(w.dataset.tags||'').split(' ').includes(f); });
+    col.scrollTop=0; stagger(open? index.querySelectorAll('.thumb:not([hidden])') : grid.querySelectorAll('.work:not([hidden])'), 45); });
   // ---- language (default ko; i18n.json holds ko->en) ----
   let lang='ko', I18N={};
   const langBtn=document.getElementById('lang-btn');
