@@ -87,8 +87,9 @@
   .vwrap { position:relative; margin:0 0 var(--pad); }
   .vwrap video { margin:0; }
   .vbar { position:absolute; left:8px; right:8px; bottom:8px; height:28px; display:flex; align-items:center; gap:10px; padding:0 6px 0 4px; background:rgba(255,255,255,.92); border-radius:999px; font-size:12px; }
-  .vbar .snd { background:none; color:var(--fg); border:1px solid var(--fg); }
   .vbar button { font:inherit; font-size:12px; line-height:1; padding:6px 10px; border:0; border-radius:999px; background:var(--fg); color:var(--bg); cursor:pointer; min-width:56px; }
+  .vbar .snd, .sndonly { background:none !important; color:var(--fg) !important; border:1px solid var(--fg) !important; }
+  .sndonly { position:absolute; right:8px; bottom:8px; font:inherit; font-size:12px; line-height:1; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.92) !important; cursor:pointer; }
   .vbar .track { flex:1; height:100%; position:relative; cursor:pointer; touch-action:none; }
   .vbar .track::before { content:''; position:absolute; left:0; right:0; top:50%; height:2px; margin-top:-1px; background:#d0d0d0; }
   .vbar .track i { position:absolute; left:0; top:50%; height:2px; margin-top:-1px; width:0; background:var(--fg); }
@@ -297,7 +298,9 @@
       v.removeAttribute('autoplay'); v.muted=true; v.loop=true; v.playsInline=true;
       const wrap=document.createElement('div'); wrap.className='vwrap'; v.replaceWith(wrap); wrap.appendChild(v);
       const fmt=t=>{t=Math.floor(t||0); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
-      const addBar=()=>{ if(!(v.duration>=20) || wrap.querySelector('.vbar')) return;
+      const addBar=()=>{ if(wrap.querySelector('.vbar, .sndonly')) return;
+        if(!(v.duration>=20)){ if(v.dataset.audio){ const sb=document.createElement('button'); sb.type='button'; sb.className='sndonly'; sb.textContent='Sound Off';
+            sb.addEventListener('click',()=>{ v.muted=!v.muted; sb.textContent=v.muted?'Sound Off':'Sound On'; }); wrap.appendChild(sb); } return; }
         const bar=document.createElement('div'); bar.className='vbar';
         bar.innerHTML='<button type="button">Pause</button><div class="track"><i></i></div><span class="time"></span>'+(v.dataset.audio?'<button type="button" class="snd">Sound Off</button>':'');
         const b=bar.querySelector('button'), fill=bar.querySelector('i'), tm=bar.querySelector('.time'), track=bar.querySelector('.track');
