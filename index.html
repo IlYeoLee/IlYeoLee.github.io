@@ -87,6 +87,7 @@
   .vwrap { position:relative; margin:0 0 var(--pad); }
   .vwrap video { margin:0; }
   .vbar { position:absolute; left:8px; right:8px; bottom:8px; height:28px; display:flex; align-items:center; gap:10px; padding:0 6px 0 4px; background:rgba(255,255,255,.92); border-radius:999px; font-size:12px; }
+  .vbar .snd { background:none; color:var(--fg); border:1px solid var(--fg); }
   .vbar button { font:inherit; font-size:12px; line-height:1; padding:6px 10px; border:0; border-radius:999px; background:var(--fg); color:var(--bg); cursor:pointer; min-width:56px; }
   .vbar .track { flex:1; height:100%; position:relative; cursor:pointer; touch-action:none; }
   .vbar .track::before { content:''; position:absolute; left:0; right:0; top:50%; height:2px; margin-top:-1px; background:#d0d0d0; }
@@ -298,7 +299,7 @@
       const fmt=t=>{t=Math.floor(t||0); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
       const addBar=()=>{ if(!(v.duration>=20) || wrap.querySelector('.vbar')) return;
         const bar=document.createElement('div'); bar.className='vbar';
-        bar.innerHTML='<button type="button">Pause</button><div class="track"><i></i></div><span class="time"></span>';
+        bar.innerHTML='<button type="button">Pause</button><div class="track"><i></i></div><span class="time"></span>'+(v.dataset.audio?'<button type="button" class="snd">Sound Off</button>':'');
         const b=bar.querySelector('button'), fill=bar.querySelector('i'), tm=bar.querySelector('.time'), track=bar.querySelector('.track');
         const sync=()=>{ b.textContent=v.paused?'Play':'Pause'; fill.style.width=(v.currentTime/v.duration*100)+'%'; track.style.setProperty('--p',(v.currentTime/v.duration*100)+'%'); tm.textContent=fmt(v.currentTime)+' / '+fmt(v.duration); };
         b.addEventListener('click',()=>{ if(v.paused){ delete v.dataset.userPaused; v.play(); } else { v.dataset.userPaused='1'; v.pause(); } sync(); });
@@ -306,6 +307,7 @@
         let drag=false; track.addEventListener('pointerdown',e=>{ drag=true; track.setPointerCapture(e.pointerId); seek(e); });
         track.addEventListener('pointermove',e=>{ if(drag) seek(e); }); track.addEventListener('pointerup',()=>{ drag=false; }); track.addEventListener('pointercancel',()=>{ drag=false; });
         v.addEventListener('timeupdate',sync); v.addEventListener('play',sync); v.addEventListener('pause',sync);
+        const snd=bar.querySelector('.snd'); if(snd){ snd.addEventListener('click',()=>{ v.muted=!v.muted; snd.textContent=v.muted?'Sound Off':'Sound On'; }); }
         wrap.appendChild(bar); sync(); };
       v.preload='metadata';
       if(v.readyState>=1) addBar(); else v.addEventListener('loadedmetadata', addBar, {once:true});
