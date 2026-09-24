@@ -253,7 +253,7 @@
   const aboutPanel=document.getElementById('about-panel'), projPanel=document.getElementById('project-panel'),
         aboutTitle=document.getElementById('about-title'), projClose=document.getElementById('proj-close'),
         aboutCol=document.getElementById('about'), tplHost=document.createElement('div');
-  fetch('projects.html').then(r=>r.text()).then(t=>{ tplHost.innerHTML=t; });
+  fetch('projects.html?v='+Date.now()).then(r=>r.text()).then(t=>{ tplHost.innerHTML=t; });
   function openProject(card){
     const key=card.dataset.key, tpl=tplHost.querySelector('#proj-'+key);
     const meta=card.querySelectorAll('.meta > p');
