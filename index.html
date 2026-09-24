@@ -46,7 +46,7 @@
   #cursor { position:fixed; top:0; left:0; z-index:9999; pointer-events:none; will-change:transform; mix-blend-mode:difference; opacity:0; transition:opacity .2s; }
   #cursor i { display:block; width:36px; height:36px; margin:-18px 0 0 -18px; border:4px solid #fff; border-radius:50%; transition:border-width .1s ease-out; }
   #cursor.on i { border-width:18px; }
-  @media (hover:hover) and (pointer:fine) { html, body, a, button, .work, .thumb { cursor:none; } }
+  @media (hover:hover) and (pointer:fine) { *, *::before, *::after { cursor:none !important; } }
   @media (hover:none) { #cursor { display:none; } }
   /* ---- full-screen project view: left rail of thumbs + wide project ---- */
   .site.viewing { grid-template-columns:132px 1fr; }
