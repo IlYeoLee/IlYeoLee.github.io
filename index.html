@@ -29,7 +29,6 @@
   .work { padding-bottom:28px; margin-bottom:28px; border-bottom:1px solid var(--line); }
   .work:last-child { border-bottom:0; }
   .work img, .work video { display:block; width:100%; height:auto; background:#eee; }
-  .work > img { aspect-ratio:404/316; object-fit:cover; }
   .meta { display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; margin-top:16px; }
   .meta p { white-space:pre-line; }
   .meta .desc { margin-top:26px; }
@@ -39,7 +38,7 @@
   button.menu.close { font-size:var(--fs); }
   .index { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--pad); align-items:start; }
   .index .thumb { display:block; background:#eee; }
-  .index .thumb img { width:100%; height:auto; aspect-ratio:404/316; object-fit:cover; display:block; transition:opacity .18s ease, transform .18s ease; }
+  .index .thumb img { width:100%; height:auto; display:block; transition:opacity .18s ease, transform .18s ease; }
   .index .thumb:active img { opacity:.85; transform:scale(.985); }
   @media (hover:hover) { .index .thumb:hover img { opacity:.92; } }
   [hidden] { display:none !important; }
