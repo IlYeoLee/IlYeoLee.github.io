@@ -42,8 +42,6 @@
   .index .thumb:active img { opacity:.85; transform:scale(.985); }
   @media (hover:hover) { .index .thumb:hover img { opacity:.92; } }
   [hidden] { display:none !important; }
-  #floater { position:fixed; left:0; top:0; width:120px; z-index:5; pointer-events:none; will-change:transform; mix-blend-mode:multiply; }
-  @media (max-width:900px) { #floater { width:80px; } }
   .chips { position:sticky; top:24px; z-index:2; display:flex; gap:6px; padding:8px var(--pad); background:var(--bg); border-bottom:1px solid var(--line); }
   .chip { font:inherit; font-size:12px; line-height:1; padding:6px 10px; border:1px solid var(--fg); border-radius:999px; background:none; color:var(--fg); cursor:pointer; transition:background .15s, color .15s; }
   .chip.on { background:var(--fg); color:var(--bg); }
@@ -131,7 +129,6 @@
 </head>
 <body>
 <div id="cursor"><i></i></div>
-<img id="floater" src="img/watermelon.jpg" alt="">
 <div class="site">
 
   <!-- LEFT : Sides -->
@@ -350,13 +347,6 @@
   }
   fetch('i18n.json?v='+Date.now()).then(r=>r.json()).then(j=>{ I18N=j; applyLang(document); });
   langBtn.addEventListener('click',()=>{ lang=lang==='ko'?'en':'ko'; applyLang(document); });
-  // ---- floating watermelon: slow drift, bounces off edges ----
-  (function(){ const f=document.getElementById('floater'); let x=innerWidth*0.3, y=innerHeight*0.6, vx=0.6, vy=0.45, a=0;
-    function step(){ const w=f.offsetWidth||120, h=f.offsetHeight||120; x+=vx; y+=vy; a+=0.15;
-      if(x<0){x=0;vx=Math.abs(vx);} if(x>innerWidth-w){x=innerWidth-w;vx=-Math.abs(vx);}
-      if(y<24){y=24;vy=Math.abs(vy);} if(y>innerHeight-h-24){y=innerHeight-h-24;vy=-Math.abs(vy);}
-      f.style.transform=`translate3d(${x}px,${y}px,0) rotate(${a}deg)`; requestAnimationFrame(step); }
-    step(); })();
   // ---- custom cursor ----
   const cur=document.getElementById('cursor');
   if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
