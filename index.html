@@ -88,9 +88,11 @@
   #project-panel .phead { margin:0 0 16px; }
   .vwrap { position:relative; margin:0 0 var(--pad); }
   .vwrap video { margin:0; }
-  .vbtn { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:56px; height:56px; border-radius:50%; border:0; background:rgba(255,255,255,.9); color:#000; font:inherit; font-size:12px; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; }
-  .vwrap:hover .vbtn, .vwrap.paused .vbtn { opacity:1; }
-  @media (hover:none) { .vwrap .vbtn { opacity:1; } }
+  .vbar { position:absolute; left:8px; right:8px; bottom:8px; height:28px; display:flex; align-items:center; gap:10px; padding:0 6px 0 4px; background:rgba(255,255,255,.92); border-radius:999px; font-size:12px; }
+  .vbar button { font:inherit; font-size:12px; line-height:1; padding:6px 10px; border:0; border-radius:999px; background:var(--fg); color:var(--bg); cursor:pointer; min-width:56px; }
+  .vbar .track { flex:1; height:2px; background:#d0d0d0; position:relative; cursor:pointer; }
+  .vbar .track i { position:absolute; left:0; top:0; height:100%; width:0; background:var(--fg); }
+  .vbar .time { color:var(--muted); font-variant-numeric:tabular-nums; min-width:70px; text-align:right; }
   #project-panel .plabel { color:var(--muted); margin:56px 0 18px; padding-top:18px; border-top:1px solid var(--line); }
   #project-panel .plabel:first-of-type { margin-top:0; padding-top:0; border-top:0; }
   #project-panel .pcap { display:grid; grid-template-columns:1fr 2fr; gap:16px; margin:22px 0 10px; }
@@ -294,10 +296,18 @@
     root.querySelectorAll('video').forEach(v=>{
       v.removeAttribute('autoplay'); v.muted=true; v.loop=true; v.playsInline=true;
       const wrap=document.createElement('div'); wrap.className='vwrap'; v.replaceWith(wrap); wrap.appendChild(v);
-      const addBtn=()=>{ if(v.duration>=30 && !wrap.querySelector('.vbtn')){ const b=document.createElement('button'); b.className='vbtn'; b.textContent='Pause';
-          b.addEventListener('click',()=>{ if(v.paused){ delete v.dataset.userPaused; v.play(); b.textContent='Pause'; wrap.classList.remove('paused'); } else { v.dataset.userPaused='1'; v.pause(); b.textContent='Play'; wrap.classList.add('paused'); } });
-          wrap.appendChild(b); } };
-      if(v.readyState>=1) addBtn(); else v.addEventListener('loadedmetadata', addBtn, {once:true});
+      const fmt=t=>{t=Math.floor(t||0); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
+      const addBar=()=>{ if(!(v.duration>=30) || wrap.querySelector('.vbar')) return;
+        const bar=document.createElement('div'); bar.className='vbar';
+        bar.innerHTML='<button type="button">Pause</button><div class="track"><i></i></div><span class="time"></span>';
+        const b=bar.querySelector('button'), fill=bar.querySelector('i'), tm=bar.querySelector('.time'), track=bar.querySelector('.track');
+        const sync=()=>{ b.textContent=v.paused?'Play':'Pause'; fill.style.width=(v.currentTime/v.duration*100)+'%'; tm.textContent=fmt(v.currentTime)+' / '+fmt(v.duration); };
+        b.addEventListener('click',()=>{ if(v.paused){ delete v.dataset.userPaused; v.play(); } else { v.dataset.userPaused='1'; v.pause(); } sync(); });
+        track.addEventListener('click',e=>{ const r=track.getBoundingClientRect(); v.currentTime=(e.clientX-r.left)/r.width*v.duration; sync(); });
+        v.addEventListener('timeupdate',sync); v.addEventListener('play',sync); v.addEventListener('pause',sync);
+        wrap.appendChild(bar); sync(); };
+      v.preload='metadata';
+      if(v.readyState>=1) addBar(); else v.addEventListener('loadedmetadata', addBar, {once:true});
       vio.observe(v);
     });
   }
