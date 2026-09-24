@@ -42,6 +42,11 @@
   .index .thumb:active img { opacity:.85; transform:scale(.985); }
   @media (hover:hover) { .index .thumb:hover img { opacity:.92; } }
   [hidden] { display:none !important; }
+  .chips { position:sticky; top:24px; z-index:2; display:flex; gap:6px; padding:8px var(--pad); background:var(--bg); border-bottom:1px solid var(--line); }
+  .chip { font:inherit; font-size:12px; line-height:1; padding:6px 10px; border:1px solid var(--fg); border-radius:999px; background:none; color:var(--fg); cursor:pointer; transition:background .15s, color .15s; }
+  .chip.on { background:var(--fg); color:var(--bg); }
+  @media (hover:hover) { .chip:not(.on):hover { background:#f2f2f2; } }
+  .site.viewing #chips { display:none !important; }
   /* ---- custom cursor (everyelse.com port: ring stretches with scroll velocity) ---- */
   #cursor { position:fixed; top:0; left:0; z-index:9999; pointer-events:none; will-change:transform; mix-blend-mode:difference; opacity:0; transition:opacity .2s; }
   #cursor i { display:block; width:36px; height:var(--stretch-h,36px); border-radius:var(--stretch-r,9999px); transform:translate(-18px,-18px); border:4px solid #fff; transition:border-width .1s ease-out; }
@@ -128,6 +133,11 @@
   <!-- CENTER : Selected Works -->
   <section class="col" id="works">
     <div class="col-head"><span id="works-title">Selected Works</span><button class="menu" id="menu-btn" aria-label="Index">≡</button></div>
+        <div class="chips" id="chips">
+      <button class="chip on" data-f="all">All</button>
+      <button class="chip" data-f="uxui">UX/UI</button>
+      <button class="chip" data-f="product">Product &amp; Global</button>
+    </div>
     <div class="col-body index" id="works-index" hidden>
       <a class="thumb" href="#" data-i="0"><img src="img/newton/Newton_0_main.webp" alt="NEWTON"></a>
       <a class="thumb" href="#" data-i="1"><img src="img/comong/01.jpg" alt="COMONG"></a>
@@ -137,7 +147,7 @@
       <a class="thumb" href="#" data-i="5"><img src="img/bbibbi.png" alt="삐삐"></a>
     </div>
     <div class="col-body grid" id="works-grid">
-      <article class="work" data-key="newton">
+      <article class="work" data-key="newton" data-tags="product">
         <img src="img/newton/Newton_0_main.webp" alt="NEWTON">
         <div class="meta">
           <p>Object<span class="muted"><br>Samsung Design Membership</span></p>
@@ -146,7 +156,7 @@
           <p class="desc">꿈꾸던 스포츠 콘텐츠를 내가 있는 곳에서 바로 도전할 수 있는 경험으로 바꾸는 웨어러블 로봇 시스템. 바닥과 벽면에 펼쳐진 움직임의 단서를 따라 멋진 동작을 내 몸으로 시도한다.</p>
         </div>
       </article>
-<article class="work" data-key="comong">
+<article class="work" data-key="comong" data-tags="product">
         <img src="img/comong/01.jpg" alt="COMONG">
         <div class="meta">
           <p>Object<span class="muted"><br>Samsung Design Membership × IDEO</span></p>
@@ -156,7 +166,7 @@
         </div>
       </article>
 
-      <article class="work" data-key="hotcake">
+      <article class="work" data-key="hotcake" data-tags="uxui product">
         <img src="img/hotcake.jpg" alt="Hotcake">
         <div class="meta">
           <p>UX/UI<br><span class="muted">Personal</span></p>
@@ -166,7 +176,7 @@
         </div>
       </article>
 
-      <article class="work" data-key="spurt">
+      <article class="work" data-key="spurt" data-tags="uxui">
         <img src="img/spurt.png" alt="SPURT">
         <div class="meta">
           <p>UX/UI<br><span class="muted">Personal</span></p>
@@ -176,7 +186,7 @@
         </div>
       </article>
 
-      <article class="work" data-key="spot">
+      <article class="work" data-key="spot" data-tags="uxui">
         <img src="img/spot.png" alt="SPOT!">
         <div class="meta">
           <p>UX/UI<br><span class="muted">Personal</span></p>
@@ -186,7 +196,7 @@
         </div>
       </article>
 
-      <article class="work" data-key="bbibbi">
+      <article class="work" data-key="bbibbi" data-tags="uxui">
         <img src="img/bbibbi.png" alt="삐삐">
         <div class="meta">
           <p>UX/UI<br><span class="muted">Personal</span></p>
@@ -306,6 +316,12 @@
   function closeProject(){ document.querySelector('.site').classList.remove('viewing'); setIndex(false); projPanel.hidden=true; projPanel.innerHTML=''; aboutPanel.hidden=false; projClose.hidden=true; aboutTitle.textContent='About'; aboutCol.scrollTop=0; }
   projClose.addEventListener('click',closeProject);
   grid.addEventListener('click',e=>{ const c=e.target.closest('.work'); if(!c) return; e.preventDefault(); openProject(c); });
+  // ---- filter chips ----
+  const chips=document.getElementById('chips');
+  chips.addEventListener('click',e=>{ const b=e.target.closest('.chip'); if(!b) return;
+    chips.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===b)); const f=b.dataset.f;
+    grid.querySelectorAll('.work').forEach(w=>{ w.hidden = f!=='all' && !(w.dataset.tags||'').split(' ').includes(f); });
+    col.scrollTop=0; });
   // ---- language ----
   let lang='en';
   const langBtn=document.getElementById('lang-btn');
