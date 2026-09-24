@@ -42,6 +42,12 @@
   .index .thumb:active img { opacity:.85; transform:scale(.985); }
   @media (hover:hover) { .index .thumb:hover img { opacity:.92; } }
   [hidden] { display:none !important; }
+  /* ---- custom cursor (ring, difference blend) ---- */
+  #cursor { position:fixed; top:0; left:0; z-index:9999; pointer-events:none; will-change:transform; mix-blend-mode:difference; opacity:0; transition:opacity .2s; }
+  #cursor i { display:block; width:36px; height:36px; margin:-18px 0 0 -18px; border:4px solid #fff; border-radius:50%; transition:border-width .1s ease-out; }
+  #cursor.on i { border-width:18px; }
+  @media (hover:hover) and (pointer:fine) { html, body, a, button, .work, .thumb { cursor:none; } }
+  @media (hover:none) { #cursor { display:none; } }
   /* ---- full-screen project view: left rail of thumbs + wide project ---- */
   .site.viewing { grid-template-columns:132px 1fr; }
   .site.viewing #works .grid, .site.viewing #works #menu-btn { display:none !important; }
@@ -109,6 +115,7 @@
 </style>
 </head>
 <body>
+<div id="cursor"><i></i></div>
 <div class="site">
 
   <!-- LEFT : Sides -->
@@ -117,13 +124,23 @@
   <section class="col" id="works">
     <div class="col-head"><span id="works-title">Selected Works</span><button class="menu" id="menu-btn" aria-label="Index">≡</button></div>
     <div class="col-body index" id="works-index" hidden>
-      <a class="thumb" href="#" data-i="0"><img src="img/comong.png" alt="COMONG"></a>
-      <a class="thumb" href="#" data-i="1"><img src="img/hotcake.jpg" alt="Hotcake"></a>
-      <a class="thumb" href="#" data-i="2"><img src="img/spurt.png" alt="SPURT"></a>
-      <a class="thumb" href="#" data-i="3"><img src="img/spot.png" alt="SPOT!"></a>
-      <a class="thumb" href="#" data-i="4"><img src="img/bbibbi.png" alt="삐삐"></a>
+      <a class="thumb" href="#" data-i="0"><img src="img/newton.jpg" alt="NEWTON"></a>
+      <a class="thumb" href="#" data-i="1"><img src="img/comong.png" alt="COMONG"></a>
+      <a class="thumb" href="#" data-i="2"><img src="img/hotcake.jpg" alt="Hotcake"></a>
+      <a class="thumb" href="#" data-i="3"><img src="img/spurt.png" alt="SPURT"></a>
+      <a class="thumb" href="#" data-i="4"><img src="img/spot.png" alt="SPOT!"></a>
+      <a class="thumb" href="#" data-i="5"><img src="img/bbibbi.png" alt="삐삐"></a>
     </div>
     <div class="col-body grid" id="works-grid">
+      <article class="work" data-key="newton">
+        <img src="img/newton.jpg" alt="NEWTON">
+        <div class="meta">
+          <p>Object<span class="muted"><br>Samsung Design Membership</span></p>
+          <p>NEWTON<br>Wearable Sports Robot System<br>2025</p>
+          <p class="desc muted">Credits:<br>Song Siheon, Lee Ilyeo, Kim Sojin,<br>Park Juwon, Jeon Dabin</p>
+          <p class="desc">꿈꾸던 스포츠 콘텐츠를 내가 있는 곳에서 바로 도전할 수 있는 경험으로 바꾸는 웨어러블 로봇 시스템. 바닥과 벽면에 펼쳐진 움직임의 단서를 따라 멋진 동작을 내 몸으로 시도한다.<a class="more" href="#">[More..]</a></p>
+        </div>
+      </article>
 <article class="work" data-key="comong">
         <img src="img/comong.png" alt="COMONG">
         <div class="meta">
@@ -277,6 +294,13 @@
   langBtn.addEventListener('click',()=>{ lang=lang==='en'?'ko':'en';
     document.querySelectorAll('[data-en]').forEach(el=>{ el.innerHTML=el.dataset[lang]; });
     langBtn.innerHTML=lang==='en'?'<b>EN</b>/KO':'EN/<b>KO</b>'; });
+  // ---- custom cursor ----
+  const cur=document.getElementById('cursor');
+  if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    window.addEventListener('mousemove', e=>{ cur.style.transform=`translate3d(${e.clientX}px,${e.clientY}px,0)`; cur.style.opacity=1;
+      cur.classList.toggle('on', !!e.target.closest('a, button, .work, .thumb')); }, {passive:true});
+    document.addEventListener('mouseleave', ()=>{ cur.style.opacity=0; });
+  }
 </script>
 </body>
 </html>
