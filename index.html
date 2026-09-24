@@ -79,6 +79,7 @@
   #project-panel .pembed { position:relative; aspect-ratio:16/9; margin:0 0 var(--pad); background:#000; }
   #project-panel .pembed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
   #project-panel .phead { margin:0 0 16px; }
+  #project-panel .pcover { aspect-ratio:16/9; object-fit:cover; margin-bottom:16px; }
   .vwrap { position:relative; margin:0 0 var(--pad); }
   .vwrap video { margin:0; }
   .vbtn { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:56px; height:56px; border-radius:50%; border:0; background:rgba(255,255,255,.9); color:#000; font:inherit; font-size:12px; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; }
@@ -292,6 +293,7 @@
     const key=card.dataset.key, tpl=tplHost.querySelector('#proj-'+key);
     const meta=card.querySelectorAll('.meta > p');
     projPanel.innerHTML='';
+    const cover=document.createElement('img'); cover.className='pcover'; cover.src=card.querySelector('img').src; cover.alt=''; projPanel.appendChild(cover);
     const head=document.createElement('div'); head.className='meta phead';
     head.innerHTML=`<p>${meta[0].innerHTML}</p><p>${meta[1].innerHTML}</p>`; projPanel.appendChild(head);
     if(tpl) projPanel.appendChild(tpl.content.cloneNode(true)); else projPanel.insertAdjacentHTML('beforeend','<p class="muted">Coming soon.</p>');
