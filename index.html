@@ -30,7 +30,7 @@
   .work:last-child { border-bottom:0; }
   .work img, .work video { display:block; width:100%; height:auto; background:#eee; }
   .meta { display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; margin-top:16px; }
-  .meta p { white-space:pre-line; }
+  .meta p { white-space:pre-line; word-break:keep-all; overflow-wrap:anywhere; }
   .meta .desc { margin-top:26px; }
   .meta .more { margin-top:16px; display:inline-block; }
   .muted { color:var(--muted); }
@@ -76,7 +76,7 @@
   button.lang b { font-weight:400; color:var(--fg); }
   #project-panel img, #project-panel video { display:block; width:100%; height:auto; margin:0 0 var(--pad); background:#f2f2f2; }
   #project-panel .ptext { max-width:640px; margin:22px auto 30px; text-align:center; white-space:normal; }
-  #project-panel .ptext p { margin:0 0 6px; }
+  #project-panel .ptext p { margin:0 0 6px; word-break:keep-all; overflow-wrap:anywhere; }
   #project-panel .ptext b { font-weight:500; }
   #project-panel .pgrid { display:grid; gap:var(--pad); margin-bottom:var(--pad); }
   #project-panel .pgrid.cols-2 { grid-template-columns:1fr 1fr; } #project-panel .pgrid.cols-3 { grid-template-columns:repeat(3,1fr); } #project-panel .pgrid.cols-4 { grid-template-columns:repeat(4,1fr); }
@@ -92,7 +92,7 @@
   #project-panel .plabel { color:var(--muted); margin:56px 0 18px; padding-top:18px; border-top:1px solid var(--line); }
   #project-panel .plabel:first-of-type { margin-top:0; padding-top:0; border-top:0; }
   #project-panel .pcap { display:grid; grid-template-columns:1fr 2fr; gap:16px; margin:22px 0 10px; }
-  #project-panel .pcap p { margin:0; }
+  #project-panel .pcap p { margin:0; word-break:keep-all; overflow-wrap:anywhere; }
   #project-panel .pcap .pt { font-weight:500; }
   @media (max-width:900px) { #project-panel .pcap { grid-template-columns:1fr; gap:6px; } }
   #project-panel .ptext.left { text-align:left; margin:36px auto 28px; }
@@ -106,6 +106,7 @@
   /* about */
   .about { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   .about p + p { margin-top:14px; }
+  .about p, .cv p { word-break:keep-all; overflow-wrap:anywhere; }
   .about .links p { margin:0; }
   .about .links .gap { height:12px; }
   .cv { border-top:1px solid var(--line); margin-top:120px; padding-top:var(--pad); }
@@ -153,7 +154,7 @@
           <p>Object<span class="muted"><br>Samsung Design Membership</span></p>
           <p>NEWTON<br>Wearable Sports Robot System<br>2025</p>
           <p class="desc muted">Credits:<br>Song Siheon, Lee Ilyeo, Kim Sojin,<br>Park Juwon, Jeon Dabin</p>
-          <p class="desc">꿈꾸던 스포츠 콘텐츠를 내가 있는 곳에서 바로 도전할 수 있는 경험으로 바꾸는 웨어러블 로봇 시스템. 바닥과 벽면에 펼쳐진 움직임의 단서를 따라 멋진 동작을 내 몸으로 시도한다.</p>
+          <p class="desc">보고만 있던 스포츠 동작을 내가 있는 곳에서 바로 따라 해 보게 만드는 웨어러블 로봇 시스템. 바닥과 벽면에 펼쳐진 움직임의 단서를 따라가고, 하체 웨어러블이 감각을 조율한다.</p>
         </div>
       </article>
 <article class="work" data-key="comong" data-tags="product">
@@ -162,7 +163,7 @@
           <p>Object<span class="muted"><br>Samsung Design Membership × IDEO</span></p>
           <p>COMONG<br>AI Air Multiplier for Dogs<br>2025</p>
           <p class="desc muted">Credits:<br>Jung Minseo, Lee Ilyeo,<br>Jang Yujin, Choi Wanhyeok</p>
-          <p class="desc">시원한 곳을 찾아 이동하는 강아지의 행동 특성에 기반한 AI 에어 멀티플라이어. 위쪽은 사람을 위한 직접풍, 아래쪽은 강아지를 위한 은은한 바닥풍을 동시에 낸다.</p>
+          <p class="desc">카메라와 바닥 온도 센서로 반려견의 더위를 감지해 바닥풍을 제공하는 AI 에어 멀티플라이어. 위쪽은 사람을 위한 직접풍, 아래쪽은 강아지를 위한 간접풍을 동시에 낸다.</p>
         </div>
       </article>
 
@@ -172,7 +173,7 @@
           <p>UX/UI<br><span class="muted">Personal</span></p>
           <p>Hotcake<br>Service Design<br>2025</p>
           <p></p>
-          <p class="desc">Hotcake 프로젝트 소개 문장을 여기에 넣는다. 두세 줄이면 충분하다.</p>
+          <p class="desc">어디에 있든 친구들과 한 공간처럼 실시간 합주할 수 있게 하는 공간 음향 스피커 Cake와 햅틱 웨어러블 Butter. 입체 음향으로 같은 방의 감각을 전하고 연주를 정확히 맞춘다.</p>
         </div>
       </article>
 
@@ -182,7 +183,7 @@
           <p>UX/UI<br><span class="muted">Personal</span></p>
           <p>SPURT<br>미루는 당신을 위한 마지막 스퍼트<br>2025</p>
           <p></p>
-          <p class="desc">SPURT 프로젝트 소개 문장을 여기에 넣는다.</p>
+          <p class="desc">마감이 임박한 작업을 한눈에 보여주고 작은 알림으로 시작을 돕는, 미루는 사람을 위한 집중 서비스. 음악과 함께 몰입을 유지하고 짧은 회고로 하루를 정리한다.</p>
         </div>
       </article>
 
@@ -192,7 +193,7 @@
           <p>UX/UI<br><span class="muted">Personal</span></p>
           <p>SPOT!<br>My Ballpark Seat View Service<br>2024</p>
           <p></p>
-          <p class="desc">내가 만들어가는 야구장 시야 서비스.</p>
+          <p class="desc">야구장 좌석의 시야 사진과 후기를 간편하게 확인하는 직관 서비스. 나만의 직관 기록을 한곳에 아카이빙하고, 다른 야구 팬들과 공유하며 다음 좌석을 고른다.</p>
         </div>
       </article>
 
@@ -202,7 +203,7 @@
           <p>UX/UI<br><span class="muted">Personal</span></p>
           <p>삐삐<br>Family Widget Service<br>2024</p>
           <p></p>
-          <p class="desc">하루 한 번, 가족에게 보내는 생존신고 서비스.</p>
+          <p class="desc">하루 한 번 가족에게 생존신고를 보내는 위젯 서비스. 잦은 연락의 부담 없이 10초만 투자해 가족의 하루를 알고, 작은 습관을 행복한 추억으로 남긴다.</p>
         </div>
       </article>
 
