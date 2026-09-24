@@ -297,7 +297,7 @@
       v.removeAttribute('autoplay'); v.muted=true; v.loop=true; v.playsInline=true;
       const wrap=document.createElement('div'); wrap.className='vwrap'; v.replaceWith(wrap); wrap.appendChild(v);
       const fmt=t=>{t=Math.floor(t||0); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
-      const addBar=()=>{ if(!(v.duration>=30) || wrap.querySelector('.vbar')) return;
+      const addBar=()=>{ if(!(v.duration>=20) || wrap.querySelector('.vbar')) return;
         const bar=document.createElement('div'); bar.className='vbar';
         bar.innerHTML='<button type="button">Pause</button><div class="track"><i></i></div><span class="time"></span>';
         const b=bar.querySelector('button'), fill=bar.querySelector('i'), tm=bar.querySelector('.time'), track=bar.querySelector('.track');
