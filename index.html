@@ -36,9 +36,9 @@
   .muted { color:var(--muted); }
   button.menu { background:none; border:0; font:inherit; font-size:14px; line-height:1; cursor:pointer; color:inherit; padding:0; }
   button.menu.close { font-size:var(--fs); }
-  .index { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--pad); }
-  .index .thumb { display:block; aspect-ratio:1/1; overflow:hidden; background:#eee; }
-  .index .thumb img { width:100%; height:100%; object-fit:cover; display:block; transition:opacity .18s ease, transform .18s ease; }
+  .index { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--pad); align-items:start; }
+  .index .thumb { display:block; background:#eee; }
+  .index .thumb img { width:100%; height:auto; display:block; transition:opacity .18s ease, transform .18s ease; }
   .index .thumb:active img { opacity:.85; transform:scale(.985); }
   @media (hover:hover) { .index .thumb:hover img { opacity:.92; } }
   [hidden] { display:none !important; }
@@ -79,6 +79,11 @@
   #project-panel .pembed { position:relative; aspect-ratio:16/9; margin:0 0 var(--pad); background:#000; }
   #project-panel .pembed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
   #project-panel .phead { margin:0 0 16px; }
+  .vwrap { position:relative; margin:0 0 var(--pad); }
+  .vwrap video { margin:0; }
+  .vbtn { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:56px; height:56px; border-radius:50%; border:0; background:rgba(255,255,255,.9); color:#000; font:inherit; font-size:12px; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; }
+  .vwrap:hover .vbtn, .vwrap.paused .vbtn { opacity:1; }
+  @media (hover:none) { .vwrap .vbtn { opacity:1; } }
   #project-panel .plabel { color:var(--muted); margin:56px 0 18px; padding-top:18px; border-top:1px solid var(--line); }
   #project-panel .plabel:first-of-type { margin-top:0; padding-top:0; border-top:0; }
   #project-panel .pcap { display:grid; grid-template-columns:1fr 2fr; gap:16px; margin:22px 0 10px; }
@@ -138,7 +143,7 @@
           <p>Object<span class="muted"><br>Samsung Design Membership</span></p>
           <p>NEWTON<br>Wearable Sports Robot System<br>2025</p>
           <p class="desc muted">Credits:<br>Song Siheon, Lee Ilyeo, Kim Sojin,<br>Park Juwon, Jeon Dabin</p>
-          <p class="desc">꿈꾸던 스포츠 콘텐츠를 내가 있는 곳에서 바로 도전할 수 있는 경험으로 바꾸는 웨어러블 로봇 시스템. 바닥과 벽면에 펼쳐진 움직임의 단서를 따라 멋진 동작을 내 몸으로 시도한다.<a class="more" href="#">[More..]</a></p>
+          <p class="desc">꿈꾸던 스포츠 콘텐츠를 내가 있는 곳에서 바로 도전할 수 있는 경험으로 바꾸는 웨어러블 로봇 시스템. 바닥과 벽면에 펼쳐진 움직임의 단서를 따라 멋진 동작을 내 몸으로 시도한다.</p>
         </div>
       </article>
 <article class="work" data-key="comong">
@@ -147,7 +152,7 @@
           <p>Object<span class="muted"><br>Samsung Design Membership × IDEO</span></p>
           <p>COMONG<br>AI Air Multiplier for Dogs<br>2025</p>
           <p class="desc muted">Credits:<br>Jung Minseo, Lee Ilyeo,<br>Jang Yujin, Choi Wanhyeok</p>
-          <p class="desc">시원한 곳을 찾아 이동하는 강아지의 행동 특성에 기반한 AI 에어 멀티플라이어. 위쪽은 사람을 위한 직접풍, 아래쪽은 강아지를 위한 은은한 바닥풍을 동시에 낸다.<a class="more" href="#">[More..]</a></p>
+          <p class="desc">시원한 곳을 찾아 이동하는 강아지의 행동 특성에 기반한 AI 에어 멀티플라이어. 위쪽은 사람을 위한 직접풍, 아래쪽은 강아지를 위한 은은한 바닥풍을 동시에 낸다.</p>
         </div>
       </article>
 
@@ -157,7 +162,7 @@
           <p>UX/UI<br><span class="muted">Personal</span></p>
           <p>Hotcake<br>Service Design<br>2025</p>
           <p></p>
-          <p class="desc">Hotcake 프로젝트 소개 문장을 여기에 넣는다. 두세 줄이면 충분하다.<a class="more" href="#">[More..]</a></p>
+          <p class="desc">Hotcake 프로젝트 소개 문장을 여기에 넣는다. 두세 줄이면 충분하다.</p>
         </div>
       </article>
 
@@ -167,7 +172,7 @@
           <p>UX/UI<br><span class="muted">Personal</span></p>
           <p>SPURT<br>미루는 당신을 위한 마지막 스퍼트<br>2025</p>
           <p></p>
-          <p class="desc">SPURT 프로젝트 소개 문장을 여기에 넣는다.<a class="more" href="#">[More..]</a></p>
+          <p class="desc">SPURT 프로젝트 소개 문장을 여기에 넣는다.</p>
         </div>
       </article>
 
@@ -177,7 +182,7 @@
           <p>UX/UI<br><span class="muted">Personal</span></p>
           <p>SPOT!<br>My Ballpark Seat View Service<br>2024</p>
           <p></p>
-          <p class="desc">내가 만들어가는 야구장 시야 서비스.<a class="more" href="#">[More..]</a></p>
+          <p class="desc">내가 만들어가는 야구장 시야 서비스.</p>
         </div>
       </article>
 
@@ -187,7 +192,7 @@
           <p>UX/UI<br><span class="muted">Personal</span></p>
           <p>삐삐<br>Family Widget Service<br>2024</p>
           <p></p>
-          <p class="desc">하루 한 번, 가족에게 보내는 생존신고 서비스.<a class="more" href="#">[More..]</a></p>
+          <p class="desc">하루 한 번, 가족에게 보내는 생존신고 서비스.</p>
         </div>
       </article>
 
@@ -271,6 +276,18 @@
         aboutTitle=document.getElementById('about-title'), projClose=document.getElementById('proj-close'),
         aboutCol=document.getElementById('about'), tplHost=document.createElement('div');
   fetch('projects.html?v='+Date.now()).then(r=>r.text()).then(t=>{ tplHost.innerHTML=t; });
+  const vio=new IntersectionObserver(es=>{ for(const e of es){ const v=e.target; if(e.isIntersecting){ if(!v.dataset.userPaused) v.play().catch(()=>{}); } else v.pause(); } }, {threshold:.25});
+  function setupVideos(root){
+    root.querySelectorAll('video').forEach(v=>{
+      v.removeAttribute('autoplay'); v.muted=true; v.loop=true; v.playsInline=true;
+      const wrap=document.createElement('div'); wrap.className='vwrap'; v.replaceWith(wrap); wrap.appendChild(v);
+      const addBtn=()=>{ if(v.duration>=30 && !wrap.querySelector('.vbtn')){ const b=document.createElement('button'); b.className='vbtn'; b.textContent='Pause';
+          b.addEventListener('click',()=>{ if(v.paused){ delete v.dataset.userPaused; v.play(); b.textContent='Pause'; wrap.classList.remove('paused'); } else { v.dataset.userPaused='1'; v.pause(); b.textContent='Play'; wrap.classList.add('paused'); } });
+          wrap.appendChild(b); } };
+      if(v.readyState>=1) addBtn(); else v.addEventListener('loadedmetadata', addBtn, {once:true});
+      vio.observe(v);
+    });
+  }
   function openProject(card){
     const key=card.dataset.key, tpl=tplHost.querySelector('#proj-'+key);
     const meta=card.querySelectorAll('.meta > p');
@@ -278,6 +295,7 @@
     const head=document.createElement('div'); head.className='meta phead';
     head.innerHTML=`<p>${meta[0].innerHTML}</p><p>${meta[1].innerHTML}</p>`; projPanel.appendChild(head);
     if(tpl) projPanel.appendChild(tpl.content.cloneNode(true)); else projPanel.insertAdjacentHTML('beforeend','<p class="muted">Coming soon.</p>');
+    setupVideos(projPanel);
     aboutPanel.hidden=true; projPanel.hidden=false; projClose.hidden=false;
     document.querySelector('.site').classList.add('viewing'); index.hidden=false; grid.hidden=true; title.textContent='Index';
     const i=[...grid.querySelectorAll('.work')].indexOf(card);
