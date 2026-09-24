@@ -212,7 +212,7 @@
 
   <!-- RIGHT : About -->
   <section class="col" id="about">
-    <div class="col-head"><span id="about-title">About</span><span class="head-right"><button class="lang" id="lang-btn" aria-label="Language"><b>EN</b>/KO</button><button class="menu close" id="proj-close" hidden>(Close)</button></span></div>
+    <div class="col-head"><span id="about-title">About</span><span class="head-right"><button class="lang" id="lang-btn" aria-label="Language"><b>KO</b>/EN</button><button class="menu close" id="proj-close" hidden>(Close)</button></span></div>
     <div class="col-body" id="project-panel" hidden></div>
     <div class="col-body" id="about-panel">
       <div class="about">
@@ -306,7 +306,7 @@
     const head=document.createElement('div'); head.className='meta phead';
     head.innerHTML=`<p>${meta[0].innerHTML}</p><p>${meta[1].innerHTML}</p>`; projPanel.appendChild(head);
     if(tpl) projPanel.appendChild(tpl.content.cloneNode(true)); else projPanel.insertAdjacentHTML('beforeend','<p class="muted">Coming soon.</p>');
-    setupVideos(projPanel);
+    setupVideos(projPanel); applyLang(projPanel);
     aboutPanel.hidden=true; projPanel.hidden=false; projClose.hidden=false;
     document.querySelector('.site').classList.add('viewing'); index.hidden=false; grid.hidden=true; title.textContent='Index';
     const i=[...grid.querySelectorAll('.work')].indexOf(card);
@@ -323,12 +323,21 @@
     chips.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===b)); const f=b.dataset.f;
     grid.querySelectorAll('.work').forEach(w=>{ w.hidden = f!=='all' && !(w.dataset.tags||'').split(' ').includes(f); });
     col.scrollTop=0; });
-  // ---- language ----
-  let lang='en';
+  // ---- language (default ko; i18n.json holds ko->en) ----
+  let lang='ko', I18N={};
   const langBtn=document.getElementById('lang-btn');
-  langBtn.addEventListener('click',()=>{ lang=lang==='en'?'ko':'en';
-    document.querySelectorAll('[data-en]').forEach(el=>{ el.innerHTML=el.dataset[lang]; });
-    langBtn.innerHTML=lang==='en'?'<b>EN</b>/KO':'EN/<b>KO</b>'; });
+  const SEL='.pt, .pb, .desc, .plabel, .ptext, .meta > p, .about p, .cv p, [data-en]';
+  const norm=el=>el.textContent.replace(/\s+/g,' ').trim();
+  function applyLang(root){
+    root.querySelectorAll(SEL).forEach(el=>{
+      if(el.dataset.en && el.dataset.ko){ el.innerHTML=el.dataset[lang]; return; }
+      if(lang==='en'){ const k=el.dataset.koKey||norm(el); const en=I18N[k]; if(en){ if(!el.dataset.koHtml){ el.dataset.koHtml=el.innerHTML; el.dataset.koKey=k; } el.innerHTML=en; } }
+      else if(el.dataset.koHtml){ el.innerHTML=el.dataset.koHtml; }
+    });
+    langBtn.innerHTML=lang==='ko'?'<b>KO</b>/EN':'KO/<b>EN</b>';
+  }
+  fetch('i18n.json?v='+Date.now()).then(r=>r.json()).then(j=>{ I18N=j; applyLang(document); });
+  langBtn.addEventListener('click',()=>{ lang=lang==='ko'?'en':'ko'; applyLang(document); });
   // ---- custom cursor ----
   const cur=document.getElementById('cursor');
   if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
