@@ -79,7 +79,6 @@
   #project-panel .pembed { position:relative; aspect-ratio:16/9; margin:0 0 var(--pad); background:#000; }
   #project-panel .pembed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
   #project-panel .phead { margin:0 0 16px; }
-  #project-panel .pcover { aspect-ratio:16/9; object-fit:cover; }
   .vwrap { position:relative; margin:0 0 var(--pad); }
   .vwrap video { margin:0; }
   .vbtn { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:56px; height:56px; border-radius:50%; border:0; background:rgba(255,255,255,.9); color:#000; font:inherit; font-size:12px; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; }
@@ -130,16 +129,16 @@
   <section class="col" id="works">
     <div class="col-head"><span id="works-title">Selected Works</span><button class="menu" id="menu-btn" aria-label="Index">≡</button></div>
     <div class="col-body index" id="works-index" hidden>
-      <a class="thumb" href="#" data-i="0"><img src="img/newton.jpg" alt="NEWTON"></a>
-      <a class="thumb" href="#" data-i="1"><img src="img/comong.png" alt="COMONG"></a>
-      <a class="thumb" href="#" data-i="2"><img src="img/hotcake.jpg" alt="Hotcake"></a>
-      <a class="thumb" href="#" data-i="3"><img src="img/spurt.png" alt="SPURT"></a>
-      <a class="thumb" href="#" data-i="4"><img src="img/spot.png" alt="SPOT!"></a>
-      <a class="thumb" href="#" data-i="5"><img src="img/bbibbi.png" alt="삐삐"></a>
+      <a class="thumb" href="#" data-i="0"><img src="img/newton/Newton_0_main.webp" alt="NEWTON"></a>
+      <a class="thumb" href="#" data-i="1"><img src="img/comong/01.jpg" alt="COMONG"></a>
+      <a class="thumb" href="#" data-i="2"><img src="img/hotcake/01.png" alt="Hotcake"></a>
+      <a class="thumb" href="#" data-i="3"><img src="img/spurt/01.png" alt="SPURT"></a>
+      <a class="thumb" href="#" data-i="4"><img src="img/spot/01.png" alt="SPOT!"></a>
+      <a class="thumb" href="#" data-i="5"><img src="img/bbibbi/01.png" alt="삐삐"></a>
     </div>
     <div class="col-body grid" id="works-grid">
       <article class="work" data-key="newton">
-        <img src="img/newton.jpg" alt="NEWTON">
+        <img src="img/newton/Newton_0_main.webp" alt="NEWTON">
         <div class="meta">
           <p>Object<span class="muted"><br>Samsung Design Membership</span></p>
           <p>NEWTON<br>Wearable Sports Robot System<br>2025</p>
@@ -148,7 +147,7 @@
         </div>
       </article>
 <article class="work" data-key="comong">
-        <img src="img/comong.png" alt="COMONG">
+        <img src="img/comong/01.jpg" alt="COMONG">
         <div class="meta">
           <p>Object<span class="muted"><br>Samsung Design Membership × IDEO</span></p>
           <p>COMONG<br>AI Air Multiplier for Dogs<br>2025</p>
@@ -158,7 +157,7 @@
       </article>
 
       <article class="work" data-key="hotcake">
-        <img src="img/hotcake.jpg" alt="Hotcake">
+        <img src="img/hotcake/01.png" alt="Hotcake">
         <div class="meta">
           <p>UX/UI<br><span class="muted">Personal</span></p>
           <p>Hotcake<br>Service Design<br>2025</p>
@@ -168,7 +167,7 @@
       </article>
 
       <article class="work" data-key="spurt">
-        <img src="img/spurt.png" alt="SPURT">
+        <img src="img/spurt/01.png" alt="SPURT">
         <div class="meta">
           <p>UX/UI<br><span class="muted">Personal</span></p>
           <p>SPURT<br>미루는 당신을 위한 마지막 스퍼트<br>2025</p>
@@ -178,7 +177,7 @@
       </article>
 
       <article class="work" data-key="spot">
-        <img src="img/spot.png" alt="SPOT!">
+        <img src="img/spot/01.png" alt="SPOT!">
         <div class="meta">
           <p>UX/UI<br><span class="muted">Personal</span></p>
           <p>SPOT!<br>My Ballpark Seat View Service<br>2024</p>
@@ -188,7 +187,7 @@
       </article>
 
       <article class="work" data-key="bbibbi">
-        <img src="img/bbibbi.png" alt="삐삐">
+        <img src="img/bbibbi/01.png" alt="삐삐">
         <div class="meta">
           <p>UX/UI<br><span class="muted">Personal</span></p>
           <p>삐삐<br>Family Widget Service<br>2024</p>
@@ -297,7 +296,6 @@
     head.innerHTML=`<p>${meta[0].innerHTML}</p><p>${meta[1].innerHTML}</p>`; projPanel.appendChild(head);
     if(tpl) projPanel.appendChild(tpl.content.cloneNode(true)); else projPanel.insertAdjacentHTML('beforeend','<p class="muted">Coming soon.</p>');
     setupVideos(projPanel);
-    const first=projPanel.querySelector('img, video'); if(first) first.classList.add('pcover');
     aboutPanel.hidden=true; projPanel.hidden=false; projClose.hidden=false;
     document.querySelector('.site').classList.add('viewing'); index.hidden=false; grid.hidden=true; title.textContent='Index';
     const i=[...grid.querySelectorAll('.work')].indexOf(card);
