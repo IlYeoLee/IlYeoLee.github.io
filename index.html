@@ -301,7 +301,11 @@
         aboutTitle=document.getElementById('about-title'), projClose=document.getElementById('proj-close'),
         aboutCol=document.getElementById('about'), tplHost=document.createElement('div');
   fetch('projects.html?v='+Date.now()).then(r=>r.text()).then(t=>{ tplHost.innerHTML=t; });
-  const vio=new IntersectionObserver(es=>{ for(const e of es){ const v=e.target; if(e.isIntersecting){ if(!v.dataset.userPaused) v.play().catch(()=>{}); } else v.pause(); } }, {threshold:.25});
+  // videos: play only when scrolling has stopped with the video in view; pause when it leaves
+  const visible=new Set(); let scrollTimer=null, scrolling=false;
+  const playVisible=()=>{ visible.forEach(v=>{ if(!v.dataset.userPaused) v.play().catch(()=>{}); }); };
+  const vio=new IntersectionObserver(es=>{ for(const e of es){ const v=e.target; if(e.isIntersecting){ visible.add(v); if(!scrolling && !v.dataset.userPaused) v.play().catch(()=>{}); } else { visible.delete(v); v.pause(); } } }, {threshold:.5});
+  document.addEventListener('scroll', ()=>{ scrolling=true; clearTimeout(scrollTimer); scrollTimer=setTimeout(()=>{ scrolling=false; playVisible(); }, 180); }, {passive:true, capture:true});
   const SND_ON='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 6h3l4-3v10l-4-3H2z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5" stroke-linecap="round"/><path d="M12.8 3.5a6 6 0 0 1 0 9" stroke-linecap="round"/></svg>', SND_OFF='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 6h3l4-3v10l-4-3H2z"/><path d="M11 6l3.5 3.5M14.5 6L11 9.5" stroke-linecap="round"/></svg>';
   function setupVideos(root){
     root.querySelectorAll('video').forEach(v=>{
