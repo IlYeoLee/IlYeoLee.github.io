@@ -90,6 +90,12 @@
   .vbar button { font:inherit; font-size:12px; line-height:1; padding:6px 10px; border:0; border-radius:999px; background:var(--fg); color:var(--bg); cursor:pointer; min-width:56px; }
   .vbar .snd, .sndonly { background:none !important; color:var(--fg) !important; border:1px solid var(--fg) !important; }
   .sndonly { position:absolute; right:8px; bottom:8px; font:inherit; font-size:12px; line-height:1; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.92) !important; cursor:pointer; }
+  .vbar .pp { width:28px; height:28px; min-width:0; padding:0; position:relative; }
+  .vbar .pp::before, .vbar .pp::after { content:''; position:absolute; top:50%; left:50%; background:var(--bg); }
+  .vbar .pp::before { width:3px; height:10px; transform:translate(-5px,-50%); }
+  .vbar .pp::after { width:3px; height:10px; transform:translate(2px,-50%); }
+  .vbar .pp.paused::before { width:0; height:0; background:none; border-left:9px solid var(--bg); border-top:5px solid transparent; border-bottom:5px solid transparent; transform:translate(-3px,-50%); }
+  .vbar .pp.paused::after { display:none; }
   .vbar .track { flex:1; height:100%; position:relative; cursor:pointer; touch-action:none; }
   .vbar .track::before { content:''; position:absolute; left:0; right:0; top:50%; height:2px; margin-top:-1px; background:#d0d0d0; }
   .vbar .track i { position:absolute; left:0; top:50%; height:2px; margin-top:-1px; width:0; background:var(--fg); }
@@ -302,9 +308,9 @@
         if(!(v.duration>=20)){ if(v.dataset.audio){ const sb=document.createElement('button'); sb.type='button'; sb.className='sndonly'; sb.textContent='Sound Off';
             sb.addEventListener('click',()=>{ v.muted=!v.muted; sb.textContent=v.muted?'Sound Off':'Sound On'; }); wrap.appendChild(sb); } return; }
         const bar=document.createElement('div'); bar.className='vbar';
-        bar.innerHTML='<button type="button">Pause</button><div class="track"><i></i></div><span class="time"></span>'+(v.dataset.audio?'<button type="button" class="snd">Sound Off</button>':'');
+        bar.innerHTML='<button type="button" class="pp" aria-label="Play/Pause"></button><div class="track"><i></i></div><span class="time"></span>'+(v.dataset.audio?'<button type="button" class="snd">Sound Off</button>':'');
         const b=bar.querySelector('button'), fill=bar.querySelector('i'), tm=bar.querySelector('.time'), track=bar.querySelector('.track');
-        const sync=()=>{ b.textContent=v.paused?'Play':'Pause'; fill.style.width=(v.currentTime/v.duration*100)+'%'; track.style.setProperty('--p',(v.currentTime/v.duration*100)+'%'); tm.textContent=fmt(v.currentTime)+' / '+fmt(v.duration); };
+        const sync=()=>{ b.classList.toggle('paused', v.paused); fill.style.width=(v.currentTime/v.duration*100)+'%'; track.style.setProperty('--p',(v.currentTime/v.duration*100)+'%'); tm.textContent=fmt(v.currentTime)+' / '+fmt(v.duration); };
         b.addEventListener('click',()=>{ if(v.paused){ delete v.dataset.userPaused; v.play(); } else { v.dataset.userPaused='1'; v.pause(); } sync(); });
         const seek=e=>{ const r=track.getBoundingClientRect(); const p=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)); v.currentTime=p*v.duration; sync(); };
         let drag=false; track.addEventListener('pointerdown',e=>{ drag=true; track.setPointerCapture(e.pointerId); seek(e); });
