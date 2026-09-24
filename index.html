@@ -42,10 +42,10 @@
   .index .thumb:active img { opacity:.85; transform:scale(.985); }
   @media (hover:hover) { .index .thumb:hover img { opacity:.92; } }
   [hidden] { display:none !important; }
-  /* ---- custom cursor (ring, difference blend) ---- */
+  /* ---- custom cursor (everyelse.com port: ring stretches with scroll velocity) ---- */
   #cursor { position:fixed; top:0; left:0; z-index:9999; pointer-events:none; will-change:transform; mix-blend-mode:difference; opacity:0; transition:opacity .2s; }
-  #cursor i { display:block; width:36px; height:36px; margin:-18px 0 0 -18px; border:4px solid #fff; border-radius:50%; transition:border-width .1s ease-out; }
-  #cursor.on i { border-width:18px; }
+  #cursor i { display:block; width:36px; height:var(--stretch-h,36px); border-radius:var(--stretch-r,9999px); transform:translate(-18px,-18px); border:4px solid #fff; transition:border-width .1s ease-out; }
+  #cursor.on i, #cursor.down i { border-width:8px; }
   @media (hover:hover) and (pointer:fine) { *, *::before, *::after { cursor:none !important; } }
   @media (hover:none) { #cursor { display:none; } }
   /* ---- full-screen project view: left rail of thumbs + wide project ---- */
@@ -315,9 +315,23 @@
   // ---- custom cursor ----
   const cur=document.getElementById('cursor');
   if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
-    window.addEventListener('mousemove', e=>{ cur.style.transform=`translate3d(${e.clientX}px,${e.clientY}px,0)`; cur.style.opacity=1;
+    let tx=0, ty=0, x=0, y=0, shown=false, lastWheel=-1e9, vel=0, lastPos=null, lastT=performance.now(), h=36, pvx=0, pvy=0, rx=0, ry=0;
+    window.addEventListener('mousemove', e=>{ if(!shown){ x=e.clientX; y=e.clientY; shown=true; } pvx=e.clientX-tx; pvy=e.clientY-ty; tx=e.clientX; ty=e.clientY; cur.style.opacity=1;
       cur.classList.toggle('on', !!e.target.closest('a, button, .work, .thumb')); }, {passive:true});
-    document.addEventListener('mouseleave', ()=>{ cur.style.opacity=0; });
+    document.addEventListener('mouseleave', ()=>{ cur.style.opacity=0; shown=false; });
+    document.addEventListener('pointerdown', ()=>cur.classList.add('down'), {passive:true});
+    document.addEventListener('pointerup', ()=>cur.classList.remove('down'), {passive:true});
+    document.addEventListener('wheel', ()=>{ lastWheel=performance.now(); }, {passive:true});
+    document.addEventListener('scroll', e=>{ const el=e.target===document?document.documentElement:e.target; const pos=el===document.documentElement?window.scrollY:el.scrollTop; const now=performance.now();
+      if(lastPos!==null && now-lastWheel<200) vel=(pos-lastPos)/Math.max(now-lastT,1); lastPos=pos; lastT=now; }, {passive:true, capture:true});
+    (function loop(){
+      x+=(tx-x)*0.5; y+=(ty-y)*0.5;
+      rx+=((-pvy*0.6)-rx)*0.2; ry+=((pvx*0.6)-ry)*0.2; pvx*=0.8; pvy*=0.8;
+      cur.style.transform=`translate3d(${x}px,${y}px,0) perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      vel*=0.85; const target=36+44*Math.min(0.35*Math.abs(vel),1); h+=(target-h)*0.25; const a=(h-36)/44;
+      cur.style.setProperty('--stretch-h', h.toFixed(2)+'px'); cur.style.setProperty('--stretch-r', (9999-9983*a).toFixed(2)+'px');
+      requestAnimationFrame(loop);
+    })();
   }
 </script>
 </body>
