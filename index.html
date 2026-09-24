@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ilyeo Lee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --fg:#000; --muted:#7a7a7a; --line:#d9d9d9; --bg:#fff; --pad:7px; --fs:13px; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; background:var(--bg); color:var(--fg); }
+  body { font-family:Inter, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; font-size:var(--fs); line-height:1.4; letter-spacing:-0.005em; -webkit-font-smoothing:antialiased; }
+  a { color:inherit; text-decoration:none; }
+  a:hover { color:var(--muted); }
+
+  .site { display:grid; grid-template-columns: 2fr 1fr; height:calc(100vh - 24px); }
+  .grid { display:grid; grid-template-columns:1fr 1fr; column-gap:var(--pad); }
+  .grid .work:nth-last-child(-n+2) { border-bottom:0; }
+  .col { position:relative; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; border-right:1px solid var(--line); }
+  .col:last-child { border-right:0; }
+  .col-head { position:sticky; top:0; z-index:2; display:flex; justify-content:space-between; align-items:center; height:24px; padding:0 var(--pad); background:var(--bg); border-bottom:1px solid var(--line); }
+  .col-head .menu { font-size:14px; line-height:1; }
+  .col-body { padding:var(--pad); }
+
+  .foot { height:24px; display:flex; align-items:center; padding:0 var(--pad); border-top:1px solid var(--line); font-size:12px; }
+
+  /* project card */
+  .work { padding-bottom:28px; margin-bottom:28px; border-bottom:1px solid var(--line); }
+  .work:last-child { border-bottom:0; }
+  .work img, .work video { display:block; width:100%; height:auto; background:#eee; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; margin-top:16px; }
+  .meta p { white-space:pre-line; }
+  .meta .desc { margin-top:26px; }
+  .meta .more { margin-top:16px; display:inline-block; }
+  .muted { color:var(--muted); }
+  button.menu { background:none; border:0; font:inherit; font-size:14px; line-height:1; cursor:pointer; color:inherit; padding:0; }
+  button.menu.close { font-size:var(--fs); }
+  .index { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--pad); }
+  .index .thumb { display:block; aspect-ratio:1/1; overflow:hidden; background:#eee; }
+  .index .thumb img { width:100%; height:100%; object-fit:cover; display:block; transition:opacity .18s ease, transform .18s ease; }
+  .index .thumb:active img { opacity:.85; transform:scale(.985); }
+  @media (hover:hover) { .index .thumb:hover img { opacity:.92; } }
+  [hidden] { display:none !important; }
+  /* ---- full-screen project view: left rail of thumbs + wide project ---- */
+  .site.viewing { grid-template-columns:132px 1fr; }
+  .site.viewing #works .grid, .site.viewing #works #menu-btn { display:none !important; }
+  .site.viewing #works .index { display:grid !important; grid-template-columns:1fr; gap:var(--pad); }
+  .site.viewing #works .index .thumb.current img { opacity:.35; }
+  .site.viewing #about-panel { display:none !important; }
+  .site.viewing #project-panel { display:block !important; padding:32px clamp(24px, 8vw, 140px) 80px; }
+  .site.viewing #project-panel > * { max-width:1040px; margin-left:auto; margin-right:auto; }
+  .site.viewing #project-panel .ptext { max-width:640px; }
+  .site.viewing #project-panel .phead { max-width:1040px; margin-bottom:20px; }
+  @media (max-width:900px) {
+    .site.viewing { grid-template-columns:1fr; }
+    .site.viewing #project-panel { padding:16px 16px 60px; }
+    .site.viewing #works { position:sticky; top:0; z-index:3; background:var(--bg); }
+    .site.viewing #works .col-head { display:none; }
+    .site.viewing #works .index { display:flex !important; overflow-x:auto; gap:var(--pad); padding:var(--pad); }
+    .site.viewing #works .index .thumb { flex:0 0 64px; }
+  }
+  .head-right { display:flex; gap:12px; align-items:center; }
+  button.lang { background:none; border:0; font:inherit; font-size:var(--fs); color:var(--muted); cursor:pointer; padding:0; letter-spacing:0; }
+  button.lang b { font-weight:400; color:var(--fg); }
+  #project-panel img, #project-panel video { display:block; width:100%; height:auto; margin:0 0 var(--pad); background:#f2f2f2; }
+  #project-panel .ptext { max-width:640px; margin:22px auto 30px; text-align:center; white-space:normal; }
+  #project-panel .ptext p { margin:0 0 6px; }
+  #project-panel .ptext b { font-weight:500; }
+  #project-panel .pgrid { display:grid; gap:var(--pad); margin-bottom:var(--pad); }
+  #project-panel .pgrid.cols-2 { grid-template-columns:1fr 1fr; } #project-panel .pgrid.cols-3 { grid-template-columns:repeat(3,1fr); } #project-panel .pgrid.cols-4 { grid-template-columns:repeat(4,1fr); }
+  #project-panel .pgrid img { margin:0; }
+  #project-panel .pembed { position:relative; aspect-ratio:16/9; margin:0 0 var(--pad); background:#000; }
+  #project-panel .pembed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+  #project-panel .phead { margin:0 0 16px; }
+  #project-panel .ptext.left { text-align:left; margin:36px auto 28px; }
+  #project-panel .ptext.left p { margin:0 0 14px; }
+  #project-panel .ptext .label { color:var(--muted); margin-bottom:10px; } #project-panel .phead p { white-space:pre-line; }
+  .work { cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .work img { transition:transform .18s ease, opacity .18s ease; }
+  .work:active img, .work.pressed img { transform:scale(.985); opacity:.85; }
+  @media (hover:hover) { .work:hover img { opacity:.92; } }
+
+  /* about */
+  .about { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .about p + p { margin-top:14px; }
+  .about .links p { margin:0; }
+  .about .links .gap { height:12px; }
+  .cv { border-top:1px solid var(--line); margin-top:120px; padding-top:var(--pad); }
+  .cv .row { display:grid; grid-template-columns:1fr 1fr; gap:16px; padding:0 0 28px; }
+  .cv .row + .row { border-top:1px solid var(--line); padding-top:var(--pad); }
+  .cv .item + .item { margin-top:14px; }
+
+  @media (max-width: 900px) {
+    .site { grid-template-columns:1fr; height:auto; }
+    .grid { grid-template-columns:1fr; }
+    .index { grid-template-columns:repeat(2,1fr); }
+    .grid .work:nth-last-child(-n+2) { border-bottom:1px solid var(--line); }
+    .grid .work:last-child { border-bottom:0; }
+    .col { overflow:visible; border-right:0; border-bottom:1px solid var(--line); }
+    .col-head { position:static; }
+  }
+</style>
+</head>
+<body>
+<div class="site">
+
+  <!-- LEFT : Sides -->
+  
+  <!-- CENTER : Selected Works -->
+  <section class="col" id="works">
+    <div class="col-head"><span id="works-title">Selected Works</span><button class="menu" id="menu-btn" aria-label="Index">≡</button></div>
+    <div class="col-body index" id="works-index" hidden>
+      <a class="thumb" href="#" data-i="0"><img src="img/comong.png" alt="COMONG"></a>
+      <a class="thumb" href="#" data-i="1"><img src="img/hotcake.jpg" alt="Hotcake"></a>
+      <a class="thumb" href="#" data-i="2"><img src="img/spurt.png" alt="SPURT"></a>
+      <a class="thumb" href="#" data-i="3"><img src="img/spot.png" alt="SPOT!"></a>
+      <a class="thumb" href="#" data-i="4"><img src="img/bbibbi.png" alt="삐삐"></a>
+    </div>
+    <div class="col-body grid" id="works-grid">
+<article class="work" data-key="comong">
+        <img src="img/comong.png" alt="COMONG">
+        <div class="meta">
+          <p>Object<span class="muted"><br>Samsung Design Membership × IDEO</span></p>
+          <p>COMONG<br>AI Air Multiplier for Dogs<br>2025</p>
+          <p class="desc muted">Credits:<br>Jung Minseo, Lee Ilyeo,<br>Jang Yujin, Choi Wanhyeok</p>
+          <p class="desc">시원한 곳을 찾아 이동하는 강아지의 행동 특성에 기반한 AI 에어 멀티플라이어. 위쪽은 사람을 위한 직접풍, 아래쪽은 강아지를 위한 은은한 바닥풍을 동시에 낸다.<a class="more" href="#">[More..]</a></p>
+        </div>
+      </article>
+
+      <article class="work" data-key="hotcake">
+        <img src="img/hotcake.jpg" alt="Hotcake">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Personal</span></p>
+          <p>Hotcake<br>Service Design<br>2025</p>
+          <p></p>
+          <p class="desc">Hotcake 프로젝트 소개 문장을 여기에 넣는다. 두세 줄이면 충분하다.<a class="more" href="#">[More..]</a></p>
+        </div>
+      </article>
+
+      <article class="work" data-key="spurt">
+        <img src="img/spurt.png" alt="SPURT">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Personal</span></p>
+          <p>SPURT<br>미루는 당신을 위한 마지막 스퍼트<br>2025</p>
+          <p></p>
+          <p class="desc">SPURT 프로젝트 소개 문장을 여기에 넣는다.<a class="more" href="#">[More..]</a></p>
+        </div>
+      </article>
+
+      <article class="work" data-key="spot">
+        <img src="img/spot.png" alt="SPOT!">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Personal</span></p>
+          <p>SPOT!<br>My Ballpark Seat View Service<br>2024</p>
+          <p></p>
+          <p class="desc">내가 만들어가는 야구장 시야 서비스.<a class="more" href="#">[More..]</a></p>
+        </div>
+      </article>
+
+      <article class="work" data-key="bbibbi">
+        <img src="img/bbibbi.png" alt="삐삐">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Personal</span></p>
+          <p>삐삐<br>Family Widget Service<br>2024</p>
+          <p></p>
+          <p class="desc">하루 한 번, 가족에게 보내는 생존신고 서비스.<a class="more" href="#">[More..]</a></p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- RIGHT : About -->
+  <section class="col" id="about">
+    <div class="col-head"><span id="about-title">About</span><span class="head-right"><button class="lang" id="lang-btn" aria-label="Language"><b>EN</b>/KO</button><button class="menu close" id="proj-close" hidden>(Close)</button></span></div>
+    <div class="col-body" id="project-panel" hidden></div>
+    <div class="col-body" id="about-panel">
+      <div class="about">
+        <div class="links">
+          <p>Ilyeo Lee</p>
+          <p class="muted">star1004da@gmail.com</p>
+          <p class="muted">+82 10 8581 9554</p>
+          <div class="gap"></div>
+          <p><a href="#">Instagram</a></p>
+          <p><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></p>
+          <p><a href="#">LinkedIn</a></p>
+        </div>
+        <div>
+          <p data-en="Ilyeo Lee is a product designer based in Seoul. She works at the point where AI meets everyday products, designing when and how a system should step in, and building the interfaces and design systems that make it usable." data-ko="이일여는 서울에서 활동하는 프로덕트 디자이너입니다. AI가 일상의 제품과 만나는 지점에서, 시스템이 언제 어떻게 개입해야 하는지를 설계하고 그것을 쓸 수 있게 만드는 인터페이스와 디자인시스템을 만듭니다.">Ilyeo Lee is a product designer based in Seoul. She works at the point where AI meets everyday products, designing when and how a system should step in, and building the interfaces and design systems that make it usable.</p>
+          <p data-en="Through Samsung Design Membership, Samsung Electronics CDO and MX projects, and the IT community DEPROMEET, she has shipped three apps and led UX for award-winning concept products including Hotcake and COMONG." data-ko="삼성디자인멤버십, 삼성전자 CDO·MX 프로젝트, IT 연합동아리 디프만을 거치며 앱 3종을 출시했고, Hotcake와 COMONG 등 수상 컨셉 제품의 UX를 이끌었습니다.">Through Samsung Design Membership, Samsung Electronics CDO and MX projects, and the IT community DEPROMEET, she has shipped three apps and led UX for award-winning concept products including Hotcake and COMONG.</p>
+          <p data-en="She studies Visual Communication Design at Hongik University and previously worked as a product designer at Bunjang." data-ko="홍익대학교 시각디자인과에 재학 중이며, 번개장터에서 프로덕트 디자이너로 일했습니다.">She studies Visual Communication Design at Hongik University and previously worked as a product designer at Bunjang.</p>
+        </div>
+      </div>
+
+      <div class="cv">
+        <div class="row">
+          <p data-en="Education" data-ko="학력">Education</p>
+          <div class="item">
+            <p data-en="Hongik University<br>B.F.A. in Visual Communication Design<br>2021 - 2027" data-ko="홍익대학교<br>시각디자인학 학사<br>2021 - 2027">Hongik University<br>B.F.A. in Visual Communication Design<br>2021 - 2027</p>
+          </div>
+        </div>
+        <div class="row">
+          <p data-en="Experience" data-ko="경력·활동">Experience</p>
+          <div>
+            <div class="item"><p data-en="Samsung Design Membership 33rd<br>UX Designer<br>2025 - 2026" data-ko="삼성디자인멤버십 33기<br>UX 디자이너<br>2025 - 2026">Samsung Design Membership 33rd<br>UX Designer<br>2025 - 2026</p></div>
+            <div class="item"><p data-en="Bunjang<br>Product Designer, Product Design 1 Team<br>2023 - 2024" data-ko="번개장터<br>프로덕트 디자이너, Product Design 1 Team<br>2023 - 2024">Bunjang<br>Product Designer, Product Design 1 Team<br>2023 - 2024</p></div>
+            <div class="item"><p data-en="Samsung Electronics CDO<br>TeddyBot / Agent Experience Paradigm (PL) / 2040 Future Home (PL)<br>2024 - 2026" data-ko="삼성전자 CDO<br>TeddyBot / Agent Experience Paradigm (PL) / 2040 미래 홈 인비저닝 (PL)<br>2024 - 2026">Samsung Electronics CDO<br>TeddyBot / Agent Experience Paradigm (PL) / 2040 Future Home (PL)<br>2024 - 2026</p></div>
+            <div class="item"><p data-en="Samsung Electronics MX<br>Next One UI with Galaxy AI<br>2025" data-ko="삼성전자 MX사업부<br>Next One UI with Galaxy AI<br>2025">Samsung Electronics MX<br>Next One UI with Galaxy AI<br>2025</p></div>
+            <div class="item"><p data-en="DEPROMEET 14th - 16th<br>Product Designer (BIBBI, SPOT!, SPURT)<br>2023 - 2025" data-ko="IT 연합동아리 디프만 14 - 16기<br>프로덕트 디자이너 (삐삐, SPOT!, SPURT 출시)<br>2023 - 2025">DEPROMEET 14th - 16th<br>Product Designer (BIBBI, SPOT!, SPURT)<br>2023 - 2025</p></div>
+            <div class="item"><p data-en="HYPHEN, Hongik UX/UI Society<br>President (2024)<br>2021 - 2024" data-ko="홍익대학교 HYPHEN UX/UI 학회<br>회장 (2024)<br>2021 - 2024">HYPHEN, Hongik UX/UI Society<br>President (2024)<br>2021 - 2024</p></div>
+          </div>
+        </div>
+        <div class="row">
+          <p data-en="Award" data-ko="수상">Award</p>
+          <div>
+            <div class="item"><p data-en="IDEA Design Award<br>Gold, Student (Hotcake)<br>2026" data-ko="IDEA 디자인 어워드<br>Gold, 학생 부문 (Hotcake)<br>2026">IDEA Design Award<br>Gold, Student (Hotcake)<br>2026</p></div>
+            <div class="item"><p data-en="Red Dot Design Concept<br>Best of the Best (Hotcake)<br>2026" data-ko="Red Dot 디자인 컨셉<br>Best of the Best (Hotcake)<br>2026">Red Dot Design Concept<br>Best of the Best (Hotcake)<br>2026</p></div>
+            <div class="item"><p data-en="Korea Design Exhibition, 61st<br>Selected (Hotcake)<br>2026" data-ko="제61회 대한민국디자인전람회<br>입선 (Hotcake)<br>2026">Korea Design Exhibition, 61st<br>Selected (Hotcake)<br>2026</p></div>
+            <div class="item"><p data-en="Asia Design Prize<br>Gold Winner (Hotcake)<br>2026" data-ko="Asia Design Prize<br>Gold Winner (Hotcake)<br>2026">Asia Design Prize<br>Gold Winner (Hotcake)<br>2026</p></div>
+            <div class="item"><p data-en="Asia Design Prize<br>Winner (COMONG)<br>2026" data-ko="Asia Design Prize<br>Winner (COMONG)<br>2026">Asia Design Prize<br>Winner (COMONG)<br>2026</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<div class="foot">© Ilyeo Lee 2026 All rights reserved.</div>
+<script>
+  const btn=document.getElementById('menu-btn'), title=document.getElementById('works-title'),
+        grid=document.getElementById('works-grid'), index=document.getElementById('works-index'),
+        col=document.getElementById('works');
+  let open=false;
+  function setIndex(v){ open=v; index.hidden=!v; grid.hidden=v; title.textContent=v?'Selected Works — Index':'Selected Works';
+    btn.textContent=v?'(Close)':'≡'; btn.classList.toggle('close',v); col.scrollTop=0; }
+  btn.addEventListener('click',()=>setIndex(!open));
+  index.addEventListener('click',e=>{ const a=e.target.closest('.thumb'); if(!a) return; e.preventDefault();
+    const w=grid.querySelectorAll('.work')[+a.dataset.i]; if(!w) return; if(document.querySelector('.site').classList.contains('viewing')){ openProject(w); } else { setIndex(false); w.scrollIntoView({block:'start'}); openProject(w); } });
+
+  for (const w of document.querySelectorAll('.work')) {
+    w.addEventListener('touchstart', () => w.classList.add('pressed'), {passive:true});
+    for (const ev of ['touchend','touchcancel']) w.addEventListener(ev, () => setTimeout(() => w.classList.remove('pressed'), 120));
+  }
+
+  // ---- project panel ----
+  const aboutPanel=document.getElementById('about-panel'), projPanel=document.getElementById('project-panel'),
+        aboutTitle=document.getElementById('about-title'), projClose=document.getElementById('proj-close'),
+        aboutCol=document.getElementById('about'), tplHost=document.createElement('div');
+  fetch('projects.html').then(r=>r.text()).then(t=>{ tplHost.innerHTML=t; });
+  function openProject(card){
+    const key=card.dataset.key, tpl=tplHost.querySelector('#proj-'+key);
+    const meta=card.querySelectorAll('.meta > p');
+    projPanel.innerHTML='';
+    const head=document.createElement('div'); head.className='meta phead';
+    head.innerHTML=`<p>${meta[0].innerHTML}</p><p>${meta[1].innerHTML}</p>`; projPanel.appendChild(head);
+    if(tpl) projPanel.appendChild(tpl.content.cloneNode(true)); else projPanel.insertAdjacentHTML('beforeend','<p class="muted">Coming soon.</p>');
+    aboutPanel.hidden=true; projPanel.hidden=false; projClose.hidden=false;
+    document.querySelector('.site').classList.add('viewing'); index.hidden=false; grid.hidden=true; title.textContent='Index';
+    const i=[...grid.querySelectorAll('.work')].indexOf(card);
+    index.querySelectorAll('.thumb').forEach((t,j)=>t.classList.toggle('current',j===i));
+    aboutTitle.textContent=meta[1].innerText.split('\n')[0]; aboutCol.scrollTop=0;
+    if(window.innerWidth<=900) aboutCol.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function closeProject(){ document.querySelector('.site').classList.remove('viewing'); setIndex(false); projPanel.hidden=true; projPanel.innerHTML=''; aboutPanel.hidden=false; projClose.hidden=true; aboutTitle.textContent='About'; aboutCol.scrollTop=0; }
+  projClose.addEventListener('click',closeProject);
+  grid.addEventListener('click',e=>{ const c=e.target.closest('.work'); if(!c) return; e.preventDefault(); openProject(c); });
+  // ---- language ----
+  let lang='en';
+  const langBtn=document.getElementById('lang-btn');
+  langBtn.addEventListener('click',()=>{ lang=lang==='en'?'ko':'en';
+    document.querySelectorAll('[data-en]').forEach(el=>{ el.innerHTML=el.dataset[lang]; });
+    langBtn.innerHTML=lang==='en'?'<b>EN</b>/KO':'EN/<b>KO</b>'; });
+</script>
+</body>
+</html>
