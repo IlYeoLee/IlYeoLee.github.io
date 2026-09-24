@@ -73,6 +73,12 @@
   #project-panel .pembed { position:relative; aspect-ratio:16/9; margin:0 0 var(--pad); background:#000; }
   #project-panel .pembed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
   #project-panel .phead { margin:0 0 16px; }
+  #project-panel .plabel { color:var(--muted); margin:56px 0 18px; padding-top:18px; border-top:1px solid var(--line); }
+  #project-panel .plabel:first-of-type { margin-top:0; padding-top:0; border-top:0; }
+  #project-panel .pcap { display:grid; grid-template-columns:1fr 2fr; gap:16px; margin:22px 0 10px; }
+  #project-panel .pcap p { margin:0; }
+  #project-panel .pcap .pt { font-weight:500; }
+  @media (max-width:900px) { #project-panel .pcap { grid-template-columns:1fr; gap:6px; } }
   #project-panel .ptext.left { text-align:left; margin:36px auto 28px; }
   #project-panel .ptext.left p { margin:0 0 14px; }
   #project-panel .ptext .label { color:var(--muted); margin-bottom:10px; } #project-panel .phead p { white-space:pre-line; }
