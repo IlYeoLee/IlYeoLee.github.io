@@ -352,7 +352,7 @@
   const aboutPanel=document.getElementById('about-panel'), projPanel=document.getElementById('project-panel'),
         aboutTitle=document.getElementById('about-title'), projClose=document.getElementById('proj-close'),
         aboutCol=document.getElementById('about'), tplHost=document.createElement('div');
-  fetch('projects.html?v='+Date.now()).then(r=>r.text()).then(t=>{ tplHost.innerHTML=t; });
+  const tplReady=fetch('projects.html?v='+Date.now()).then(r=>r.text()).then(t=>{ tplHost.innerHTML=t; });
   // videos: play only when scrolling has stopped with the video in view; pause when it leaves
   const visible=new Set(); let scrollTimer=null, scrolling=false;
   const playVisible=()=>{ visible.forEach(v=>{ if(!v.dataset.userPaused) v.play().catch(()=>{}); }); };
@@ -385,6 +385,7 @@
   }
   function openProject(card){
     const key=card.dataset.key, tpl=tplHost.querySelector('#proj-'+key);
+    if(!tplHost.firstChild){ tplReady.then(()=>openProject(card)); return; }  // first click before projects.html arrived
     const meta=card.querySelectorAll('.meta > p');
     projPanel.innerHTML='';
     const head=document.createElement('div'); head.className='meta phead';
@@ -396,7 +397,7 @@
     document.querySelector('.site').classList.add('viewing'); index.hidden=false; grid.hidden=true; swapText(title,'Leeilyeoo'); stagger(index.querySelectorAll('.thumb'), 35);
     const i=[...grid.querySelectorAll('.work')].indexOf(card);
     index.querySelectorAll('.thumb').forEach((t,j)=>t.classList.toggle('current',j===i));
-    swapText(aboutTitle, meta[1].innerText.split('\n')[0]); aboutCol.scrollTop=0;
+    swapText(aboutTitle, meta[1].firstChild.textContent.trim()); aboutCol.scrollTop=0;
     if(window.innerWidth<=900) aboutCol.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function closeProject(){ document.querySelector('.site').classList.remove('viewing'); setIndex(false); projPanel.hidden=true; projPanel.innerHTML=''; aboutPanel.hidden=false; projClose.hidden=true; swapText(aboutTitle,'About'); aboutCol.scrollTop=0;
@@ -409,17 +410,18 @@
   // FLIP: zoom from/to the clicked image's on-screen box. Timer (not onfinish) ends each phase, so a click mid-animation always responds.
   const lbFrom=()=>{ const a=lbSrc.getBoundingClientRect(), b=lbImg.getBoundingClientRect();
     return `translate(${a.left-b.left}px,${a.top-b.top}px) scale(${a.width/b.width},${a.height/b.height})`; };
-  const lbStop=()=>{ clearTimeout(lbT); lb.getAnimations({subtree:true}).forEach(x=>x.cancel()); };
+  let anims=[], lbShutAt=0; const animating=()=>anims.some(a=>a.playState==='running');
+  const lbStop=()=>{ clearTimeout(lbT); anims.forEach(x=>x.cancel()); anims=[]; };
   const lbAnim=fwd=>{ if(!DUR) return; const o={duration:DUR,easing:EASE,fill:'both',direction:fwd?'normal':'reverse'};
-    lb.animate([{backgroundColor:'rgba(255,255,255,0)'},{backgroundColor:'rgba(255,255,255,1)'}],o);
-    lbHead.animate([{opacity:0},{opacity:1}],o); lbImg.animate([{transform:lbFrom()},{transform:'none'}],o); };
-  projPanel.addEventListener('click',e=>{ if(e.target.tagName!=='IMG'||!lb.hidden) return; lbStop(); lbSrc=e.target;
+    anims=[lb.animate([{backgroundColor:'rgba(255,255,255,0)'},{backgroundColor:'rgba(255,255,255,1)'}],o),
+      lbHead.animate([{opacity:0},{opacity:1}],o), lbImg.animate([{transform:lbFrom()},{transform:'none'}],o)]; };
+  projPanel.addEventListener('click',e=>{ if(e.target.tagName!=='IMG'||!lb.hidden||performance.now()-lbShutAt<500) return; lbStop(); lbSrc=e.target;
     lbImg.src=lbSrc.currentSrc||lbSrc.src; lb.hidden=false; lbSrc.style.visibility='hidden';
     const go=()=>{ if(!lb.hidden && lbSrc===e.target){ lbAnim(true); lbT=setTimeout(lbStop,DUR+50); } };
     lbImg.complete? go() : lbImg.addEventListener('load',go,{once:true}); });
-  const lbClose=()=>{ if(lb.hidden) return; zReset(); clearTimeout(lbT); const run=lb.getAnimations({subtree:true});
-    if(run.length) run.forEach(x=>x.reverse()); else if(lbSrc.isConnected && lbImg.complete) lbAnim(false);
-    lbT=setTimeout(()=>{ lbStop(); lb.hidden=true; lbSrc.style.visibility=''; lbImg.removeAttribute('src'); }, lbSrc.isConnected?DUR:0); };
+  const lbClose=()=>{ if(lb.hidden) return; zReset(); clearTimeout(lbT); 
+    if(animating()) anims.forEach(x=>x.reverse()); else if(lbSrc.isConnected && lbImg.complete) lbAnim(false);
+    lbT=setTimeout(()=>{ lbStop(); lb.hidden=true; lbShutAt=performance.now(); lbSrc.style.visibility=''; lbImg.removeAttribute('src'); }, lbSrc.isConnected?DUR:0); };
   // pinch / drag / wheel zoom inside the lightbox only (page itself never zooms); a plain tap closes
   let zs=1, zx=0, zy=0; const pts=new Map(); let g=null;
   const zApply=()=>{ lbImg.style.transform = zs===1 ? '' : `translate(${zx}px,${zy}px) scale(${zs})`; };
@@ -429,7 +431,7 @@
   const gStart=()=>{ const p=[...pts.values()], b=zBase();
     if(p.length>=2){ const [a,c]=p; g={pinch:true, moved:true, b, s0:zs, x0:zx, y0:zy, d0:Math.hypot(a.x-c.x,a.y-c.y)||1, m0:{x:(a.x+c.x)/2,y:(a.y+c.y)/2}}; }
     else { g={pinch:false, moved:g?g.moved:false, b, s0:zs, x0:zx, y0:zy, p0:p[0], t0:performance.now()}; } };
-  lb.addEventListener('pointerdown',e=>{ if(lb.getAnimations({subtree:true}).length) return; try{ lb.setPointerCapture(e.pointerId); }catch(_){} pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===1) g=null; gStart(); });
+  lb.addEventListener('pointerdown',e=>{ if(animating()) return; try{ lb.setPointerCapture(e.pointerId); }catch(_){} pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===1) g=null; gStart(); });
   lb.addEventListener('pointermove',e=>{ if(!pts.has(e.pointerId)||!g) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); const p=[...pts.values()];
     if(g.pinch && p.length>=2){ const [a,c]=p, d=Math.hypot(a.x-c.x,a.y-c.y), m={x:(a.x+c.x)/2,y:(a.y+c.y)/2};
       zAt(g.s0*d/g.d0, m.x, m.y, g.b, g.s0, g.x0+(m.x-g.m0.x), g.y0+(m.y-g.m0.y)); }
@@ -438,7 +440,7 @@
     if(pts.size) { gStart(); g.moved=true; return; }   // lifted one finger of a pinch: keep panning, never counts as a tap
     const tap = g && !g.pinch && !g.moved && performance.now()-g.t0<400; g=null; if(tap && e.type==='pointerup') lbClose(); };
   lb.addEventListener('pointerup',pEnd); lb.addEventListener('pointercancel',pEnd);
-  lb.addEventListener('wheel',e=>{ e.preventDefault(); if(lb.getAnimations({subtree:true}).length) return; const b=zBase();
+  lb.addEventListener('wheel',e=>{ e.preventDefault(); if(animating()) return; const b=zBase();
     zAt(zs*Math.exp(-e.deltaY*(e.ctrlKey?0.01:0.002)), e.clientX, e.clientY, b, zs, zx, zy); }, {passive:false});
   document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !lb.hidden) lbClose(); });
   title.addEventListener('click',()=>{ if(document.querySelector('.site').classList.contains('viewing')) closeProject(); });
