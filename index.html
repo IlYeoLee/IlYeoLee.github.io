@@ -370,8 +370,6 @@
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   function stagger(nodes, step=45, base=0){ nodes=[...nodes]; nodes.forEach((n,i)=>{ n.classList.remove('in'); n.classList.add('rv'); n.style.transitionDelay=reduce?'0ms':(base+i*step)+'ms'; });
     requestAnimationFrame(()=>requestAnimationFrame(()=>nodes.forEach(n=>n.classList.add('in')))); }
-  const rio=new IntersectionObserver(es=>{ for(const e of es){ if(e.isIntersecting){ e.target.classList.add('in'); rio.unobserve(e.target); } } }, {threshold:.08, rootMargin:'0px 0px -6% 0px'});
-  function revealOnScroll(root){ const els=[...root.children]; els.forEach((n,i)=>{ n.classList.add('rv'); n.style.transitionDelay=(Math.min(i,6)*40)+'ms'; }); els.slice(0,4).forEach(n=>n.classList.add('in')); els.slice(4).forEach(n=>rio.observe(n)); }
   function swapText(el, text){ el.style.opacity=0; setTimeout(()=>{ el.textContent=text; el.style.opacity=1; }, 160); }
   // first paint: cards, about
   stagger(document.querySelectorAll('#works-grid .work'), 60, 80);
@@ -420,7 +418,9 @@
     head.innerHTML=`<p>${meta[0].innerHTML}</p><p>${meta[1].innerHTML}</p>`; projPanel.appendChild(head);
     const info=card.querySelector('.info'); if(info){ const c=info.cloneNode(true); c.hidden=false; projPanel.appendChild(c); }
     if(tpl) projPanel.appendChild(tpl.content.cloneNode(true)); else projPanel.insertAdjacentHTML('beforeend','<p class="muted">Coming soon.</p>');
-    setupVideos(projPanel); applyLang(projPanel); revealOnScroll(projPanel);
+    setupVideos(projPanel); applyLang(projPanel);
+    projPanel.querySelectorAll('img').forEach((im,i)=>{ if(i<6) im.loading='eager'; });
+    if(!reduce) projPanel.animate([{opacity:0},{opacity:1}],{duration:250,easing:'ease'});  // whole body at once, not per element
     aboutPanel.hidden=true; projPanel.hidden=false; projClose.hidden=false;
     document.querySelector('.site').classList.add('viewing'); index.hidden=false; grid.hidden=true; swapText(title,'Leeilyeoo'); stagger(index.querySelectorAll('.thumb'), 35);
     const i=[...grid.querySelectorAll('.work')].indexOf(card);
