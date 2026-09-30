@@ -36,7 +36,7 @@
   .meta.info { grid-template-columns:1fr 2fr; gap:6px 16px; padding-top:12px; border-top:1px solid var(--line); }
   #project-panel .meta.info { margin-bottom:48px; }
   #project-panel img { cursor:zoom-in; }
-  #lb { position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; padding:calc(24px + var(--pad)) var(--pad) var(--pad); background:var(--bg); cursor:zoom-out; }
+  #lb { position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; padding:calc(24px + var(--pad)) var(--pad) var(--pad); background:var(--bg); cursor:zoom-out; touch-action:none; user-select:none; -webkit-user-select:none; }
   #lb .lb-head { position:absolute; top:0; left:0; right:0; height:24px; display:flex; justify-content:flex-end; align-items:center; padding:0 var(--pad); border-bottom:1px solid var(--line); }
   #lb img { max-width:100%; max-height:100%; object-fit:contain; transform-origin:0 0; will-change:transform; }
   .muted { color:var(--muted); }
@@ -417,10 +417,29 @@
     lbImg.src=lbSrc.currentSrc||lbSrc.src; lb.hidden=false; lbSrc.style.visibility='hidden';
     const go=()=>{ if(!lb.hidden && lbSrc===e.target){ lbAnim(true); lbT=setTimeout(lbStop,DUR+50); } };
     lbImg.complete? go() : lbImg.addEventListener('load',go,{once:true}); });
-  const lbClose=()=>{ if(lb.hidden) return; clearTimeout(lbT); const run=lb.getAnimations({subtree:true});
+  const lbClose=()=>{ if(lb.hidden) return; zReset(); clearTimeout(lbT); const run=lb.getAnimations({subtree:true});
     if(run.length) run.forEach(x=>x.reverse()); else if(lbSrc.isConnected && lbImg.complete) lbAnim(false);
     lbT=setTimeout(()=>{ lbStop(); lb.hidden=true; lbSrc.style.visibility=''; lbImg.removeAttribute('src'); }, lbSrc.isConnected?DUR:0); };
-  lb.addEventListener('click',lbClose);
+  // pinch / drag / wheel zoom inside the lightbox only (page itself never zooms); a plain tap closes
+  let zs=1, zx=0, zy=0; const pts=new Map(); let g=null;
+  const zApply=()=>{ lbImg.style.transform = zs===1 ? '' : `translate(${zx}px,${zy}px) scale(${zs})`; };
+  const zReset=()=>{ zs=1; zx=zy=0; zApply(); pts.clear(); g=null; };
+  const zBase=()=>{ const r=lbImg.getBoundingClientRect(); return {x:r.left-zx, y:r.top-zy}; };
+  const zAt=(s,mx,my,b,s0,x0,y0)=>{ zs=Math.min(6,Math.max(1,s)); zx=(mx-b.x)-(mx-b.x-x0)*(zs/s0); zy=(my-b.y)-(my-b.y-y0)*(zs/s0); if(zs===1){ zx=zy=0; } zApply(); };
+  const gStart=()=>{ const p=[...pts.values()], b=zBase();
+    if(p.length>=2){ const [a,c]=p; g={pinch:true, moved:true, b, s0:zs, x0:zx, y0:zy, d0:Math.hypot(a.x-c.x,a.y-c.y)||1, m0:{x:(a.x+c.x)/2,y:(a.y+c.y)/2}}; }
+    else { g={pinch:false, moved:g?g.moved:false, b, s0:zs, x0:zx, y0:zy, p0:p[0], t0:performance.now()}; } };
+  lb.addEventListener('pointerdown',e=>{ if(lb.getAnimations({subtree:true}).length) return; try{ lb.setPointerCapture(e.pointerId); }catch(_){} pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===1) g=null; gStart(); });
+  lb.addEventListener('pointermove',e=>{ if(!pts.has(e.pointerId)||!g) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); const p=[...pts.values()];
+    if(g.pinch && p.length>=2){ const [a,c]=p, d=Math.hypot(a.x-c.x,a.y-c.y), m={x:(a.x+c.x)/2,y:(a.y+c.y)/2};
+      zAt(g.s0*d/g.d0, m.x, m.y, g.b, g.s0, g.x0+(m.x-g.m0.x), g.y0+(m.y-g.m0.y)); }
+    else if(!g.pinch){ const dx=p[0].x-g.p0.x, dy=p[0].y-g.p0.y; if(Math.hypot(dx,dy)>8) g.moved=true; if(zs>1){ zx=g.x0+dx; zy=g.y0+dy; zApply(); } } });
+  const pEnd=e=>{ if(!pts.has(e.pointerId)) return; pts.delete(e.pointerId);
+    if(pts.size) { gStart(); g.moved=true; return; }   // lifted one finger of a pinch: keep panning, never counts as a tap
+    const tap = g && !g.pinch && !g.moved && performance.now()-g.t0<400; g=null; if(tap && e.type==='pointerup') lbClose(); };
+  lb.addEventListener('pointerup',pEnd); lb.addEventListener('pointercancel',pEnd);
+  lb.addEventListener('wheel',e=>{ e.preventDefault(); if(lb.getAnimations({subtree:true}).length) return; const b=zBase();
+    zAt(zs*Math.exp(-e.deltaY*(e.ctrlKey?0.01:0.002)), e.clientX, e.clientY, b, zs, zx, zy); }, {passive:false});
   document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !lb.hidden) lbClose(); });
   title.addEventListener('click',()=>{ if(document.querySelector('.site').classList.contains('viewing')) closeProject(); });
   grid.addEventListener('click',e=>{ const c=e.target.closest('.work'); if(!c) return; e.preventDefault(); openProject(c); });
