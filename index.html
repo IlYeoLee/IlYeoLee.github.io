@@ -36,9 +36,9 @@
   .meta.info { grid-template-columns:1fr 2fr; gap:6px 16px; padding-top:12px; border-top:1px solid var(--line); }
   #project-panel .meta.info { margin-bottom:48px; }
   #project-panel img { cursor:zoom-in; }
-  #lb { position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; padding:24px 0 0; background:var(--bg); cursor:zoom-out; }
+  #lb { position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; padding:calc(24px + var(--pad)) var(--pad) var(--pad); background:var(--bg); cursor:zoom-out; }
   #lb .lb-head { position:absolute; top:0; left:0; right:0; height:24px; display:flex; justify-content:flex-end; align-items:center; padding:0 var(--pad); border-bottom:1px solid var(--line); }
-  #lb img { max-width:100%; max-height:100%; object-fit:contain; padding:var(--pad); }
+  #lb img { max-width:100%; max-height:100%; object-fit:contain; transform-origin:0 0; will-change:transform; }
   .muted { color:var(--muted); }
   button.menu { background:none; border:0; font:inherit; font-size:14px; line-height:1; cursor:pointer; color:inherit; padding:0; }
   button.menu.close { font-size:var(--fs); }
@@ -403,9 +403,23 @@
     stagger(grid.querySelectorAll('.work:not([hidden])'), 45); stagger(aboutPanel.querySelectorAll('.about > *, .cv .row'), 60); }
   projClose.addEventListener('click',closeProject);
   // ---- lightbox ----
-  const lb=document.getElementById('lb'), lbImg=lb.querySelector('img');
-  projPanel.addEventListener('click',e=>{ if(e.target.tagName!=='IMG') return; lbImg.src=e.target.currentSrc||e.target.src; lb.hidden=false; });
-  const lbClose=()=>{ lb.hidden=true; lbImg.removeAttribute('src'); };
+  const lb=document.getElementById('lb'), lbImg=lb.querySelector('img'), lbHead=lb.querySelector('.lb-head');
+  const RM=matchMedia('(prefers-reduced-motion:reduce)').matches, EASE='cubic-bezier(.2,.7,.2,1)';
+  const DUR=RM?0:340; let lbSrc=null, lbT=0;
+  // FLIP: zoom from/to the clicked image's on-screen box. Timer (not onfinish) ends each phase, so a click mid-animation always responds.
+  const lbFrom=()=>{ const a=lbSrc.getBoundingClientRect(), b=lbImg.getBoundingClientRect();
+    return `translate(${a.left-b.left}px,${a.top-b.top}px) scale(${a.width/b.width},${a.height/b.height})`; };
+  const lbStop=()=>{ clearTimeout(lbT); lb.getAnimations({subtree:true}).forEach(x=>x.cancel()); };
+  const lbAnim=fwd=>{ if(!DUR) return; const o={duration:DUR,easing:EASE,fill:'both',direction:fwd?'normal':'reverse'};
+    lb.animate([{backgroundColor:'rgba(255,255,255,0)'},{backgroundColor:'rgba(255,255,255,1)'}],o);
+    lbHead.animate([{opacity:0},{opacity:1}],o); lbImg.animate([{transform:lbFrom()},{transform:'none'}],o); };
+  projPanel.addEventListener('click',e=>{ if(e.target.tagName!=='IMG'||!lb.hidden) return; lbStop(); lbSrc=e.target;
+    lbImg.src=lbSrc.currentSrc||lbSrc.src; lb.hidden=false; lbSrc.style.visibility='hidden';
+    const go=()=>{ if(!lb.hidden && lbSrc===e.target){ lbAnim(true); lbT=setTimeout(lbStop,DUR+50); } };
+    lbImg.complete? go() : lbImg.addEventListener('load',go,{once:true}); });
+  const lbClose=()=>{ if(lb.hidden) return; clearTimeout(lbT); const run=lb.getAnimations({subtree:true});
+    if(run.length) run.forEach(x=>x.reverse()); else if(lbSrc.isConnected && lbImg.complete) lbAnim(false);
+    lbT=setTimeout(()=>{ lbStop(); lb.hidden=true; lbSrc.style.visibility=''; lbImg.removeAttribute('src'); }, lbSrc.isConnected?DUR:0); };
   lb.addEventListener('click',lbClose);
   document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !lb.hidden) lbClose(); });
   title.addEventListener('click',()=>{ if(document.querySelector('.site').classList.contains('viewing')) closeProject(); });
