@@ -34,6 +34,11 @@
   .meta .desc { margin-top:26px; }
   .meta .more { margin-top:16px; display:inline-block; }
   .meta.info { grid-template-columns:1fr 2fr; gap:6px 16px; padding-top:12px; border-top:1px solid var(--line); }
+  #project-panel .meta.info { margin-bottom:48px; }
+  #project-panel img { cursor:zoom-in; }
+  #lb { position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; padding:24px 0 0; background:var(--bg); cursor:zoom-out; }
+  #lb .lb-head { position:absolute; top:0; left:0; right:0; height:24px; display:flex; justify-content:flex-end; align-items:center; padding:0 var(--pad); border-bottom:1px solid var(--line); }
+  #lb img { max-width:100%; max-height:100%; object-fit:contain; padding:var(--pad); }
   .muted { color:var(--muted); }
   button.menu { background:none; border:0; font:inherit; font-size:14px; line-height:1; cursor:pointer; color:inherit; padding:0; }
   button.menu.close { font-size:var(--fs); }
@@ -315,6 +320,7 @@
 
 </div>
 <div class="foot">© Ilyeo Lee 2026 All rights reserved.</div>
+<div id="lb" hidden><div class="lb-head"><button class="menu close" type="button">(Close)</button></div><img alt=""></div>
 <script>
   const btn=document.getElementById('menu-btn'), title=document.getElementById('works-title'),
         grid=document.getElementById('works-grid'), index=document.getElementById('works-index'),
@@ -396,6 +402,12 @@
   function closeProject(){ document.querySelector('.site').classList.remove('viewing'); setIndex(false); projPanel.hidden=true; projPanel.innerHTML=''; aboutPanel.hidden=false; projClose.hidden=true; swapText(aboutTitle,'About'); aboutCol.scrollTop=0;
     stagger(grid.querySelectorAll('.work:not([hidden])'), 45); stagger(aboutPanel.querySelectorAll('.about > *, .cv .row'), 60); }
   projClose.addEventListener('click',closeProject);
+  // ---- lightbox ----
+  const lb=document.getElementById('lb'), lbImg=lb.querySelector('img');
+  projPanel.addEventListener('click',e=>{ if(e.target.tagName!=='IMG') return; lbImg.src=e.target.currentSrc||e.target.src; lb.hidden=false; });
+  const lbClose=()=>{ lb.hidden=true; lbImg.removeAttribute('src'); };
+  lb.addEventListener('click',lbClose);
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !lb.hidden) lbClose(); });
   title.addEventListener('click',()=>{ if(document.querySelector('.site').classList.contains('viewing')) closeProject(); });
   grid.addEventListener('click',e=>{ const c=e.target.closest('.work'); if(!c) return; e.preventDefault(); openProject(c); });
   // ---- filter chips ----
