@@ -18,6 +18,12 @@
   .site { display:grid; grid-template-columns: 2fr 1fr; height:calc(100vh - 24px); height:calc(100dvh - 24px); }
   .grid { display:grid; grid-template-columns:1fr 1fr; column-gap:var(--pad); }
   .grid .work:nth-last-child(-n+2) { border-bottom:0; }
+  .other-head { grid-column:1/-1; margin:8px 0 20px; padding-top:var(--pad); border-top:1px solid var(--line); }
+  .grid { grid-template-columns:repeat(4,1fr); }
+  .grid .work { grid-column:span 2; }
+  .grid .work.other { grid-column:span 1; border-bottom:0; }
+  .work.other .meta { grid-template-columns:1fr; gap:4px; margin-top:10px; }
+  .work.other .meta p:empty, .work.other .meta .desc, .work.other .meta p:first-child { display:none; }
   .col { position:relative; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; border-right:1px solid var(--line); }
   .col:last-child { border-right:0; }
   .col-head { position:sticky; top:0; z-index:2; display:flex; justify-content:space-between; align-items:center; height:24px; padding:0 var(--pad); background:var(--bg); border-bottom:1px solid var(--line); }
@@ -155,7 +161,9 @@
 
   @media (max-width: 900px) {
     .site { grid-template-columns:1fr; height:auto; }
-    .grid { grid-template-columns:1fr; }
+    .grid { grid-template-columns:1fr 1fr; }
+    .grid .work { grid-column:1/-1; }
+    .grid .work.other { grid-column:auto; }
     .index { grid-template-columns:repeat(2,1fr); }
     .grid .work:nth-last-child(-n+2) { border-bottom:1px solid var(--line); }
     .grid .work:last-child { border-bottom:0; }
@@ -182,47 +190,17 @@
       <button class="chip" data-f="vibe">Vibe Coding UX/UI</button>
     </div>
     <div class="col-body index" id="works-index" hidden>
-      <a class="thumb" href="#" data-i="0" data-tags="uxui"><img width="960" height="751" decoding="async" src="img/thumb/spot.webp?v=3" alt="SPOT!"></a>
-      <a class="thumb" href="#" data-i="1" data-tags="uxui"><img width="960" height="751" decoding="async" src="img/thumb/bbibbi.webp?v=3" alt="삐삐"></a>
-      <a class="thumb" href="#" data-i="2" data-tags="uxui"><img width="960" height="751" decoding="async" src="img/thumb/spurt.webp?v=3" alt="SPURT"></a>
-      <a class="thumb" href="#" data-i="3" data-tags="uxui"><img width="960" height="752" decoding="async" src="img/thumb/bunjang.webp?v=3" alt="번개장터"></a>
-      <a class="thumb" href="#" data-i="4" data-tags="product"><img width="960" height="720" decoding="async" src="img/thumb/hotcake.webp?v=3" alt="Hotcake"></a>
-      <a class="thumb" href="#" data-i="5" data-tags="product"><img width="960" height="540" decoding="async" src="img/thumb/comong.webp?v=3" alt="COMONG"></a>
+      <a class="thumb" href="#" data-i="0" data-tags="uxui"><img width="960" height="752" decoding="async" src="img/thumb/bunjang.webp?v=3" alt="번개장터"></a>
+      <a class="thumb" href="#" data-i="1" data-tags="vibe"><img width="960" height="540" decoding="async" src="img/thumb/zerotoone.webp?v=3" alt="0TO1"></a>
+      <a class="thumb" href="#" data-i="2" data-tags="uxui"><img width="960" height="751" decoding="async" src="img/thumb/bbibbi.webp?v=3" alt="삐삐"></a>
+      <a class="thumb" href="#" data-i="3" data-tags="uxui"><img width="960" height="751" decoding="async" src="img/thumb/spot.webp?v=3" alt="SPOT!"></a>
+      <a class="thumb" href="#" data-i="4" data-tags="vibe"><img width="960" height="540" decoding="async" src="img/thumb/memboarding.webp?v=3" alt="멤보딩"></a>
+      <a class="thumb" href="#" data-i="5" data-tags="uxui"><img width="960" height="751" decoding="async" src="img/thumb/spurt.webp?v=3" alt="SPURT"></a>
       <a class="thumb" href="#" data-i="6" data-tags="product"><img width="960" height="900" decoding="async" src="img/thumb/newton.webp?v=3" alt="NEWTON"></a>
-      <a class="thumb" href="#" data-i="7" data-tags="vibe"><img width="960" height="540" decoding="async" src="img/thumb/zerotoone.webp?v=3" alt="0TO1"></a>
-      <a class="thumb" href="#" data-i="8" data-tags="vibe"><img width="960" height="540" decoding="async" src="img/thumb/memboarding.webp?v=3" alt="멤보딩"></a>
+      <a class="thumb" href="#" data-i="7" data-tags="product"><img width="960" height="540" decoding="async" src="img/thumb/comong.webp?v=3" alt="COMONG"></a>
+      <a class="thumb" href="#" data-i="8" data-tags="product"><img width="960" height="720" decoding="async" src="img/thumb/hotcake.webp?v=3" alt="Hotcake"></a>
     </div>
     <div class="col-body grid" id="works-grid">
-      <article class="work" data-key="spot" data-tags="uxui">
-        <img width="960" height="751" decoding="async" src="img/thumb/spot.webp?v=3" alt="SPOT!">
-        <div class="meta">
-          <p>UX/UI<br><span class="muted">Team</span></p>
-          <p>SPOT!<br>My Ballpark Seat View Service<br>2024</p>
-          <p></p>
-          <p class="desc">야구장 좌석의 시야 사진과 후기를 간편하게 확인하는 직관 서비스. 나만의 직관 기록을 한곳에 아카이빙하고, 다른 야구 팬들과 공유하며 다음 좌석을 고른다.</p>
-        </div>
-        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · DEPROMEET 15기" data-en="Team project · DEPROMEET 15th">팀 프로젝트 · DEPROMEET 15기</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2024.06 – 2024.09" data-en="Jun – Sep 2024">2024.06 – 2024.09</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="Design 3 · Android 4 · Server 3" data-en="Design 3 · Android 4 · Server 3">Design 3 · Android 4 · Server 3</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="Product Designer (디자이너 3인 중 1인)" data-en="Product Designer (1 of 3 designers)">Product Designer (디자이너 3인 중 1인)</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="디자인 40%" data-en="Design 40%">디자인 40%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="기획, 캐릭터 스케치, GUI 전담, 시야 찾기 화면 메인 디자이너" data-en="Planning, character sketches, all GUI, lead designer of the seat-view screen">기획, 캐릭터 스케치, GUI 전담, 시야 찾기 화면 메인 디자이너</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="Google Play 출시, DEPROMEET 15기 대상" data-en="Launched on Google Play, DEPROMEET 15th Grand Prize">Google Play 출시, DEPROMEET 15기 대상</p></div>
-      </article>
-      <article class="work" data-key="bbibbi" data-tags="uxui">
-        <img width="960" height="751" decoding="async" src="img/thumb/bbibbi.webp?v=3" alt="삐삐">
-        <div class="meta">
-          <p>UX/UI<br><span class="muted">Team</span></p>
-          <p>삐삐<br>Family Widget Service<br>2024</p>
-          <p></p>
-          <p class="desc" data-ko="하루 한 번 가족에게 생존신고를 보내는 위젯 서비스. 출시 전 Maze로 33명 사용성 테스트를 거쳐 온보딩과 홈을 고쳤고, 출시 후 Mixpanel 분석으로 초대받은 가족의 방 입장 성공률을 9.09%에서 49.35%로 높였다." data-en="A widget service where family members send a once-a-day check-in. Fixed onboarding and home after a 33-person Maze usability test before launch, then used Mixpanel after launch to raise invited members' room-join rate from 9.09% to 49.35%.">하루 한 번 가족에게 생존신고를 보내는 위젯 서비스. 출시 전 Maze로 33명 사용성 테스트를 거쳐 온보딩과 홈을 고쳤고, 출시 후 Mixpanel 분석으로 초대받은 가족의 방 입장 성공률을 9.09%에서 49.35%로 높였다.</p>
-        </div>
-        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · DEPROMEET 14기 Team 05" data-en="Team project · DEPROMEET 14th, Team 05">팀 프로젝트 · DEPROMEET 14기 Team 05</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2024.11 – 현재" data-en="Nov 2024 – present">2024.11 – 현재</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="Design 3 · iOS 4 · Server 3" data-en="Design 3 · iOS 4 · Server 3">Design 3 · iOS 4 · Server 3</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="Product Designer (디자이너 3인 중 1인)" data-en="Product Designer (1 of 3 designers)">Product Designer (디자이너 3인 중 1인)</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="디자인 40%" data-en="Design 40%">디자인 40%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="기획, UX/UI (위젯 · 피드 · 캘린더), 그래픽 전담, 마케팅" data-en="Planning, UX/UI (widget, feed, calendar), all graphics, marketing">기획, UX/UI (위젯 · 피드 · 캘린더), 그래픽 전담, 마케팅</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="App Store · Google Play 출시, DEPROMEET 14기 대상" data-en="Launched on App Store and Google Play, DEPROMEET 14th Grand Prize">App Store · Google Play 출시, DEPROMEET 14기 대상</p></div>
-      </article>
-      <article class="work" data-key="spurt" data-tags="uxui">
-        <img width="960" height="751" decoding="async" src="img/thumb/spurt.webp?v=3" alt="SPURT">
-        <div class="meta">
-          <p>UX/UI<br><span class="muted">Team</span></p>
-          <p>SPURT<br>미루는 당신을 위한 마지막 스퍼트<br>2025</p>
-          <p></p>
-          <p class="desc">마감이 임박한 작업을 한눈에 보여주고 작은 알림으로 시작을 돕는, 미루는 사람을 위한 집중 서비스. 음악과 함께 몰입을 유지하고 짧은 회고로 하루를 정리한다.</p>
-        </div>
-        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · DEPROMEET 16기" data-en="Team project · DEPROMEET 16th">팀 프로젝트 · DEPROMEET 16기</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2025.01 – 2025.04" data-en="Jan – Apr 2025">2025.01 – 2025.04</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="Designer 3 · Frontend 4 · Backend 3" data-en="Designer 3 · Frontend 4 · Backend 3">Designer 3 · Frontend 4 · Backend 3</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="Product Designer (디자이너 3인 중 1인)" data-en="Product Designer (1 of 3 designers)">Product Designer (디자이너 3인 중 1인)</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="디자인 40%" data-en="Design 40%">디자인 40%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="기획, GUI · 그래픽 전담, 할 일 추가하기 화면" data-en="Planning, all GUI and graphics, the add-task flow">기획, GUI · 그래픽 전담, 할 일 추가하기 화면</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="App Store 출시" data-en="Launched on the App Store">App Store 출시</p></div>
-      </article>
       <article class="work" data-key="bunjang" data-tags="uxui">
         <img width="960" height="752" decoding="async" src="img/thumb/bunjang.webp?v=3" alt="번개장터">
         <div class="meta">
@@ -232,36 +210,6 @@
           <p class="desc" data-ko="번개장터 디자인시스템(BDS) 재정비 팀에서 디자이너와 개발자, 리뷰어가 같은 기준으로 쓰는 가이드 템플릿을 만들어 6개월간 컴포넌트 7종을 반영하고, Title과 Spacing 기준을 9개 핵심 플로우에 적용했다. 반복 알림에 묻히던 알림센터도 묶음과 거래 액션 중심으로 다시 설계했다." data-en="On Bunjang's design system (BDS) revamp team, built a guide template that designers, developers and reviewers read the same way, shipping 7 components in 6 months and applying Title and Spacing rules to 9 core flows. Also redesigned the notification center around grouping and trade actions so key alerts stop getting buried.">번개장터 디자인시스템(BDS) 재정비 팀에서 디자이너와 개발자, 리뷰어가 같은 기준으로 쓰는 가이드 템플릿을 만들어 6개월간 컴포넌트 7종을 반영하고, Title과 Spacing 기준을 9개 핵심 플로우에 적용했다. 반복 알림에 묻히던 알림센터도 묶음과 거래 액션 중심으로 다시 설계했다.</p>
         </div>
         <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="인턴십 · 번개장터 Product Design 1 Team" data-en="Internship · Bunjang Product Design 1 Team">인턴십 · 번개장터 Product Design 1 Team</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2023.12 – 2024.08 (9개월)" data-en="Dec 2023 – Aug 2024 (9 months)">2023.12 – 2024.08 (9개월)</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="Product Designer Intern (BDS 재정비 로드맵 팀)" data-en="Product Designer Intern (BDS revamp roadmap team)">Product Designer Intern (BDS 재정비 로드맵 팀)</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="가이드 템플릿 50% (2인), 스페이싱 · 타이틀 시스템 80% (2인), 알림센터 개편 100% (1인)" data-en="Guide template 50% (2 people), spacing and title system 80% (2 people), notification center redesign 100% (solo)">가이드 템플릿 50% (2인), 스페이싱 · 타이틀 시스템 80% (2인), 알림센터 개편 100% (1인)</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="디자인시스템 가이드 템플릿 제작, 일관된 스페이싱 · 타이틀 시스템 구축, 알림센터 개편 선행 디자인" data-en="Design system guide template, consistent spacing and title system, notification center redesign concept">디자인시스템 가이드 템플릿 제작, 일관된 스페이싱 · 타이틀 시스템 구축, 알림센터 개편 선행 디자인</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="BDS 성과 공유 컨퍼런스 진행, 가이드 도입 후 6개월간 7개 컴포넌트 · 에셋 반영, 9개 핵심 플로우에 스페이싱 · 타이틀 시스템 개발 반영, 알림센터 실무진 6명 긍정 평가" data-en="Presented at the BDS sharing conference, 7 components and assets adopted in 6 months, spacing and title system shipped across 9 core flows, positive review from 6 practitioners on the notification center">BDS 성과 공유 컨퍼런스 진행, 가이드 도입 후 6개월간 7개 컴포넌트 · 에셋 반영, 9개 핵심 플로우에 스페이싱 · 타이틀 시스템 개발 반영, 알림센터 실무진 6명 긍정 평가</p></div>
-      </article>
-      <article class="work" data-key="hotcake" data-tags="product">
-        <img width="960" height="720" decoding="async" src="img/thumb/hotcake.webp?v=3" alt="Hotcake">
-        <div class="meta">
-          <p>UX/UI<br><span class="muted">Team</span></p>
-          <p>Hotcake<br>Service Design<br>2025</p>
-          <p></p>
-          <p class="desc">어디에 있든 친구들과 한 공간처럼 실시간 합주할 수 있게 하는 공간 음향 스피커 Cake와 햅틱 웨어러블 Butter. 입체 음향으로 같은 방의 감각을 전하고 연주를 정확히 맞춘다.</p>
-        </div>
-        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 (5인)" data-en="Team project (5 members)">팀 프로젝트 (5인)</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="ID 장우진(PL) · ID 장은혜 · UX 정혜령 · UX 이일여 · BX 김채은" data-en="ID Woojin Jang (PL) · ID Eunhye Jang · UX Hyeryoung Jeong · UX Ilyeo Lee · BX Chaeeun Kim">ID 장우진(PL) · ID 장은혜 · UX 정혜령 · UX 이일여 · BX 김채은</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="UX Designer" data-en="UX Designer">UX Designer</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="2025 삼성디자인멤버십 MEP 전시" data-en="Exhibited at 2025 Samsung Design Membership MEP">2025 삼성디자인멤버십 MEP 전시</p></div>
-      </article>
-      <article class="work" data-key="comong" data-tags="product">
-        <img width="960" height="540" decoding="async" src="img/thumb/comong.webp?v=3" alt="COMONG">
-        <div class="meta">
-          <p>Object<span class="muted"><br>Samsung Design Membership × IDEO</span></p>
-          <p>COMONG<br>AI Air Multiplier for Dogs<br>2025</p>
-          <p class="desc muted">Credits:<br>Jung Minseo, Lee Ilyeo,<br>Jang Yujin, Choi Wanhyeok</p>
-          <p class="desc">카메라와 바닥 온도 센서로 반려견의 더위를 감지해 바닥풍을 제공하는 AI 에어 멀티플라이어. 위쪽은 사람을 위한 직접풍, 아래쪽은 강아지를 위한 간접풍을 동시에 낸다.</p>
-        </div>
-        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · 삼성디자인멤버십 × IDEO Team 6" data-en="Team project · Samsung Design Membership × IDEO, Team 6">팀 프로젝트 · 삼성디자인멤버십 × IDEO Team 6</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="ID 정민서(PL) · ID 최완혁 · UX/UI 이일여 · BX 장유진" data-en="ID Jung Minseo (PL) · ID Choi Wanhyeok · UX/UI Lee Ilyeo · BX Jang Yujin">ID 정민서(PL) · ID 최완혁 · UX/UI 이일여 · BX 장유진</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="UX/UI" data-en="UX/UI">UX/UI</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="UX/UI 100% (BX는 별도 담당)" data-en="UX/UI 100% (BX handled separately)">UX/UI 100% (BX는 별도 담당)</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="앱 온보딩 · 외출 모드 · 동반자 모드 플로우, AI 감지 로직 정의, 시나리오 설계, 발표 장표 · 대본" data-en="App onboarding, away mode and companion mode flows, AI detection logic, scenario design, presentation deck and script">앱 온보딩 · 외출 모드 · 동반자 모드 플로우, AI 감지 로직 정의, 시나리오 설계, 발표 장표 · 대본</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="Asia Design Prize 2026 Winner" data-en="Asia Design Prize 2026 Winner">Asia Design Prize 2026 Winner</p></div>
-      </article>
-      <article class="work" data-key="newton" data-tags="product">
-        <img width="960" height="900" decoding="async" src="img/thumb/newton.webp?v=3" alt="NEWTON">
-        <div class="meta">
-          <p>Object<span class="muted"><br>Samsung Design Membership</span></p>
-          <p>NEWTON<br>Wearable Sports Robot System<br>2026</p>
-          <p class="desc muted">Credits:<br>Song Siheon, Lee Ilyeo, Kim Sojin,<br>Park Juwon, Jeon Dabin</p>
-          <p class="desc">보고만 있던 스포츠 동작을 내가 있는 곳에서 바로 따라 해 보게 만드는 웨어러블 로봇 시스템. 바닥과 벽면에 펼쳐진 움직임의 단서를 따라가고, 하체 웨어러블이 감각을 조율한다.</p>
-        </div>
-        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · 삼성디자인멤버십 (5인)" data-en="Team project · Samsung Design Membership (5 members)">팀 프로젝트 · 삼성디자인멤버십 (5인)</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2026.05 – 2026.08" data-en="May – Aug 2026">2026.05 – 2026.08</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="ID 송시헌(PL) · UX 이일여 · ID 김소진 · ID 박주원 · VD 전다빈" data-en="ID Siheon Song (PL) · UX Ilyeo Lee · ID SoJin Kim · ID Juwon Park · VD Dabin Jeon">ID 송시헌(PL) · UX 이일여 · ID 김소진 · ID 박주원 · VD 전다빈</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="UX" data-en="UX">UX</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="UX 100%" data-en="UX 100%">UX 100%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="UX 전략과 시나리오, IA, 프로젝션 GUI, 프로토타입 개발 (Claude Code로 검증 시뮬레이터 자체 개발)" data-en="UX strategy and scenarios, IA, projection GUI, prototype development (built a validation simulator with Claude Code)">UX 전략과 시나리오, IA, 프로젝션 GUI, 프로토타입 개발 (Claude Code로 검증 시뮬레이터 자체 개발)</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="2026 삼성디자인멤버십 MEP 전시" data-en="Exhibited at 2026 Samsung Design Membership MEP">2026 삼성디자인멤버십 MEP 전시</p></div>
       </article>
       <article class="work" data-key="zerotoone" data-tags="vibe">
         <img width="960" height="540" decoding="async" src="img/thumb/zerotoone.webp?v=3" alt="0TO1">
@@ -274,6 +222,26 @@
         </div>
         <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="개인 프로젝트" data-en="Personal project">개인 프로젝트</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2026.03 – 2026.04" data-en="Mar – Apr 2026">2026.03 – 2026.04</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="리서치, 설계, 구현, 검증" data-en="Research, design, build, validation">리서치, 설계, 구현, 검증</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="100%" data-en="100%">100%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="병목 조사, ChatGPT 기획, 피그마 설계, Claude Code 구현 (5일 200+ 커밋), 어피니티·디자인시스템·유저테스트 툴 3종 제작" data-en="Bottleneck research, planning with ChatGPT, Figma design, built with Claude Code (200+ commits in 5 days), three tools: affinity, design system, user test">병목 조사, ChatGPT 기획, 피그마 설계, Claude Code 구현 (5일 200+ 커밋), 어피니티·디자인시스템·유저테스트 툴 3종 제작</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="3명 실사용 검증, 세 툴 이슈를 AS-IS→TO-BE로 개선" data-en="Validated with 3 real users; tool issues improved from AS-IS to TO-BE">3명 실사용 검증, 세 툴 이슈를 AS-IS→TO-BE로 개선</p><p class="muted" data-ko="링크" data-en="Links">링크</p><div class="plinks"><a class="chip" href="https://b1-saas.vercel.app" target="_blank" rel="noopener">Affinity ↗</a><a class="chip" href="https://designsync-omega.vercel.app" target="_blank" rel="noopener">DesignSync ↗</a><a class="chip" href="https://usability-tester.vercel.app" target="_blank" rel="noopener">UserTest ↗</a></div></div>
       </article>
+      <article class="work" data-key="bbibbi" data-tags="uxui">
+        <img width="960" height="751" decoding="async" src="img/thumb/bbibbi.webp?v=3" alt="삐삐">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Team</span></p>
+          <p>삐삐<br>Family Widget Service<br>2024</p>
+          <p></p>
+          <p class="desc" data-ko="하루 한 번 가족에게 생존신고를 보내는 위젯 서비스. 출시 전 Maze로 33명 사용성 테스트를 거쳐 온보딩과 홈을 고쳤고, 출시 후 Mixpanel 분석으로 초대받은 가족의 방 입장 성공률을 9.09%에서 49.35%로 높였다." data-en="A widget service where family members send a once-a-day check-in. Fixed onboarding and home after a 33-person Maze usability test before launch, then used Mixpanel after launch to raise invited members' room-join rate from 9.09% to 49.35%.">하루 한 번 가족에게 생존신고를 보내는 위젯 서비스. 출시 전 Maze로 33명 사용성 테스트를 거쳐 온보딩과 홈을 고쳤고, 출시 후 Mixpanel 분석으로 초대받은 가족의 방 입장 성공률을 9.09%에서 49.35%로 높였다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · DEPROMEET 14기 Team 05" data-en="Team project · DEPROMEET 14th, Team 05">팀 프로젝트 · DEPROMEET 14기 Team 05</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2024.11 – 현재" data-en="Nov 2024 – present">2024.11 – 현재</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="Design 3 · iOS 4 · Server 3" data-en="Design 3 · iOS 4 · Server 3">Design 3 · iOS 4 · Server 3</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="Product Designer (디자이너 3인 중 1인)" data-en="Product Designer (1 of 3 designers)">Product Designer (디자이너 3인 중 1인)</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="디자인 40%" data-en="Design 40%">디자인 40%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="기획, UX/UI (위젯 · 피드 · 캘린더), 그래픽 전담, 마케팅" data-en="Planning, UX/UI (widget, feed, calendar), all graphics, marketing">기획, UX/UI (위젯 · 피드 · 캘린더), 그래픽 전담, 마케팅</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="App Store · Google Play 출시, DEPROMEET 14기 대상" data-en="Launched on App Store and Google Play, DEPROMEET 14th Grand Prize">App Store · Google Play 출시, DEPROMEET 14기 대상</p></div>
+      </article>
+      <article class="work" data-key="spot" data-tags="uxui">
+        <img width="960" height="751" decoding="async" src="img/thumb/spot.webp?v=3" alt="SPOT!">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Team</span></p>
+          <p>SPOT!<br>My Ballpark Seat View Service<br>2024</p>
+          <p></p>
+          <p class="desc">야구장 좌석의 시야 사진과 후기를 간편하게 확인하는 직관 서비스. 나만의 직관 기록을 한곳에 아카이빙하고, 다른 야구 팬들과 공유하며 다음 좌석을 고른다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · DEPROMEET 15기" data-en="Team project · DEPROMEET 15th">팀 프로젝트 · DEPROMEET 15기</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2024.06 – 2024.09" data-en="Jun – Sep 2024">2024.06 – 2024.09</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="Design 3 · Android 4 · Server 3" data-en="Design 3 · Android 4 · Server 3">Design 3 · Android 4 · Server 3</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="Product Designer (디자이너 3인 중 1인)" data-en="Product Designer (1 of 3 designers)">Product Designer (디자이너 3인 중 1인)</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="디자인 40%" data-en="Design 40%">디자인 40%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="기획, 캐릭터 스케치, GUI 전담, 시야 찾기 화면 메인 디자이너" data-en="Planning, character sketches, all GUI, lead designer of the seat-view screen">기획, 캐릭터 스케치, GUI 전담, 시야 찾기 화면 메인 디자이너</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="Google Play 출시, DEPROMEET 15기 대상" data-en="Launched on Google Play, DEPROMEET 15th Grand Prize">Google Play 출시, DEPROMEET 15기 대상</p></div>
+      </article>
       <article class="work" data-key="memboarding" data-tags="vibe">
         <img width="960" height="540" decoding="async" src="img/thumb/memboarding.webp?v=3" alt="멤보딩">
         <div class="meta">
@@ -284,6 +252,47 @@
           <div class="plinks"><a class="chip" href="https://ilyeolee.github.io/gitsdm-vibecoding/" target="_blank" rel="noopener">멤보딩 ↗</a></div>
         </div>
         <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="개인 프로젝트" data-en="Personal project">개인 프로젝트</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2026.05.01 – 2026.05.02 (2일)" data-en="May 1 – 2, 2026 (2 days)">2026.05.01 – 2026.05.02 (2일)</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="기획, 디자인, 개발" data-en="Planning, design, development">기획, 디자인, 개발</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="100%" data-en="100%">100%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="팀원 인터뷰, IA, 5단계 온보딩·팀 대시보드 UI, Claude Code로 기능과 UI 구현, AI로 캐릭터·에셋·효과음 제작" data-en="Team interviews, IA, 5-step onboarding and team dashboard UI, built features and UI with Claude Code, characters, assets and sound made with AI">팀원 인터뷰, IA, 5단계 온보딩·팀 대시보드 UI, Claude Code로 기능과 UI 구현, AI로 캐릭터·에셋·효과음 제작</p><p class="muted" data-ko="사용 도구" data-en="Tools">사용 도구</p><p data-ko="ChatGPT, Pinterest, Gemini Canvas, 이미지 생성, Claude Code" data-en="ChatGPT, Pinterest, Gemini Canvas, image generation, Claude Code">ChatGPT, Pinterest, Gemini Canvas, 이미지 생성, Claude Code</p><p class="muted" data-ko="링크" data-en="Links">링크</p><div class="plinks"><a class="chip" href="https://ilyeolee.github.io/gitsdm-vibecoding/" target="_blank" rel="noopener">멤보딩 ↗</a></div></div>
+      </article>
+      <p class="other-head">Other Works</p>
+      <article class="work other" data-key="spurt" data-tags="uxui">
+        <img width="960" height="751" decoding="async" src="img/thumb/spurt.webp?v=3" alt="SPURT">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Team</span></p>
+          <p>SPURT<br>미루는 당신을 위한 마지막 스퍼트<br>2025</p>
+          <p></p>
+          <p class="desc">마감이 임박한 작업을 한눈에 보여주고 작은 알림으로 시작을 돕는, 미루는 사람을 위한 집중 서비스. 음악과 함께 몰입을 유지하고 짧은 회고로 하루를 정리한다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · DEPROMEET 16기" data-en="Team project · DEPROMEET 16th">팀 프로젝트 · DEPROMEET 16기</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2025.01 – 2025.04" data-en="Jan – Apr 2025">2025.01 – 2025.04</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="Designer 3 · Frontend 4 · Backend 3" data-en="Designer 3 · Frontend 4 · Backend 3">Designer 3 · Frontend 4 · Backend 3</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="Product Designer (디자이너 3인 중 1인)" data-en="Product Designer (1 of 3 designers)">Product Designer (디자이너 3인 중 1인)</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="디자인 40%" data-en="Design 40%">디자인 40%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="기획, GUI · 그래픽 전담, 할 일 추가하기 화면" data-en="Planning, all GUI and graphics, the add-task flow">기획, GUI · 그래픽 전담, 할 일 추가하기 화면</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="App Store 출시" data-en="Launched on the App Store">App Store 출시</p></div>
+      </article>
+      <article class="work other" data-key="newton" data-tags="product">
+        <img width="960" height="900" decoding="async" src="img/thumb/newton.webp?v=3" alt="NEWTON">
+        <div class="meta">
+          <p>Object<span class="muted"><br>Samsung Design Membership</span></p>
+          <p>NEWTON<br>Wearable Sports Robot System<br>2026</p>
+          <p class="desc muted">Credits:<br>Song Siheon, Lee Ilyeo, Kim Sojin,<br>Park Juwon, Jeon Dabin</p>
+          <p class="desc">보고만 있던 스포츠 동작을 내가 있는 곳에서 바로 따라 해 보게 만드는 웨어러블 로봇 시스템. 바닥과 벽면에 펼쳐진 움직임의 단서를 따라가고, 하체 웨어러블이 감각을 조율한다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · 삼성디자인멤버십 (5인)" data-en="Team project · Samsung Design Membership (5 members)">팀 프로젝트 · 삼성디자인멤버십 (5인)</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2026.05 – 2026.08" data-en="May – Aug 2026">2026.05 – 2026.08</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="ID 송시헌(PL) · UX 이일여 · ID 김소진 · ID 박주원 · VD 전다빈" data-en="ID Siheon Song (PL) · UX Ilyeo Lee · ID SoJin Kim · ID Juwon Park · VD Dabin Jeon">ID 송시헌(PL) · UX 이일여 · ID 김소진 · ID 박주원 · VD 전다빈</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="UX" data-en="UX">UX</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="UX 100%" data-en="UX 100%">UX 100%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="UX 전략과 시나리오, IA, 프로젝션 GUI, 프로토타입 개발 (Claude Code로 검증 시뮬레이터 자체 개발)" data-en="UX strategy and scenarios, IA, projection GUI, prototype development (built a validation simulator with Claude Code)">UX 전략과 시나리오, IA, 프로젝션 GUI, 프로토타입 개발 (Claude Code로 검증 시뮬레이터 자체 개발)</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="2026 삼성디자인멤버십 MEP 전시" data-en="Exhibited at 2026 Samsung Design Membership MEP">2026 삼성디자인멤버십 MEP 전시</p></div>
+      </article>
+      <article class="work other" data-key="comong" data-tags="product">
+        <img width="960" height="540" decoding="async" src="img/thumb/comong.webp?v=3" alt="COMONG">
+        <div class="meta">
+          <p>Object<span class="muted"><br>Samsung Design Membership × IDEO</span></p>
+          <p>COMONG<br>AI Air Multiplier for Dogs<br>2025</p>
+          <p class="desc muted">Credits:<br>Jung Minseo, Lee Ilyeo,<br>Jang Yujin, Choi Wanhyeok</p>
+          <p class="desc">카메라와 바닥 온도 센서로 반려견의 더위를 감지해 바닥풍을 제공하는 AI 에어 멀티플라이어. 위쪽은 사람을 위한 직접풍, 아래쪽은 강아지를 위한 간접풍을 동시에 낸다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · 삼성디자인멤버십 × IDEO Team 6" data-en="Team project · Samsung Design Membership × IDEO, Team 6">팀 프로젝트 · 삼성디자인멤버십 × IDEO Team 6</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="ID 정민서(PL) · ID 최완혁 · UX/UI 이일여 · BX 장유진" data-en="ID Jung Minseo (PL) · ID Choi Wanhyeok · UX/UI Lee Ilyeo · BX Jang Yujin">ID 정민서(PL) · ID 최완혁 · UX/UI 이일여 · BX 장유진</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="UX/UI" data-en="UX/UI">UX/UI</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="UX/UI 100% (BX는 별도 담당)" data-en="UX/UI 100% (BX handled separately)">UX/UI 100% (BX는 별도 담당)</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="앱 온보딩 · 외출 모드 · 동반자 모드 플로우, AI 감지 로직 정의, 시나리오 설계, 발표 장표 · 대본" data-en="App onboarding, away mode and companion mode flows, AI detection logic, scenario design, presentation deck and script">앱 온보딩 · 외출 모드 · 동반자 모드 플로우, AI 감지 로직 정의, 시나리오 설계, 발표 장표 · 대본</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="Asia Design Prize 2026 Winner" data-en="Asia Design Prize 2026 Winner">Asia Design Prize 2026 Winner</p></div>
+      </article>
+      <article class="work other" data-key="hotcake" data-tags="product">
+        <img width="960" height="720" decoding="async" src="img/thumb/hotcake.webp?v=3" alt="Hotcake">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Team</span></p>
+          <p>Hotcake<br>Service Design<br>2025</p>
+          <p></p>
+          <p class="desc">어디에 있든 친구들과 한 공간처럼 실시간 합주할 수 있게 하는 공간 음향 스피커 Cake와 햅틱 웨어러블 Butter. 입체 음향으로 같은 방의 감각을 전하고 연주를 정확히 맞춘다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 (5인)" data-en="Team project (5 members)">팀 프로젝트 (5인)</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="ID 장우진(PL) · ID 장은혜 · UX 정혜령 · UX 이일여 · BX 김채은" data-en="ID Woojin Jang (PL) · ID Eunhye Jang · UX Hyeryoung Jeong · UX Ilyeo Lee · BX Chaeeun Kim">ID 장우진(PL) · ID 장은혜 · UX 정혜령 · UX 이일여 · BX 김채은</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="UX Designer" data-en="UX Designer">UX Designer</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="2025 삼성디자인멤버십 MEP 전시" data-en="Exhibited at 2025 Samsung Design Membership MEP">2025 삼성디자인멤버십 MEP 전시</p></div>
       </article>
 
 
@@ -478,7 +487,7 @@
   const chips=document.getElementById('chips');
   chips.addEventListener('click',e=>{ const b=e.target.closest('.chip'); if(!b) return;
     chips.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===b)); const f=b.dataset.f;
-    document.querySelectorAll('#works-grid .work, #works-index .thumb').forEach(w=>{ w.hidden = f!=='all' && !(w.dataset.tags||'').split(' ').includes(f); });
+    document.querySelectorAll('#works-grid .work, #works-index .thumb').forEach(w=>{ w.hidden = f!=='all' && !(w.dataset.tags||'').split(' ').includes(f); }); document.querySelector('.other-head').hidden = f!=='all';
     col.scrollTop=0; stagger(open? index.querySelectorAll('.thumb:not([hidden])') : grid.querySelectorAll('.work:not([hidden])'), 45); });
   // ---- language (default ko; i18n.json holds ko->en) ----
   let lang='ko', I18N={};
