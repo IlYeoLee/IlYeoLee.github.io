@@ -75,17 +75,12 @@
   .chip.on { background:var(--fg); color:var(--bg); }
   @media (hover:hover) { .chip:not(.on):hover { background:#f2f2f2; } }
   .site.viewing #chips { display:none !important; }
-  /* ---- custom cursor (everyelse.com port: ring stretches with scroll velocity) + AutoEver A + drag footprints ---- */
+  /* ---- custom cursor (everyelse.com port: ring stretches with scroll velocity) ---- */
   #cursor { position:fixed; top:0; left:0; z-index:9999; pointer-events:none; will-change:transform; mix-blend-mode:difference; opacity:0; transition:opacity .2s; }
   #cursor i { display:block; width:36px; height:var(--stretch-h,36px); border-radius:var(--stretch-r,9999px); transform:translate(-18px,-18px); border:4px solid #fff; transition:border-width .1s ease-out; }
   #cursor.on i, #cursor.down i { border-width:8px; }
-  #cursor-a { position:fixed; top:0; left:0; z-index:10000; pointer-events:none; opacity:0; transition:opacity .2s; }
-  #cursor-a svg { display:block; width:12px; height:15px; transform:translate(-6px,-7.5px); fill:#002A7F; transition:transform .15s ease-out; }
-  #cursor-a.on svg, #cursor-a.down svg { transform:translate(-6px,-7.5px) scale(1.4); }
-  #steps { position:fixed; inset:0; z-index:9998; pointer-events:none; overflow:hidden; }
-  #steps svg { position:absolute; width:16px; height:20px; margin:-10px 0 0 -8px; fill:#002A7F; opacity:.22; transition:opacity 2.4s ease; }
   @media (hover:hover) and (pointer:fine) { *, *::before, *::after { cursor:none !important; } }
-  @media (hover:none) { #cursor, #cursor-a, #steps { display:none; } }
+  @media (hover:none) { #cursor { display:none; } }
   /* ---- full-screen project view: left rail of thumbs + wide project ---- */
   .site.viewing { grid-template-columns:132px 1fr; }
   .site.viewing #works .grid, .site.viewing #works #menu-btn { display:none !important; }
@@ -181,10 +176,7 @@
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute"><symbol id="ae" viewBox="160 87 585 715"><path d="M490 97H713L724 512L560 505L583 177L466 517L240 633Z"/><path d="M237 648L726 520L735 792H548L550 668H408L362 792H170Z"/></symbol></svg>
 <div id="cursor"><i></i></div>
-<div id="cursor-a"><svg><use href="#ae"/></svg></div>
-<div id="steps"></div>
 <div class="site">
 
   <!-- LEFT : Sides -->
@@ -514,14 +506,14 @@
   fetch('portfolio/i18n.json?v='+Date.now()).then(r=>r.json()).then(j=>{ I18N=j; applyLang(document); });
   langBtn.addEventListener('click',()=>{ lang=lang==='ko'?'en':'ko'; applyLang(document); });
   // ---- custom cursor ----
-  const cur=document.getElementById('cursor'), curA=document.getElementById('cursor-a');
+  const cur=document.getElementById('cursor');
   if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
     let tx=0, ty=0, x=0, y=0, shown=false, lastWheel=-1e9, vel=0, lastPos=null, lastT=performance.now(), h=36, pvx=0, pvy=0, rx=0, ry=0;
-    window.addEventListener('mousemove', e=>{ if(!shown){ x=e.clientX; y=e.clientY; shown=true; } pvx=e.clientX-tx; pvy=e.clientY-ty; tx=e.clientX; ty=e.clientY; cur.style.opacity=1; curA.style.opacity=1;
-      const on=!!e.target.closest('a, button, .work, .thumb'); cur.classList.toggle('on', on); curA.classList.toggle('on', on); }, {passive:true});
-    document.addEventListener('mouseleave', ()=>{ cur.style.opacity=0; curA.style.opacity=0; shown=false; });
-    document.addEventListener('pointerdown', ()=>{ cur.classList.add('down'); curA.classList.add('down'); }, {passive:true});
-    document.addEventListener('pointerup', ()=>{ cur.classList.remove('down'); curA.classList.remove('down'); }, {passive:true});
+    window.addEventListener('mousemove', e=>{ if(!shown){ x=e.clientX; y=e.clientY; shown=true; } pvx=e.clientX-tx; pvy=e.clientY-ty; tx=e.clientX; ty=e.clientY; cur.style.opacity=1;
+      cur.classList.toggle('on', !!e.target.closest('a, button, .work, .thumb')); }, {passive:true});
+    document.addEventListener('mouseleave', ()=>{ cur.style.opacity=0; shown=false; });
+    document.addEventListener('pointerdown', ()=>cur.classList.add('down'), {passive:true});
+    document.addEventListener('pointerup', ()=>cur.classList.remove('down'), {passive:true});
     document.addEventListener('wheel', ()=>{ lastWheel=performance.now(); }, {passive:true});
     document.addEventListener('scroll', e=>{ const el=e.target===document?document.documentElement:e.target; const pos=el===document.documentElement?window.scrollY:el.scrollTop; const now=performance.now();
       if(lastPos!==null && now-lastWheel<200) vel=(pos-lastPos)/Math.max(now-lastT,1); lastPos=pos; lastT=now; }, {passive:true, capture:true});
@@ -529,22 +521,10 @@
       x+=(tx-x)*0.5; y+=(ty-y)*0.5;
       rx+=((-pvy*0.6)-rx)*0.2; ry+=((pvx*0.6)-ry)*0.2; pvx*=0.8; pvy*=0.8;
       cur.style.transform=`translate3d(${x}px,${y}px,0) perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-      curA.style.transform=`translate3d(${x}px,${y}px,0)`;
       vel*=0.85; const target=36+44*Math.min(0.35*Math.abs(vel),1); h+=(target-h)*0.25; const a=(h-36)/44;
       cur.style.setProperty('--stretch-h', h.toFixed(2)+'px'); cur.style.setProperty('--stretch-r', (9999-9983*a).toFixed(2)+'px');
       requestAnimationFrame(loop);
     })();
-    // footprints: while dragging, stamp faint logos at irregular steps, alternating sides
-    const steps=document.getElementById('steps'); let dragging=false, sx=0, sy=0, next=70, side=1;
-    document.addEventListener('pointerdown', e=>{ dragging=true; sx=e.clientX; sy=e.clientY; next=50+Math.random()*50; }, {passive:true});
-    document.addEventListener('pointerup', ()=>{ dragging=false; }, {passive:true});
-    window.addEventListener('mousemove', e=>{ if(!dragging) return; const dx=e.clientX-sx, dy=e.clientY-sy, d=Math.hypot(dx,dy); if(d<next) return;
-      const ang=Math.atan2(dy,dx), off=(6+Math.random()*6)*side; side=-side;
-      const f=document.createElementNS('http://www.w3.org/2000/svg','svg'); f.innerHTML='<use href="#ae"/>';
-      f.style.left=(e.clientX-Math.sin(ang)*off+(Math.random()-.5)*6)+'px'; f.style.top=(e.clientY+Math.cos(ang)*off+(Math.random()-.5)*6)+'px';
-      f.style.transform=`rotate(${(ang*180/Math.PI+90+(Math.random()-.5)*36).toFixed(1)}deg) scale(${(.8+Math.random()*.4).toFixed(2)})`;
-      steps.appendChild(f); requestAnimationFrame(()=>requestAnimationFrame(()=>{ f.style.opacity=0; })); setTimeout(()=>f.remove(), 2600);
-      sx=e.clientX; sy=e.clientY; next=50+Math.random()*50; }, {passive:true});
   }
 </script>
 </body>
