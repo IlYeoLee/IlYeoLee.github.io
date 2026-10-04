@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<base href="../">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ilyeo Lee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --fg:#000; --muted:#7a7a7a; --line:#d9d9d9; --bg:#fff; --pad:7px; --fs:13px; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; background:var(--bg); color:var(--fg); }
+  body { font-family:Inter, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; font-size:var(--fs); line-height:1.4; letter-spacing:-0.005em; -webkit-font-smoothing:antialiased; }
+  a { color:inherit; text-decoration:none; }
+  a:hover { color:var(--muted); }
+
+  .site { display:grid; grid-template-columns: 2fr 1fr; height:calc(100vh - 24px); height:calc(100dvh - 24px); }
+  .grid { display:grid; grid-template-columns:1fr 1fr; column-gap:var(--pad); }
+  .grid .work:nth-last-child(-n+2) { border-bottom:0; }
+  .col { position:relative; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; border-right:1px solid var(--line); }
+  .col:last-child { border-right:0; }
+  .col-head { position:sticky; top:0; z-index:2; display:flex; justify-content:space-between; align-items:center; height:24px; padding:0 var(--pad); background:var(--bg); border-bottom:1px solid var(--line); }
+  .col-head .menu { font-size:14px; line-height:1; }
+  .col-body { padding:var(--pad); }
+
+  .foot { height:24px; display:flex; align-items:center; padding:0 var(--pad); border-top:1px solid var(--line); font-size:12px; }
+
+  /* project card */
+  .work { padding-bottom:28px; margin-bottom:28px; border-bottom:1px solid var(--line); }
+  .work:last-child { border-bottom:0; }
+  .work img, .work video { display:block; width:100%; height:auto; background:#eee; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; margin-top:16px; }
+  .meta p { white-space:pre-line; word-break:keep-all; overflow-wrap:anywhere; }
+  .meta .desc { margin-top:26px; }
+  .meta .more { margin-top:16px; display:inline-block; }
+  .meta.info { grid-template-columns:1fr 2fr; gap:6px 16px; padding-top:12px; border-top:1px solid var(--line); }
+  #project-panel .meta.info { margin-bottom:48px; }
+  #project-panel img { cursor:zoom-in; }
+  #lb { position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; padding:calc(24px + var(--pad)) var(--pad) var(--pad); background:var(--bg); cursor:zoom-out; touch-action:none; user-select:none; -webkit-user-select:none; }
+  #lb .lb-head { position:absolute; top:0; left:0; right:0; height:24px; display:flex; justify-content:flex-end; align-items:center; padding:0 var(--pad); border-bottom:1px solid var(--line); }
+  #lb img { max-width:100%; max-height:100%; object-fit:contain; transform-origin:0 0; will-change:transform; }
+  .muted { color:var(--muted); }
+  button.menu { background:none; border:0; font:inherit; font-size:14px; line-height:1; cursor:pointer; color:inherit; padding:0; }
+  button.menu.close { font-size:var(--fs); }
+  .index { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--pad); }
+  .index .thumb { display:block; background:#eee; aspect-ratio:1/1; overflow:hidden; }
+  .index .thumb img { width:100%; height:100%; object-fit:cover; display:block; transition:opacity .18s ease, transform .18s ease; }
+  .index .thumb:active img { opacity:.85; transform:scale(.985); }
+  @media (hover:hover) { .index .thumb:hover img { opacity:.92; } }
+  .plinks { display:flex; flex-wrap:wrap; gap:6px; }
+  .meta > .plinks { grid-column:2; }
+  [hidden] { display:none !important; }
+  /* ---- motion ---- */
+  .rv { opacity:0; transform:translateY(14px); transition:opacity .55s ease, transform .7s cubic-bezier(.2,.7,.2,1); will-change:opacity, transform; }
+  .rv.in { opacity:1; transform:none; }
+  .col-body { transition:opacity .25s ease; }
+  .col-body.fading { opacity:0; }
+  #works-title, #about-title { transition:opacity .2s ease; }
+  .work img { transition:transform .6s cubic-bezier(.2,.7,.2,1), opacity .18s ease; }
+  @media (hover:hover) { .work:hover img { transform:scale(1.015); } }
+  .chip { transition:background .15s, color .15s, transform .15s; }
+  .chip:active { transform:scale(.96); }
+  @media (prefers-reduced-motion:reduce) { .rv { opacity:1; transform:none; transition:none; } .work img { transition:none; } }
+
+  .chips { position:sticky; top:24px; z-index:2; display:flex; gap:6px; padding:8px var(--pad); background:var(--bg); border-bottom:1px solid var(--line); }
+  .chip { font:inherit; font-size:12px; line-height:1; padding:6px 10px; border:1px solid var(--fg); border-radius:999px; background:none; color:var(--fg); cursor:pointer; transition:background .15s, color .15s; }
+  .chip.on { background:var(--fg); color:var(--bg); }
+  @media (hover:hover) { .chip:not(.on):hover { background:#f2f2f2; } }
+  .site.viewing #chips { display:none !important; }
+  /* ---- custom cursor (everyelse.com port: ring stretches with scroll velocity) ---- */
+  #cursor { position:fixed; top:0; left:0; z-index:9999; pointer-events:none; will-change:transform; mix-blend-mode:difference; opacity:0; transition:opacity .2s; }
+  #cursor i { display:block; width:36px; height:var(--stretch-h,36px); border-radius:var(--stretch-r,9999px); transform:translate(-18px,-18px); border:4px solid #fff; transition:border-width .1s ease-out; }
+  #cursor.on i, #cursor.down i { border-width:8px; }
+  @media (hover:hover) and (pointer:fine) { *, *::before, *::after { cursor:none !important; } }
+  @media (hover:none) { #cursor { display:none; } }
+  /* ---- full-screen project view: left rail of thumbs + wide project ---- */
+  .site.viewing { grid-template-columns:132px 1fr; }
+  .site.viewing #works .grid, .site.viewing #works #menu-btn { display:none !important; }
+  .site.viewing #works-title { cursor:pointer; }
+  .site.viewing #works .index { display:grid !important; grid-template-columns:1fr; gap:var(--pad); }
+  .site.viewing #works .index .thumb.current img { opacity:.35; }
+  .site.viewing #about-panel { display:none !important; }
+  .site.viewing #project-panel { display:block !important; padding:32px clamp(24px, 8vw, 140px) 80px; }
+  .site.viewing #project-panel > * { max-width:1040px; margin-left:auto; margin-right:auto; }
+  .site.viewing #project-panel .ptext { max-width:640px; }
+  .site.viewing #project-panel .phead { max-width:1040px; margin-bottom:20px; }
+  @media (max-width:900px) {
+    .site.viewing { grid-template-columns:1fr; }
+    .site.viewing #project-panel { padding:16px 16px 60px; }
+    .site.viewing #works { position:sticky; top:0; z-index:3; background:var(--bg); }
+    .site.viewing #works .col-head { display:none; }
+    .site.viewing #works .index { display:flex !important; overflow-x:auto; gap:var(--pad); padding:var(--pad); }
+    .site.viewing #works .index .thumb { flex:0 0 64px; }
+  }
+  .head-right { display:flex; gap:12px; align-items:center; }
+  button.lang { background:none; border:0; font:inherit; font-size:var(--fs); color:var(--muted); cursor:pointer; padding:0; letter-spacing:0; }
+  button.lang b { font-weight:400; color:var(--fg); }
+  #project-panel img, #project-panel video { display:block; width:100%; height:auto; margin:0 0 var(--pad); background:#f2f2f2; }
+  #project-panel .ptext { max-width:640px; margin:22px auto 30px; text-align:center; white-space:normal; }
+  #project-panel .ptext p { margin:0 0 6px; word-break:keep-all; overflow-wrap:anywhere; }
+  #project-panel .ptext b { font-weight:500; }
+  #project-panel .pgrid { display:grid; gap:var(--pad); margin-bottom:var(--pad); }
+  #project-panel .pgrid.cols-2 { grid-template-columns:1fr 1fr; } #project-panel .pgrid.cols-3 { grid-template-columns:repeat(3,1fr); } #project-panel .pgrid.cols-4 { grid-template-columns:repeat(4,1fr); }
+  #project-panel .pgrid img { margin:0; }
+  #project-panel .pembed { position:relative; aspect-ratio:16/9; margin:0 0 var(--pad); background:#000; }
+  #project-panel .pembed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+  #project-panel .phead { margin:0 0 16px; }
+  .vwrap { position:relative; margin:0 0 var(--pad); }
+  .vwrap video { margin:0; }
+  .vbar, .sndonly { opacity:0; transition:opacity .2s; }
+  .vwrap:hover .vbar, .vwrap:hover .sndonly, .vwrap.paused .vbar { opacity:1; }
+  @media (hover:none) { .vbar, .sndonly { opacity:1; } }
+  .vbar { position:absolute; left:12px; right:12px; bottom:12px; height:36px; display:flex; align-items:center; gap:14px; padding:0 4px; background:rgba(255,255,255,.92); border-radius:999px; font-size:12px; }
+  .vbar button { font:inherit; font-size:12px; line-height:1; padding:6px 10px; border:0; border-radius:999px; background:var(--fg); color:var(--bg); cursor:pointer; min-width:56px; }
+  .vbar .snd, .sndonly { background:none !important; color:var(--fg) !important; border:1px solid var(--fg) !important; width:28px; height:28px; min-width:0 !important; padding:0 !important; display:inline-flex; align-items:center; justify-content:center; }
+  .sndonly { position:absolute; right:12px; bottom:12px; border-radius:999px; background:rgba(255,255,255,.92) !important; cursor:pointer; }
+  .vbar .pp { width:28px; height:28px; min-width:0; padding:0; position:relative; }
+  .vbar .pp::before, .vbar .pp::after { content:''; position:absolute; top:50%; left:50%; background:var(--bg); }
+  .vbar .pp::before { width:3px; height:10px; transform:translate(-5px,-50%); }
+  .vbar .pp::after { width:3px; height:10px; transform:translate(2px,-50%); }
+  .vbar .pp.paused::before { width:0; height:0; background:none; border-left:9px solid var(--bg); border-top:5px solid transparent; border-bottom:5px solid transparent; transform:translate(-3px,-50%); }
+  .vbar .pp.paused::after { display:none; }
+  .vbar .track { flex:1; height:100%; position:relative; cursor:pointer; touch-action:none; }
+  .vbar .track::before { content:''; position:absolute; left:0; right:0; top:50%; height:2px; margin-top:-1px; background:#d0d0d0; }
+  .vbar .track i { position:absolute; left:0; top:50%; height:2px; margin-top:-1px; width:0; background:var(--fg); }
+  .vbar .track::after { content:''; position:absolute; top:50%; left:var(--p,0%); width:10px; height:10px; margin:-5px 0 0 -5px; border-radius:50%; background:var(--fg); }
+  .vbar .time { color:var(--muted); font-variant-numeric:tabular-nums; min-width:70px; text-align:right; margin-right:6px; }
+  .vbar .time:last-child { margin-right:12px; }
+  #project-panel .plabel { color:var(--muted); margin:56px 0 18px; padding-top:18px; border-top:1px solid var(--line); }
+  #project-panel .plabel:first-of-type { margin-top:0; padding-top:0; border-top:0; }
+  #project-panel .pcap { display:grid; grid-template-columns:1fr 2fr; gap:16px; margin:22px 0 10px; }
+  #project-panel .pcap p { margin:0; word-break:keep-all; overflow-wrap:anywhere; }
+  #project-panel .pcap .pt { font-weight:700; }
+  #project-panel .pcap .pt .muted { font-weight:500; }
+  @media (max-width:900px) { #project-panel .pcap { grid-template-columns:1fr; gap:6px; } }
+  #project-panel .ptext.left { text-align:left; margin:36px auto 28px; }
+  #project-panel .ptext.left p { margin:0 0 14px; }
+  #project-panel .ptext .label { color:var(--muted); margin-bottom:10px; } #project-panel .phead p { white-space:pre-line; }
+  .work { cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .work img { transition:transform .18s ease, opacity .18s ease; }
+  .work:active img, .work.pressed img { transform:scale(.985); opacity:.85; }
+  @media (hover:hover) { .work:hover img { opacity:.92; } }
+
+  /* about */
+  .about { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .about p + p { margin-top:14px; }
+  .about p, .cv p { word-break:keep-all; overflow-wrap:anywhere; }
+  .about .links p { margin:0; }
+  .about .links .gap { height:12px; }
+  .cv { border-top:1px solid var(--line); margin-top:120px; padding-top:var(--pad); }
+  .cv .row { display:grid; grid-template-columns:1fr 1fr; gap:16px; padding:0 0 28px; }
+  .cv .row + .row { border-top:1px solid var(--line); padding-top:var(--pad); }
+  .cv .item + .item { margin-top:14px; }
+
+  @media (max-width: 900px) {
+    .site { grid-template-columns:1fr; height:auto; }
+    .grid { grid-template-columns:1fr; }
+    .index { grid-template-columns:repeat(2,1fr); }
+    .grid .work:nth-last-child(-n+2) { border-bottom:1px solid var(--line); }
+    .grid .work:last-child { border-bottom:0; }
+    .col { overflow:visible; border-right:0; border-bottom:1px solid var(--line); }
+    .col-head { position:static; }
+    /* col-head가 static이라 24px 오프셋이 비어 본문이 비쳐 보였음 */
+    .chips { top:0; }
+  }
+</style>
+</head>
+<body>
+<div id="cursor"><i></i></div>
+<div class="site">
+
+  <!-- LEFT : Sides -->
+  
+  <!-- CENTER : Selected Works -->
+  <section class="col" id="works">
+    <div class="col-head"><span id="works-title" role="button">Selected Works</span><button class="menu" id="menu-btn" aria-label="Index">≡</button></div>
+        <div class="chips" id="chips">
+      <button class="chip on" data-f="all">All</button>
+      <button class="chip" data-f="uxui">App UX/UI</button>
+      <button class="chip" data-f="product">Concept UX</button>
+      <button class="chip" data-f="vibe">Vibe Coding UX/UI</button>
+    </div>
+    <div class="col-body index" id="works-index" hidden>
+      <a class="thumb" href="#" data-i="0" data-tags="uxui"><img width="960" height="751" decoding="async" src="img/thumb/spot.webp?v=3" alt="SPOT!"></a>
+      <a class="thumb" href="#" data-i="1" data-tags="uxui"><img width="960" height="751" decoding="async" src="img/thumb/bbibbi.webp?v=3" alt="삐삐"></a>
+      <a class="thumb" href="#" data-i="2" data-tags="uxui"><img width="960" height="751" decoding="async" src="img/thumb/spurt.webp?v=3" alt="SPURT"></a>
+      <a class="thumb" href="#" data-i="3" data-tags="uxui"><img width="960" height="752" decoding="async" src="img/thumb/bunjang.webp?v=3" alt="번개장터"></a>
+      <a class="thumb" href="#" data-i="4" data-tags="product"><img width="960" height="720" decoding="async" src="img/thumb/hotcake.webp?v=3" alt="Hotcake"></a>
+      <a class="thumb" href="#" data-i="5" data-tags="product"><img width="960" height="540" decoding="async" src="img/thumb/comong.webp?v=3" alt="COMONG"></a>
+      <a class="thumb" href="#" data-i="6" data-tags="product"><img width="960" height="900" decoding="async" src="img/thumb/newton.webp?v=3" alt="NEWTON"></a>
+      <a class="thumb" href="#" data-i="7" data-tags="vibe"><img width="960" height="540" decoding="async" src="img/thumb/zerotoone.webp?v=3" alt="0TO1"></a>
+      <a class="thumb" href="#" data-i="8" data-tags="vibe"><img width="960" height="540" decoding="async" src="img/thumb/memboarding.webp?v=3" alt="멤보딩"></a>
+    </div>
+    <div class="col-body grid" id="works-grid">
+      <article class="work" data-key="spot" data-tags="uxui">
+        <img width="960" height="751" decoding="async" src="img/thumb/spot.webp?v=3" alt="SPOT!">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Team</span></p>
+          <p>SPOT!<br>My Ballpark Seat View Service<br>2024</p>
+          <p></p>
+          <p class="desc">야구장 좌석의 시야 사진과 후기를 간편하게 확인하는 직관 서비스. 나만의 직관 기록을 한곳에 아카이빙하고, 다른 야구 팬들과 공유하며 다음 좌석을 고른다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · DEPROMEET 15기" data-en="Team project · DEPROMEET 15th">팀 프로젝트 · DEPROMEET 15기</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2024.06 – 2024.09" data-en="Jun – Sep 2024">2024.06 – 2024.09</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="Design 3 · Android 4 · Server 3" data-en="Design 3 · Android 4 · Server 3">Design 3 · Android 4 · Server 3</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="Product Designer (디자이너 3인 중 1인)" data-en="Product Designer (1 of 3 designers)">Product Designer (디자이너 3인 중 1인)</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="디자인 40%" data-en="Design 40%">디자인 40%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="기획, 캐릭터 스케치, GUI 전담, 시야 찾기 화면 메인 디자이너" data-en="Planning, character sketches, all GUI, lead designer of the seat-view screen">기획, 캐릭터 스케치, GUI 전담, 시야 찾기 화면 메인 디자이너</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="Google Play 출시, DEPROMEET 15기 대상" data-en="Launched on Google Play, DEPROMEET 15th Grand Prize">Google Play 출시, DEPROMEET 15기 대상</p></div>
+      </article>
+      <article class="work" data-key="bbibbi" data-tags="uxui">
+        <img width="960" height="751" decoding="async" src="img/thumb/bbibbi.webp?v=3" alt="삐삐">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Team</span></p>
+          <p>삐삐<br>Family Widget Service<br>2024</p>
+          <p></p>
+          <p class="desc" data-ko="하루 한 번 가족에게 생존신고를 보내는 위젯 서비스. 출시 전 Maze로 33명 사용성 테스트를 거쳐 온보딩과 홈을 고쳤고, 출시 후 Mixpanel 분석으로 초대받은 가족의 방 입장 성공률을 9.09%에서 49.35%로 높였다." data-en="A widget service where family members send a once-a-day check-in. Fixed onboarding and home after a 33-person Maze usability test before launch, then used Mixpanel after launch to raise invited members' room-join rate from 9.09% to 49.35%.">하루 한 번 가족에게 생존신고를 보내는 위젯 서비스. 출시 전 Maze로 33명 사용성 테스트를 거쳐 온보딩과 홈을 고쳤고, 출시 후 Mixpanel 분석으로 초대받은 가족의 방 입장 성공률을 9.09%에서 49.35%로 높였다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · DEPROMEET 14기 Team 05" data-en="Team project · DEPROMEET 14th, Team 05">팀 프로젝트 · DEPROMEET 14기 Team 05</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2024.11 – 현재" data-en="Nov 2024 – present">2024.11 – 현재</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="Design 3 · iOS 4 · Server 3" data-en="Design 3 · iOS 4 · Server 3">Design 3 · iOS 4 · Server 3</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="Product Designer (디자이너 3인 중 1인)" data-en="Product Designer (1 of 3 designers)">Product Designer (디자이너 3인 중 1인)</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="디자인 40%" data-en="Design 40%">디자인 40%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="기획, UX/UI (위젯 · 피드 · 캘린더), 그래픽 전담, 마케팅" data-en="Planning, UX/UI (widget, feed, calendar), all graphics, marketing">기획, UX/UI (위젯 · 피드 · 캘린더), 그래픽 전담, 마케팅</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="App Store · Google Play 출시, DEPROMEET 14기 대상" data-en="Launched on App Store and Google Play, DEPROMEET 14th Grand Prize">App Store · Google Play 출시, DEPROMEET 14기 대상</p></div>
+      </article>
+      <article class="work" data-key="spurt" data-tags="uxui">
+        <img width="960" height="751" decoding="async" src="img/thumb/spurt.webp?v=3" alt="SPURT">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Team</span></p>
+          <p>SPURT<br>미루는 당신을 위한 마지막 스퍼트<br>2025</p>
+          <p></p>
+          <p class="desc">마감이 임박한 작업을 한눈에 보여주고 작은 알림으로 시작을 돕는, 미루는 사람을 위한 집중 서비스. 음악과 함께 몰입을 유지하고 짧은 회고로 하루를 정리한다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · DEPROMEET 16기" data-en="Team project · DEPROMEET 16th">팀 프로젝트 · DEPROMEET 16기</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2025.01 – 2025.04" data-en="Jan – Apr 2025">2025.01 – 2025.04</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="Designer 3 · Frontend 4 · Backend 3" data-en="Designer 3 · Frontend 4 · Backend 3">Designer 3 · Frontend 4 · Backend 3</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="Product Designer (디자이너 3인 중 1인)" data-en="Product Designer (1 of 3 designers)">Product Designer (디자이너 3인 중 1인)</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="디자인 40%" data-en="Design 40%">디자인 40%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="기획, GUI · 그래픽 전담, 할 일 추가하기 화면" data-en="Planning, all GUI and graphics, the add-task flow">기획, GUI · 그래픽 전담, 할 일 추가하기 화면</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="App Store 출시" data-en="Launched on the App Store">App Store 출시</p></div>
+      </article>
+      <article class="work" data-key="bunjang" data-tags="uxui">
+        <img width="960" height="752" decoding="async" src="img/thumb/bunjang.webp?v=3" alt="번개장터">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Internship</span></p>
+          <p>Bunjang<br>Design System &amp; Notification Center<br>2024</p>
+          <p></p>
+          <p class="desc" data-ko="번개장터 디자인시스템(BDS) 재정비 팀에서 디자이너와 개발자, 리뷰어가 같은 기준으로 쓰는 가이드 템플릿을 만들어 6개월간 컴포넌트 7종을 반영하고, Title과 Spacing 기준을 9개 핵심 플로우에 적용했다. 반복 알림에 묻히던 알림센터도 묶음과 거래 액션 중심으로 다시 설계했다." data-en="On Bunjang's design system (BDS) revamp team, built a guide template that designers, developers and reviewers read the same way, shipping 7 components in 6 months and applying Title and Spacing rules to 9 core flows. Also redesigned the notification center around grouping and trade actions so key alerts stop getting buried.">번개장터 디자인시스템(BDS) 재정비 팀에서 디자이너와 개발자, 리뷰어가 같은 기준으로 쓰는 가이드 템플릿을 만들어 6개월간 컴포넌트 7종을 반영하고, Title과 Spacing 기준을 9개 핵심 플로우에 적용했다. 반복 알림에 묻히던 알림센터도 묶음과 거래 액션 중심으로 다시 설계했다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="인턴십 · 번개장터 Product Design 1 Team" data-en="Internship · Bunjang Product Design 1 Team">인턴십 · 번개장터 Product Design 1 Team</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2023.12 – 2024.08 (9개월)" data-en="Dec 2023 – Aug 2024 (9 months)">2023.12 – 2024.08 (9개월)</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="Product Designer Intern (BDS 재정비 로드맵 팀)" data-en="Product Designer Intern (BDS revamp roadmap team)">Product Designer Intern (BDS 재정비 로드맵 팀)</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="가이드 템플릿 50% (2인), 스페이싱 · 타이틀 시스템 80% (2인), 알림센터 개편 100% (1인)" data-en="Guide template 50% (2 people), spacing and title system 80% (2 people), notification center redesign 100% (solo)">가이드 템플릿 50% (2인), 스페이싱 · 타이틀 시스템 80% (2인), 알림센터 개편 100% (1인)</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="디자인시스템 가이드 템플릿 제작, 일관된 스페이싱 · 타이틀 시스템 구축, 알림센터 개편 선행 디자인" data-en="Design system guide template, consistent spacing and title system, notification center redesign concept">디자인시스템 가이드 템플릿 제작, 일관된 스페이싱 · 타이틀 시스템 구축, 알림센터 개편 선행 디자인</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="BDS 성과 공유 컨퍼런스 진행, 가이드 도입 후 6개월간 7개 컴포넌트 · 에셋 반영, 9개 핵심 플로우에 스페이싱 · 타이틀 시스템 개발 반영, 알림센터 실무진 6명 긍정 평가" data-en="Presented at the BDS sharing conference, 7 components and assets adopted in 6 months, spacing and title system shipped across 9 core flows, positive review from 6 practitioners on the notification center">BDS 성과 공유 컨퍼런스 진행, 가이드 도입 후 6개월간 7개 컴포넌트 · 에셋 반영, 9개 핵심 플로우에 스페이싱 · 타이틀 시스템 개발 반영, 알림센터 실무진 6명 긍정 평가</p></div>
+      </article>
+      <article class="work" data-key="hotcake" data-tags="product">
+        <img width="960" height="720" decoding="async" src="img/thumb/hotcake.webp?v=3" alt="Hotcake">
+        <div class="meta">
+          <p>UX/UI<br><span class="muted">Team</span></p>
+          <p>Hotcake<br>Service Design<br>2025</p>
+          <p></p>
+          <p class="desc">어디에 있든 친구들과 한 공간처럼 실시간 합주할 수 있게 하는 공간 음향 스피커 Cake와 햅틱 웨어러블 Butter. 입체 음향으로 같은 방의 감각을 전하고 연주를 정확히 맞춘다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 (5인)" data-en="Team project (5 members)">팀 프로젝트 (5인)</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="ID 장우진(PL) · ID 장은혜 · UX 정혜령 · UX 이일여 · BX 김채은" data-en="ID Woojin Jang (PL) · ID Eunhye Jang · UX Hyeryoung Jeong · UX Ilyeo Lee · BX Chaeeun Kim">ID 장우진(PL) · ID 장은혜 · UX 정혜령 · UX 이일여 · BX 김채은</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="UX Designer" data-en="UX Designer">UX Designer</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="2025 삼성디자인멤버십 MEP 전시" data-en="Exhibited at 2025 Samsung Design Membership MEP">2025 삼성디자인멤버십 MEP 전시</p></div>
+      </article>
+      <article class="work" data-key="comong" data-tags="product">
+        <img width="960" height="540" decoding="async" src="img/thumb/comong.webp?v=3" alt="COMONG">
+        <div class="meta">
+          <p>Object<span class="muted"><br>Samsung Design Membership × IDEO</span></p>
+          <p>COMONG<br>AI Air Multiplier for Dogs<br>2025</p>
+          <p class="desc muted">Credits:<br>Jung Minseo, Lee Ilyeo,<br>Jang Yujin, Choi Wanhyeok</p>
+          <p class="desc">카메라와 바닥 온도 센서로 반려견의 더위를 감지해 바닥풍을 제공하는 AI 에어 멀티플라이어. 위쪽은 사람을 위한 직접풍, 아래쪽은 강아지를 위한 간접풍을 동시에 낸다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · 삼성디자인멤버십 × IDEO Team 6" data-en="Team project · Samsung Design Membership × IDEO, Team 6">팀 프로젝트 · 삼성디자인멤버십 × IDEO Team 6</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="ID 정민서(PL) · ID 최완혁 · UX/UI 이일여 · BX 장유진" data-en="ID Jung Minseo (PL) · ID Choi Wanhyeok · UX/UI Lee Ilyeo · BX Jang Yujin">ID 정민서(PL) · ID 최완혁 · UX/UI 이일여 · BX 장유진</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="UX/UI" data-en="UX/UI">UX/UI</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="UX/UI 100% (BX는 별도 담당)" data-en="UX/UI 100% (BX handled separately)">UX/UI 100% (BX는 별도 담당)</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="앱 온보딩 · 외출 모드 · 동반자 모드 플로우, AI 감지 로직 정의, 시나리오 설계, 발표 장표 · 대본" data-en="App onboarding, away mode and companion mode flows, AI detection logic, scenario design, presentation deck and script">앱 온보딩 · 외출 모드 · 동반자 모드 플로우, AI 감지 로직 정의, 시나리오 설계, 발표 장표 · 대본</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="Asia Design Prize 2026 Winner" data-en="Asia Design Prize 2026 Winner">Asia Design Prize 2026 Winner</p></div>
+      </article>
+      <article class="work" data-key="newton" data-tags="product">
+        <img width="960" height="900" decoding="async" src="img/thumb/newton.webp?v=3" alt="NEWTON">
+        <div class="meta">
+          <p>Object<span class="muted"><br>Samsung Design Membership</span></p>
+          <p>NEWTON<br>Wearable Sports Robot System<br>2026</p>
+          <p class="desc muted">Credits:<br>Song Siheon, Lee Ilyeo, Kim Sojin,<br>Park Juwon, Jeon Dabin</p>
+          <p class="desc">보고만 있던 스포츠 동작을 내가 있는 곳에서 바로 따라 해 보게 만드는 웨어러블 로봇 시스템. 바닥과 벽면에 펼쳐진 움직임의 단서를 따라가고, 하체 웨어러블이 감각을 조율한다.</p>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · 삼성디자인멤버십 (5인)" data-en="Team project · Samsung Design Membership (5 members)">팀 프로젝트 · 삼성디자인멤버십 (5인)</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2026.05 – 2026.08" data-en="May – Aug 2026">2026.05 – 2026.08</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="ID 송시헌(PL) · UX 이일여 · ID 김소진 · ID 박주원 · VD 전다빈" data-en="ID Siheon Song (PL) · UX Ilyeo Lee · ID SoJin Kim · ID Juwon Park · VD Dabin Jeon">ID 송시헌(PL) · UX 이일여 · ID 김소진 · ID 박주원 · VD 전다빈</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="UX" data-en="UX">UX</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="UX 100%" data-en="UX 100%">UX 100%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="UX 전략과 시나리오, IA, 프로젝션 GUI, 프로토타입 개발 (Claude Code로 검증 시뮬레이터 자체 개발)" data-en="UX strategy and scenarios, IA, projection GUI, prototype development (built a validation simulator with Claude Code)">UX 전략과 시나리오, IA, 프로젝션 GUI, 프로토타입 개발 (Claude Code로 검증 시뮬레이터 자체 개발)</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="2026 삼성디자인멤버십 MEP 전시" data-en="Exhibited at 2026 Samsung Design Membership MEP">2026 삼성디자인멤버십 MEP 전시</p></div>
+      </article>
+      <article class="work" data-key="zerotoone" data-tags="vibe">
+        <img width="960" height="540" decoding="async" src="img/thumb/zerotoone.webp?v=3" alt="0TO1">
+        <div class="meta">
+          <p>Vibe Coding UX/UI<br><span class="muted">Personal</span></p>
+          <p>0TO1<br>Research–Design–Validation Workflow<br>2026</p>
+          <p></p>
+          <p class="desc" data-ko="리서치, 디자인, 검증을 잇는 워크플로우. 바이브코딩으로 직접 만드는 디자이너가 리서치부터 검증까지 더 쉽고 빠르고 정확하게 제품을 만들 수 있도록 어피니티, 디자인시스템, 유저테스트 툴 3종을 Claude Code로 만들었다." data-en="A workflow that connects research, design and validation. Three tools (affinity diagram, design system, user test) built with Claude Code, so a designer who builds with vibe coding can go from research to validation more easily, quickly and accurately.">리서치, 디자인, 검증을 잇는 워크플로우. 바이브코딩으로 직접 만드는 디자이너가 리서치부터 검증까지 더 쉽고 빠르고 정확하게 제품을 만들 수 있도록 어피니티, 디자인시스템, 유저테스트 툴 3종을 Claude Code로 만들었다.</p>
+          <div class="plinks"><a class="chip" href="https://b1-saas.vercel.app" target="_blank" rel="noopener">Affinity ↗</a><a class="chip" href="https://designsync-omega.vercel.app" target="_blank" rel="noopener">DesignSync ↗</a><a class="chip" href="https://usability-tester.vercel.app" target="_blank" rel="noopener">UserTest ↗</a></div>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="개인 프로젝트" data-en="Personal project">개인 프로젝트</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2026.03 – 2026.04" data-en="Mar – Apr 2026">2026.03 – 2026.04</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="리서치, 설계, 구현, 검증" data-en="Research, design, build, validation">리서치, 설계, 구현, 검증</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="100%" data-en="100%">100%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="병목 조사, ChatGPT 기획, 피그마 설계, Claude Code 구현 (5일 200+ 커밋), 어피니티·디자인시스템·유저테스트 툴 3종 제작" data-en="Bottleneck research, planning with ChatGPT, Figma design, built with Claude Code (200+ commits in 5 days), three tools: affinity, design system, user test">병목 조사, ChatGPT 기획, 피그마 설계, Claude Code 구현 (5일 200+ 커밋), 어피니티·디자인시스템·유저테스트 툴 3종 제작</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="3명 실사용 검증, 세 툴 이슈를 AS-IS→TO-BE로 개선" data-en="Validated with 3 real users; tool issues improved from AS-IS to TO-BE">3명 실사용 검증, 세 툴 이슈를 AS-IS→TO-BE로 개선</p><p class="muted" data-ko="링크" data-en="Links">링크</p><div class="plinks"><a class="chip" href="https://b1-saas.vercel.app" target="_blank" rel="noopener">Affinity ↗</a><a class="chip" href="https://designsync-omega.vercel.app" target="_blank" rel="noopener">DesignSync ↗</a><a class="chip" href="https://usability-tester.vercel.app" target="_blank" rel="noopener">UserTest ↗</a></div></div>
+      </article>
+      <article class="work" data-key="memboarding" data-tags="vibe">
+        <img width="960" height="540" decoding="async" src="img/thumb/memboarding.webp?v=3" alt="멤보딩">
+        <div class="meta">
+          <p>Vibe Coding UX/UI<br><span class="muted">Personal</span></p>
+          <p>멤보딩<br>Team Onboarding App<br>2026</p>
+          <p></p>
+          <p class="desc" data-ko="새 팀의 첫날, 서로를 알고 팀 규칙까지 정하는 온보딩 앱. 2년간 8번 바뀌는 삼성디자인멤버십 팀에서 매번 반복되던 자기소개를, 빈칸 대신 고르기만 하면 되는 5단계 온보딩과 팀 대시보드로 바꿨다." data-en="An onboarding app for a new team&#39;s first day, from getting to know each other to agreeing on team rules. It turns the self-introductions repeated eight times in two years at Samsung Design Membership into a 5-step onboarding where you pick instead of type, plus a team dashboard.">새 팀의 첫날, 서로를 알고 팀 규칙까지 정하는 온보딩 앱. 2년간 8번 바뀌는 삼성디자인멤버십 팀에서 매번 반복되던 자기소개를, 빈칸 대신 고르기만 하면 되는 5단계 온보딩과 팀 대시보드로 바꿨다.</p>
+          <div class="plinks"><a class="chip" href="https://ilyeolee.github.io/gitsdm-vibecoding/" target="_blank" rel="noopener">멤보딩 ↗</a></div>
+        </div>
+        <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="개인 프로젝트" data-en="Personal project">개인 프로젝트</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2026.05.01 – 2026.05.02 (2일)" data-en="May 1 – 2, 2026 (2 days)">2026.05.01 – 2026.05.02 (2일)</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="기획, 디자인, 개발" data-en="Planning, design, development">기획, 디자인, 개발</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="100%" data-en="100%">100%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="팀원 인터뷰, IA, 5단계 온보딩·팀 대시보드 UI, Claude Code로 기능과 UI 구현, AI로 캐릭터·에셋·효과음 제작" data-en="Team interviews, IA, 5-step onboarding and team dashboard UI, built features and UI with Claude Code, characters, assets and sound made with AI">팀원 인터뷰, IA, 5단계 온보딩·팀 대시보드 UI, Claude Code로 기능과 UI 구현, AI로 캐릭터·에셋·효과음 제작</p><p class="muted" data-ko="사용 도구" data-en="Tools">사용 도구</p><p data-ko="ChatGPT, Pinterest, Gemini Canvas, 이미지 생성, Claude Code" data-en="ChatGPT, Pinterest, Gemini Canvas, image generation, Claude Code">ChatGPT, Pinterest, Gemini Canvas, 이미지 생성, Claude Code</p><p class="muted" data-ko="링크" data-en="Links">링크</p><div class="plinks"><a class="chip" href="https://ilyeolee.github.io/gitsdm-vibecoding/" target="_blank" rel="noopener">멤보딩 ↗</a></div></div>
+      </article>
+
+
+
+
+
+    </div>
+  </section>
+
+  <!-- RIGHT : About -->
+  <section class="col" id="about">
+    <div class="col-head"><span id="about-title">About</span><span class="head-right"><button class="lang" id="lang-btn" aria-label="Language"><b>KO</b>/EN</button><button class="menu close" id="proj-close" hidden>(Close)</button></span></div>
+    <div class="col-body" id="project-panel" hidden></div>
+    <div class="col-body" id="about-panel">
+      <div class="about">
+        <div class="links">
+          <p>Ilyeo Lee</p>
+          <p class="muted">leeilyeoo@gmail.com</p>
+          <p class="muted">+82 10 8581 9554</p>
+          <div class="gap"></div>
+          <p><a href="#">Instagram</a></p>
+          <p><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></p>
+        </div>
+        <div>
+          <p data-en="Ilyeo Lee is a product designer based in Seoul. She works at the point where AI meets everyday products, designing when and how a system should step in, and building the interfaces and design systems that make it usable." data-ko="이일여는 서울에서 활동하는 프로덕트 디자이너입니다. AI가 일상의 제품과 만나는 지점에서, 시스템이 언제 어떻게 개입해야 하는지를 설계하고 그것을 쓸 수 있게 만드는 인터페이스와 디자인시스템을 만듭니다.">Ilyeo Lee is a product designer based in Seoul. She works at the point where AI meets everyday products, designing when and how a system should step in, and building the interfaces and design systems that make it usable.</p>
+          <p data-en="She enjoys vibe coding, building what she designs to test it for real. She has developed research, design system and user test tools, product simulators, and this website herself with Claude Code." data-ko="디자인한 것을 직접 만들어 확인하는 바이브코딩을 좋아합니다. 리서치·디자인시스템·유저테스트 툴, 제품 시뮬레이터, 이 웹사이트까지 Claude Code로 직접 개발했습니다.">She enjoys vibe coding, building what she designs to test it for real. She has developed research, design system and user test tools, product simulators, and this website herself with Claude Code.</p>
+          <p data-en="She shipped three apps with the IT community DEPROMEET. At Samsung Design Membership, she worked on projects for Samsung Electronics CDO and the MX Business, and designed the UX for award-winning concept products including Hotcake and COMONG." data-ko="IT 연합동아리 디프만에서 앱 3종을 출시했습니다. 삼성디자인멤버십에서는 삼성전자 CDO·MX사업부 과제를 수행하고, Hotcake와 COMONG 등 수상한 컨셉 제품의 UX를 맡았습니다.">She shipped three apps with the IT community DEPROMEET. At Samsung Design Membership, she worked on projects for Samsung Electronics CDO and the MX Business, and designed the UX for award-winning concept products including Hotcake and COMONG.</p>
+          <p data-en="She studies Visual Communication Design at Hongik University and previously worked as a product designer at Bunjang." data-ko="홍익대학교 시각디자인과에 재학 중이며, 번개장터에서 프로덕트 디자이너로 일했습니다.">She studies Visual Communication Design at Hongik University and previously worked as a product designer at Bunjang.</p>
+        </div>
+      </div>
+
+      <div class="cv">
+        <div class="row">
+          <p data-en="Education" data-ko="학력">Education</p>
+          <div class="item">
+            <p data-en="Hongik University<br>B.F.A. in Visual Communication Design<br>2021 - 2027" data-ko="홍익대학교<br>시각디자인학 학사<br>2021 - 2027">Hongik University<br>B.F.A. in Visual Communication Design<br>2021 - 2027</p>
+          </div>
+        </div>
+        <div class="row">
+          <p data-en="Experience" data-ko="경력·활동">Experience</p>
+          <div>
+            <div class="item"><p data-en="Samsung Design Membership 33rd<br>UX Designer<br>2025 - 2026" data-ko="삼성디자인멤버십 33기<br>UX 디자이너<br>2025 - 2026">Samsung Design Membership 33rd<br>UX Designer<br>2025 - 2026</p></div>
+            <div class="item"><p data-en="Bunjang<br>Product Designer, Product Design 1 Team<br>2023 - 2024" data-ko="번개장터<br>프로덕트 디자이너, Product Design 1 Team<br>2023 - 2024">Bunjang<br>Product Designer, Product Design 1 Team<br>2023 - 2024</p></div>
+            <div class="item"><p data-en="Samsung Electronics CDO<br>TeddyBot / Agent Experience Paradigm (PL) / 2040 Future Home (PL)<br>2024 - 2026" data-ko="삼성전자 CDO<br>TeddyBot / Agent Experience Paradigm (PL) / 2040 미래 홈 인비저닝 (PL)<br>2024 - 2026">Samsung Electronics CDO<br>TeddyBot / Agent Experience Paradigm (PL) / 2040 Future Home (PL)<br>2024 - 2026</p></div>
+            <div class="item"><p data-en="Samsung Electronics MX<br>Next One UI with Galaxy AI<br>2025" data-ko="삼성전자 MX사업부<br>Next One UI with Galaxy AI<br>2025">Samsung Electronics MX<br>Next One UI with Galaxy AI<br>2025</p></div>
+            <div class="item"><p data-en="DEPROMEET 14th - 16th<br>Product Designer (BIBBI, SPOT!, SPURT)<br>2023 - 2025" data-ko="IT 연합동아리 디프만 14 - 16기<br>프로덕트 디자이너 (삐삐, SPOT!, SPURT 출시)<br>2023 - 2025">DEPROMEET 14th - 16th<br>Product Designer (BIBBI, SPOT!, SPURT)<br>2023 - 2025</p></div>
+            <div class="item"><p data-en="HYPHEN, Hongik UX/UI Society<br>President (2024)<br>2021 - 2024" data-ko="홍익대학교 HYPHEN UX/UI 학회<br>회장 (2024)<br>2021 - 2024">HYPHEN, Hongik UX/UI Society<br>President (2024)<br>2021 - 2024</p></div>
+          </div>
+        </div>
+        <div class="row">
+          <p data-en="Award" data-ko="수상">Award</p>
+          <div>
+            <div class="item"><p data-en="IDEA Design Award<br>Gold, Student (Hotcake)<br>2026" data-ko="IDEA 디자인 어워드<br>Gold, 학생 부문 (Hotcake)<br>2026">IDEA Design Award<br>Gold, Student (Hotcake)<br>2026</p></div>
+            <div class="item"><p data-en="Red Dot Design Concept<br>Best of the Best (Hotcake)<br>2026" data-ko="Red Dot 디자인 컨셉<br>Best of the Best (Hotcake)<br>2026">Red Dot Design Concept<br>Best of the Best (Hotcake)<br>2026</p></div>
+            <div class="item"><p data-en="Korea Design Exhibition, 61st<br>Selected (Hotcake)<br>2026" data-ko="제61회 대한민국디자인전람회<br>입선 (Hotcake)<br>2026">Korea Design Exhibition, 61st<br>Selected (Hotcake)<br>2026</p></div>
+            <div class="item"><p data-en="Asia Design Prize<br>Gold Winner (Hotcake)<br>2026" data-ko="Asia Design Prize<br>Gold Winner (Hotcake)<br>2026">Asia Design Prize<br>Gold Winner (Hotcake)<br>2026</p></div>
+            <div class="item"><p data-en="Asia Design Prize<br>Winner (COMONG)<br>2026" data-ko="Asia Design Prize<br>Winner (COMONG)<br>2026">Asia Design Prize<br>Winner (COMONG)<br>2026</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<div class="foot">© Ilyeo Lee 2026 All rights reserved. Designed and developed by Ilyeo Lee.</div>
+<div id="lb" hidden><div class="lb-head"><button class="menu close" type="button">(Close)</button></div><img alt=""></div>
+<script>
+  const btn=document.getElementById('menu-btn'), title=document.getElementById('works-title'),
+        grid=document.getElementById('works-grid'), index=document.getElementById('works-index'),
+        col=document.getElementById('works');
+  let open=false;
+  function setIndex(v){ open=v; index.hidden=!v; grid.hidden=v; title.textContent=v?'Selected Works — Index':'Selected Works';
+    btn.textContent=v?'(Close)':'≡'; btn.classList.toggle('close',v); col.scrollTop=0;
+    stagger(v? index.querySelectorAll('.thumb') : grid.querySelectorAll('.work:not([hidden])'), 35); }
+  btn.addEventListener('click',()=>setIndex(!open));
+  index.addEventListener('click',e=>{ const a=e.target.closest('.thumb'); if(!a) return; e.preventDefault();
+    const w=grid.querySelectorAll('.work')[+a.dataset.i]; if(!w) return; if(document.querySelector('.site').classList.contains('viewing')){ openProject(w); } else { setIndex(false); w.scrollIntoView({block:'start'}); openProject(w); } });
+
+  for (const w of document.querySelectorAll('.work')) {
+    w.addEventListener('touchstart', () => w.classList.add('pressed'), {passive:true});
+    for (const ev of ['touchend','touchcancel']) w.addEventListener(ev, () => setTimeout(() => w.classList.remove('pressed'), 120));
+  }
+
+  // ---- motion helpers ----
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function stagger(nodes, step=45, base=0){ nodes=[...nodes]; nodes.forEach((n,i)=>{ n.classList.remove('in'); n.classList.add('rv'); n.style.transitionDelay=reduce?'0ms':(base+i*step)+'ms'; });
+    requestAnimationFrame(()=>requestAnimationFrame(()=>nodes.forEach(n=>n.classList.add('in')))); }
+  function swapText(el, text){ el.style.opacity=0; setTimeout(()=>{ el.textContent=text; el.style.opacity=1; }, 160); }
+  // first paint: cards, about
+  stagger(document.querySelectorAll('#works-grid .work'), 60, 80);
+  stagger(document.querySelectorAll('#about-panel .about > *, #about-panel .cv .row'), 70, 160);
+  // ---- project panel ----
+  const aboutPanel=document.getElementById('about-panel'), projPanel=document.getElementById('project-panel'),
+        aboutTitle=document.getElementById('about-title'), projClose=document.getElementById('proj-close'),
+        aboutCol=document.getElementById('about'), tplHost=document.createElement('div');
+  const tplReady=fetch('portfolio/projects.html?v='+Date.now()).then(r=>r.text()).then(t=>{ tplHost.innerHTML=t; });
+  // videos: play only when scrolling has stopped with the video in view; pause when it leaves
+  const visible=new Set(); let scrollTimer=null, scrolling=false;
+  const playVisible=()=>{ visible.forEach(v=>{ if(!v.dataset.userPaused) v.play().catch(()=>{}); }); };
+  const vio=new IntersectionObserver(es=>{ for(const e of es){ const v=e.target; if(e.isIntersecting){ visible.add(v); if(!scrolling && !v.dataset.userPaused) v.play().catch(()=>{}); } else { visible.delete(v); v.pause(); } } }, {threshold:.5});
+  document.addEventListener('scroll', ()=>{ scrolling=true; clearTimeout(scrollTimer); scrollTimer=setTimeout(()=>{ scrolling=false; playVisible(); }, 180); }, {passive:true, capture:true});
+  const SND_ON='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 6h3l4-3v10l-4-3H2z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5" stroke-linecap="round"/><path d="M12.8 3.5a6 6 0 0 1 0 9" stroke-linecap="round"/></svg>', SND_OFF='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 6h3l4-3v10l-4-3H2z"/><path d="M11 6l3.5 3.5M14.5 6L11 9.5" stroke-linecap="round"/></svg>';
+  function setupVideos(root){
+    root.querySelectorAll('video').forEach(v=>{
+      v.removeAttribute('autoplay'); v.muted=true; v.loop=true; v.playsInline=true;
+      const wrap=document.createElement('div'); wrap.className='vwrap'; v.replaceWith(wrap); wrap.appendChild(v);
+      const fmt=t=>{t=Math.floor(t||0); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
+      const addBar=()=>{ if(wrap.querySelector('.vbar, .sndonly')) return;
+        if(!(v.duration>=20)){ if(v.dataset.audio){ const sb=document.createElement('button'); sb.type='button'; sb.className='sndonly'; sb.innerHTML=SND_OFF;
+            sb.addEventListener('click',()=>{ v.muted=!v.muted; sb.innerHTML=v.muted?SND_OFF:SND_ON; }); wrap.appendChild(sb); } return; }
+        const bar=document.createElement('div'); bar.className='vbar';
+        bar.innerHTML='<button type="button" class="pp" aria-label="Play/Pause"></button><div class="track"><i></i></div><span class="time"></span>'+(v.dataset.audio?'<button type="button" class="snd" aria-label="Sound">'+SND_OFF+'</button>':'');
+        const b=bar.querySelector('button'), fill=bar.querySelector('i'), tm=bar.querySelector('.time'), track=bar.querySelector('.track');
+        const sync=()=>{ b.classList.toggle('paused', v.paused); wrap.classList.toggle('paused', v.paused); fill.style.width=(v.currentTime/v.duration*100)+'%'; track.style.setProperty('--p',(v.currentTime/v.duration*100)+'%'); tm.textContent=fmt(v.currentTime)+' / '+fmt(v.duration); };
+        b.addEventListener('click',()=>{ if(v.paused){ delete v.dataset.userPaused; v.play(); } else { v.dataset.userPaused='1'; v.pause(); } sync(); });
+        const seek=e=>{ const r=track.getBoundingClientRect(); const p=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)); v.currentTime=p*v.duration; sync(); };
+        let drag=false; track.addEventListener('pointerdown',e=>{ drag=true; track.setPointerCapture(e.pointerId); seek(e); });
+        track.addEventListener('pointermove',e=>{ if(drag) seek(e); }); track.addEventListener('pointerup',()=>{ drag=false; }); track.addEventListener('pointercancel',()=>{ drag=false; });
+        v.addEventListener('timeupdate',sync); v.addEventListener('play',sync); v.addEventListener('pause',sync);
+        const snd=bar.querySelector('.snd'); if(snd){ snd.addEventListener('click',()=>{ v.muted=!v.muted; snd.innerHTML=v.muted?SND_OFF:SND_ON; }); }
+        wrap.appendChild(bar); sync(); };
+      v.preload='metadata';
+      if(v.readyState>=1) addBar(); else v.addEventListener('loadedmetadata', addBar, {once:true});
+      vio.observe(v);
+    });
+  }
+  function openProject(card){
+    const key=card.dataset.key, tpl=tplHost.querySelector('#proj-'+key);
+    if(!tplHost.firstChild){ tplReady.then(()=>openProject(card)); return; }  // first click before projects.html arrived
+    const meta=card.querySelectorAll('.meta > p');
+    projPanel.innerHTML='';
+    const head=document.createElement('div'); head.className='meta phead';
+    head.innerHTML=`<p>${meta[0].innerHTML}</p><p>${meta[1].innerHTML}</p>`; projPanel.appendChild(head);
+    const info=card.querySelector('.info'); if(info){ const c=info.cloneNode(true); c.hidden=false; projPanel.appendChild(c); }
+    if(tpl) projPanel.appendChild(tpl.content.cloneNode(true)); else projPanel.insertAdjacentHTML('beforeend','<p class="muted">Coming soon.</p>');
+    setupVideos(projPanel); applyLang(projPanel);
+    projPanel.querySelectorAll('img').forEach((im,i)=>{ if(i<6) im.loading='eager'; });
+    if(!reduce) projPanel.animate([{opacity:0},{opacity:1}],{duration:250,easing:'ease'});  // whole body at once, not per element
+    aboutPanel.hidden=true; projPanel.hidden=false; projClose.hidden=false;
+    document.querySelector('.site').classList.add('viewing'); index.hidden=false; grid.hidden=true; swapText(title,'Leeilyeoo'); stagger(index.querySelectorAll('.thumb'), 35);
+    const i=[...grid.querySelectorAll('.work')].indexOf(card);
+    index.querySelectorAll('.thumb').forEach((t,j)=>t.classList.toggle('current',j===i));
+    swapText(aboutTitle, meta[1].firstChild.textContent.trim()); aboutCol.scrollTop=0;
+    if(window.innerWidth<=900) aboutCol.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function closeProject(){ document.querySelector('.site').classList.remove('viewing'); setIndex(false); projPanel.hidden=true; projPanel.innerHTML=''; aboutPanel.hidden=false; projClose.hidden=true; swapText(aboutTitle,'About'); aboutCol.scrollTop=0;
+    stagger(grid.querySelectorAll('.work:not([hidden])'), 45); stagger(aboutPanel.querySelectorAll('.about > *, .cv .row'), 60); }
+  projClose.addEventListener('click',closeProject);
+  // ---- lightbox ----
+  const lb=document.getElementById('lb'), lbImg=lb.querySelector('img'), lbHead=lb.querySelector('.lb-head');
+  const RM=matchMedia('(prefers-reduced-motion:reduce)').matches, EASE='cubic-bezier(.2,.7,.2,1)';
+  const DUR=RM?0:340; let lbSrc=null, lbT=0;
+  // FLIP: zoom from/to the clicked image's on-screen box. Timer (not onfinish) ends each phase, so a click mid-animation always responds.
+  const lbFrom=()=>{ const a=lbSrc.getBoundingClientRect(), b=lbImg.getBoundingClientRect();
+    return `translate(${a.left-b.left}px,${a.top-b.top}px) scale(${a.width/b.width},${a.height/b.height})`; };
+  let anims=[], lbShutAt=0; const animating=()=>anims.some(a=>a.playState==='running');
+  const lbStop=()=>{ clearTimeout(lbT); anims.forEach(x=>x.cancel()); anims=[]; };
+  const lbAnim=fwd=>{ if(!DUR) return; const o={duration:DUR,easing:EASE,fill:'both',direction:fwd?'normal':'reverse'};
+    anims=[lb.animate([{backgroundColor:'rgba(255,255,255,0)'},{backgroundColor:'rgba(255,255,255,1)'}],o),
+      lbHead.animate([{opacity:0},{opacity:1}],o), lbImg.animate([{transform:lbFrom()},{transform:'none'}],o)]; };
+  projPanel.addEventListener('click',e=>{ if(e.target.tagName!=='IMG'||!lb.hidden||performance.now()-lbShutAt<500) return; lbStop(); lbSrc=e.target;
+    lbImg.src=lbSrc.currentSrc||lbSrc.src; lb.hidden=false; lbSrc.style.visibility='hidden';
+    const go=()=>{ if(!lb.hidden && lbSrc===e.target){ lbAnim(true); lbT=setTimeout(lbStop,DUR+50); } };
+    lbImg.complete? go() : lbImg.addEventListener('load',go,{once:true}); });
+  const lbClose=()=>{ if(lb.hidden) return; zReset(); clearTimeout(lbT); 
+    if(animating()) anims.forEach(x=>x.reverse()); else if(lbSrc.isConnected && lbImg.complete) lbAnim(false);
+    lbT=setTimeout(()=>{ lbStop(); lb.hidden=true; lbShutAt=performance.now(); lbSrc.style.visibility=''; lbImg.removeAttribute('src'); }, lbSrc.isConnected?DUR:0); };
+  // pinch / drag / wheel zoom inside the lightbox only (page itself never zooms); a plain tap closes
+  let zs=1, zx=0, zy=0; const pts=new Map(); let g=null;
+  const zApply=()=>{ lbImg.style.transform = zs===1 ? '' : `translate(${zx}px,${zy}px) scale(${zs})`; };
+  const zReset=()=>{ zs=1; zx=zy=0; zApply(); pts.clear(); g=null; };
+  const zBase=()=>{ const r=lbImg.getBoundingClientRect(); return {x:r.left-zx, y:r.top-zy}; };
+  const zAt=(s,mx,my,b,s0,x0,y0)=>{ zs=Math.min(6,Math.max(1,s)); zx=(mx-b.x)-(mx-b.x-x0)*(zs/s0); zy=(my-b.y)-(my-b.y-y0)*(zs/s0); if(zs===1){ zx=zy=0; } zApply(); };
+  const gStart=()=>{ const p=[...pts.values()], b=zBase();
+    if(p.length>=2){ const [a,c]=p; g={pinch:true, moved:true, b, s0:zs, x0:zx, y0:zy, d0:Math.hypot(a.x-c.x,a.y-c.y)||1, m0:{x:(a.x+c.x)/2,y:(a.y+c.y)/2}}; }
+    else { g={pinch:false, moved:g?g.moved:false, b, s0:zs, x0:zx, y0:zy, p0:p[0], t0:performance.now()}; } };
+  lb.addEventListener('pointerdown',e=>{ if(animating()) return; try{ lb.setPointerCapture(e.pointerId); }catch(_){} pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===1) g=null; gStart(); });
+  lb.addEventListener('pointermove',e=>{ if(!pts.has(e.pointerId)||!g) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); const p=[...pts.values()];
+    if(g.pinch && p.length>=2){ const [a,c]=p, d=Math.hypot(a.x-c.x,a.y-c.y), m={x:(a.x+c.x)/2,y:(a.y+c.y)/2};
+      zAt(g.s0*d/g.d0, m.x, m.y, g.b, g.s0, g.x0+(m.x-g.m0.x), g.y0+(m.y-g.m0.y)); }
+    else if(!g.pinch){ const dx=p[0].x-g.p0.x, dy=p[0].y-g.p0.y; if(Math.hypot(dx,dy)>8) g.moved=true; if(zs>1){ zx=g.x0+dx; zy=g.y0+dy; zApply(); } } });
+  const pEnd=e=>{ if(!pts.has(e.pointerId)) return; pts.delete(e.pointerId);
+    if(pts.size) { gStart(); g.moved=true; return; }   // lifted one finger of a pinch: keep panning, never counts as a tap
+    const tap = g && !g.pinch && !g.moved && performance.now()-g.t0<400; g=null; if(tap && e.type==='pointerup') lbClose(); };
+  lb.addEventListener('pointerup',pEnd); lb.addEventListener('pointercancel',pEnd);
+  lb.addEventListener('wheel',e=>{ e.preventDefault(); if(animating()) return; const b=zBase();
+    zAt(zs*Math.exp(-e.deltaY*(e.ctrlKey?0.01:0.002)), e.clientX, e.clientY, b, zs, zx, zy); }, {passive:false});
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !lb.hidden) lbClose(); });
+  title.addEventListener('click',()=>{ if(document.querySelector('.site').classList.contains('viewing')) closeProject(); });
+  grid.addEventListener('click',e=>{ if(e.target.closest('a')) return; const c=e.target.closest('.work'); if(!c) return; e.preventDefault(); openProject(c); });
+  // ---- filter chips ----
+  const chips=document.getElementById('chips');
+  chips.addEventListener('click',e=>{ const b=e.target.closest('.chip'); if(!b) return;
+    chips.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===b)); const f=b.dataset.f;
+    document.querySelectorAll('#works-grid .work, #works-index .thumb').forEach(w=>{ w.hidden = f!=='all' && !(w.dataset.tags||'').split(' ').includes(f); });
+    col.scrollTop=0; stagger(open? index.querySelectorAll('.thumb:not([hidden])') : grid.querySelectorAll('.work:not([hidden])'), 45); });
+  // ---- language (default ko; i18n.json holds ko->en) ----
+  let lang='ko', I18N={};
+  const langBtn=document.getElementById('lang-btn');
+  const SEL='.pt, .pb, .desc, .plabel, .ptext, .meta > p, .about p, .cv p, [data-en]';
+  const tmp=document.createElement('div'), norm=el=>{ tmp.innerHTML=el.innerHTML.replace(/<br\s*\/?>/gi,' '); return tmp.textContent.replace(/\s+/g,' ').trim(); }; // same key as build_i18n.py (br -> space)
+  function applyLang(root){
+    root.querySelectorAll(SEL).forEach(el=>{
+      if(el.dataset.en && el.dataset.ko){ el.innerHTML=el.dataset[lang]; return; }
+      if(lang==='en'){ const k=el.dataset.koKey||norm(el); const en=I18N[k]; if(en){ if(!el.dataset.koHtml){ el.dataset.koHtml=el.innerHTML; el.dataset.koKey=k; } el.innerHTML=en; } }
+      else if(el.dataset.koHtml){ el.innerHTML=el.dataset.koHtml; }
+    });
+    langBtn.innerHTML=lang==='ko'?'<b>KO</b>/EN':'KO/<b>EN</b>';
+  }
+  fetch('portfolio/i18n.json?v='+Date.now()).then(r=>r.json()).then(j=>{ I18N=j; applyLang(document); });
+  langBtn.addEventListener('click',()=>{ lang=lang==='ko'?'en':'ko'; applyLang(document); });
+  // ---- custom cursor ----
+  const cur=document.getElementById('cursor');
+  if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    let tx=0, ty=0, x=0, y=0, shown=false, lastWheel=-1e9, vel=0, lastPos=null, lastT=performance.now(), h=36, pvx=0, pvy=0, rx=0, ry=0;
+    window.addEventListener('mousemove', e=>{ if(!shown){ x=e.clientX; y=e.clientY; shown=true; } pvx=e.clientX-tx; pvy=e.clientY-ty; tx=e.clientX; ty=e.clientY; cur.style.opacity=1;
+      cur.classList.toggle('on', !!e.target.closest('a, button, .work, .thumb')); }, {passive:true});
+    document.addEventListener('mouseleave', ()=>{ cur.style.opacity=0; shown=false; });
+    document.addEventListener('pointerdown', ()=>cur.classList.add('down'), {passive:true});
+    document.addEventListener('pointerup', ()=>cur.classList.remove('down'), {passive:true});
+    document.addEventListener('wheel', ()=>{ lastWheel=performance.now(); }, {passive:true});
+    document.addEventListener('scroll', e=>{ const el=e.target===document?document.documentElement:e.target; const pos=el===document.documentElement?window.scrollY:el.scrollTop; const now=performance.now();
+      if(lastPos!==null && now-lastWheel<200) vel=(pos-lastPos)/Math.max(now-lastT,1); lastPos=pos; lastT=now; }, {passive:true, capture:true});
+    (function loop(){
+      x+=(tx-x)*0.5; y+=(ty-y)*0.5;
+      rx+=((-pvy*0.6)-rx)*0.2; ry+=((pvx*0.6)-ry)*0.2; pvx*=0.8; pvy*=0.8;
+      cur.style.transform=`translate3d(${x}px,${y}px,0) perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      vel*=0.85; const target=36+44*Math.min(0.35*Math.abs(vel),1); h+=(target-h)*0.25; const a=(h-36)/44;
+      cur.style.setProperty('--stretch-h', h.toFixed(2)+'px'); cur.style.setProperty('--stretch-r', (9999-9983*a).toFixed(2)+'px');
+      requestAnimationFrame(loop);
+    })();
+  }
+</script>
+</body>
+</html>
