@@ -18,6 +18,7 @@
   .site { display:grid; grid-template-columns: 2fr 1fr; height:calc(100vh - 24px); height:calc(100dvh - 24px); }
   .grid { display:grid; grid-template-columns:1fr 1fr; column-gap:var(--pad); }
   .grid .work:nth-last-child(-n+2) { border-bottom:0; }
+  #works-grid .work:has(+ .other-head) { border-bottom:0; margin-bottom:0; }
   .other-head { grid-column:1/-1; margin:8px 0 20px; padding-top:var(--pad); border-top:1px solid var(--line); }
   .grid { grid-template-columns:repeat(4,1fr); }
   .grid .work { grid-column:span 2; }
