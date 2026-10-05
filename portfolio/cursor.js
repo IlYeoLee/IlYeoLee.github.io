@@ -1,32 +1,49 @@
-// Cursor ported from lilguy.net: frosted circle that morphs around hovered controls (with a slight magnetic pull)
-// + a glyph trail. Trail mixes in the letters of "Lee Il Yeoo"; near the Vibe Coding Lab ([data-cursor=pixel])
-// the trail turns into small pixel-art vector graphics.
+// Original ring cursor (everyelse.com port: ring stretches with scroll velocity, tilts with movement)
+// + a glyph trail ported from lilguy.net. The trail spells "Lee Il Yeoo" one letter at a time; near the
+// Vibe Coding Lab ([data-cursor=pixel], .lab-band, .lab-strip) it turns into small pixel-art vector graphics.
 (() => {
   if (!matchMedia('(hover:hover) and (pointer:fine)').matches) return;
   const css = document.createElement('style');
   css.textContent = `
+    #cursor { position:fixed; top:0; left:0; z-index:10000; pointer-events:none; will-change:transform; mix-blend-mode:difference; opacity:0; transition:opacity .2s; }
+    #cursor i { display:block; width:36px; height:var(--stretch-h,36px); border-radius:var(--stretch-r,9999px); transform:translate(-18px,-18px); border:4px solid #fff; transition:border-width .1s ease-out; }
+    #cursor.on i, #cursor.down i { border-width:8px; }
     *, *::before, *::after { cursor:none !important; }
-    .gc { position:fixed; left:0; top:0; width:40px; height:40px; border-radius:20px; pointer-events:none; z-index:10000;
-      background:rgba(42,43,44,.15); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); opacity:0;
-      transition:opacity .1s, background-color .3s, border .3s, backdrop-filter .6s, -webkit-backdrop-filter .6s; }
-    .gc.small { background:rgba(42,43,44,0); border:1px solid rgba(42,43,44,.25); -webkit-backdrop-filter:blur(0) brightness(.95); backdrop-filter:blur(0) brightness(.95); }
-    .gc.show { opacity:1; }
     .gt { position:fixed; inset:0; pointer-events:none; z-index:9999; overflow:hidden; }
     .gt span { position:absolute; font:14px/1 Inter, sans-serif; color:#aaa; opacity:0; transition:opacity .15s ease-out; white-space:nowrap; }
     .gt svg { position:absolute; width:16px; height:16px; opacity:0; transition:opacity .15s ease-out; shape-rendering:crispEdges; }`;
   document.head.appendChild(css);
-
-  const cur = document.createElement('div'); cur.className = 'gc';
+  const cur = document.createElement('div'); cur.id = 'cursor'; cur.innerHTML = '<i></i>';
   const trail = document.createElement('div'); trail.className = 'gt';
   document.body.append(trail, cur);
+
+  // ---- ring cursor (unchanged behaviour) ----
+  let tx=0, ty=0, x=0, y=0, shown=false, lastWheel=-1e9, vel=0, lastPos=null, lastT=performance.now(), h=36, pvx=0, pvy=0, rx=0, ry=0;
+  addEventListener('mousemove', e=>{ if(!shown){ x=e.clientX; y=e.clientY; shown=true; } pvx=e.clientX-tx; pvy=e.clientY-ty; tx=e.clientX; ty=e.clientY; cur.style.opacity=1;
+    cur.classList.toggle('on', !!e.target.closest('a, button, .work, .thumb, .tip')); }, {passive:true});
+  document.addEventListener('mouseleave', ()=>{ cur.style.opacity=0; shown=false; });
+  document.documentElement.addEventListener('mouseout', e=>{ if(e.relatedTarget && e.relatedTarget.tagName==='IFRAME'){ cur.style.opacity=0; shown=false; } });
+  document.addEventListener('pointerdown', ()=>cur.classList.add('down'), {passive:true});
+  document.addEventListener('pointerup', ()=>cur.classList.remove('down'), {passive:true});
+  document.addEventListener('wheel', ()=>{ lastWheel=performance.now(); }, {passive:true});
+  document.addEventListener('scroll', e=>{ const el=e.target===document?document.documentElement:e.target; const pos=el===document.documentElement?scrollY:el.scrollTop; const now=performance.now();
+    if(lastPos!==null && now-lastWheel<200) vel=(pos-lastPos)/Math.max(now-lastT,1); lastPos=pos; lastT=now; }, {passive:true, capture:true});
+  (function loop(){
+    x+=(tx-x)*0.5; y+=(ty-y)*0.5;
+    rx+=((-pvy*0.6)-rx)*0.2; ry+=((pvx*0.6)-ry)*0.2; pvx*=0.8; pvy*=0.8;
+    cur.style.transform=`translate3d(${x}px,${y}px,0) perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    vel*=0.85; const target=36+44*Math.min(0.35*Math.abs(vel),1); h+=(target-h)*0.25; const a=(h-36)/44;
+    cur.style.setProperty('--stretch-h', h.toFixed(2)+'px'); cur.style.setProperty('--stretch-r', (9999-9983*a).toFixed(2)+'px');
+    requestAnimationFrame(loop);
+  })();
 
   // ---- glyph pools ----
   const SYMS = '⌐¬░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀∞∩∫≡±≥≤⌠⌡÷≈°∙·√ⁿ²■⊕⊗⋆★☆◇◆□▪▫△▲▽▼○●◎◉⊙⊚⊛⊜⌬⏣⏢⎔⬡⬢⬣⎊⍟✦✧✩✪✫✬✭✮✯'.split('');
   const NAME = 'LeeIlYeoo'.split('');
+  let ni = 0; // name letters come out one at a time, in order, scattered among the symbols
   const pickGlyph = () => { const r = Math.random();
-    if (r < 0.03) return 'Lee Il Yeoo';
-    if (r < 0.30) return NAME[Math.random() * NAME.length | 0];
-    if (r < 0.45) return '⚇'; if (r < 0.55) return '©';
+    if (r < 0.25) return NAME[ni++ % NAME.length];
+    if (r < 0.40) return '⚇'; if (r < 0.50) return '©';
     return SYMS[Math.random() * SYMS.length | 0]; };
   // 8x8 pixel sprites ('#' = filled), drawn as SVG rects
   const SPRITES = [
@@ -44,45 +61,10 @@
     let r = ''; g.forEach((row, y) => [...row].forEach((ch, x) => { if (ch === '#') r += `<rect x="${x}" y="${y}" width="1" height="1"/>`; }));
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('viewBox', '0 0 8 8'); s.setAttribute('fill', c); s.innerHTML = r; return s; };
 
-  // ---- morph state (same easing/timing as the original) ----
-  const ease = t => { if (t <= 0) return 0; if (t >= 1) return 1; let lo = 0, hi = 1, m;
-    for (let i = 0; i < 20; i++) { m = (lo + hi) / 2; const x = 3*.38*m*(1-m)*(1-m) + m*m*m; if (x < t) lo = m; else hi = m; }
-    m = (lo + hi) / 2; return 3*.05*m*(1-m)*(1-m) + 3*m*m*(1-m) + m*m*m; };
-  const DEF = { tx: -20, ty: -20, w: 40, h: 40, r: 20, ex: 0, ey: 0 };
-  let cur0 = { ...DEF }, now = { ...DEF }, tgt = { ...DEF }, hp = 1, hovering = false, prevEl = null, last = performance.now();
+  // ---- trail (only on movement) ----
   let mx = -100, my = -100, pixel = false, lastSpawn = 0;
-  const restart = () => { hp = 0; cur0 = { ...now }; };
-  const HOVER = 'a, button, .chip, [role=button], label';
-
-  (function loop(t) {
-    hp = Math.min(1, hp + (t - last) / 1000 * 60 / 18); last = t; const k = ease(hp);
-    for (const p in now) now[p] = cur0[p] + (tgt[p] - cur0[p]) * k;
-    cur.style.transform = `translate(${mx + now.tx}px, ${my + now.ty}px)`;
-    cur.style.width = now.w + 'px'; cur.style.height = now.h + 'px'; cur.style.borderRadius = now.r + 'px';
-    if (prevEl) { if (!hovering && hp >= 1) { prevEl.style.translate = ''; prevEl = null; } else prevEl.style.translate = `${now.ex}px ${now.ey}px`; }
-    requestAnimationFrame(loop);
-  })(last);
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY; cur.classList.add('show');
-    const t = e.target instanceof Element ? e.target : null;
-    pixel = !!(t && t.closest('[data-cursor=pixel], .lab-band, .lab-strip'));
-    let el = t && t.closest(HOVER);
-    if (el) { const r = el.getBoundingClientRect(); if (r.width > 360 || r.height > 120) el = null; } // big cards keep the circle
-    if (el) {
-      if (!hovering || el !== prevEl) { if (prevEl && prevEl !== el) prevEl.style.translate = ''; hovering = true; restart(); }
-      const r = el.getBoundingClientRect(), o = { l: r.left - 7, t: r.top - 5, w: r.width + 14, h: r.height + 10 };
-      const pill = parseFloat(getComputedStyle(el).borderRadius) >= r.height / 2;
-      tgt = { tx: (o.l - mx) * .9 - o.w * .05, ty: (o.t - my) * .9 - o.h * .05, w: o.w, h: o.h, r: pill ? o.h / 2 : 0,
-              ex: (mx - (o.l + o.w / 2)) * .1, ey: (my - (o.t + o.h / 2)) * .1 };
-      prevEl = el; cur.classList.add('small'); trail.style.display = 'none';
-    } else {
-      if (hovering) { hovering = false; restart(); }
-      tgt = { ...DEF }; cur.classList.remove('small'); trail.style.display = '';
-      spawn();
-    }
-  }, { passive: true });
-  document.documentElement.addEventListener('mouseout', e => { if (!e.relatedTarget || e.relatedTarget.tagName === 'IFRAME') cur.classList.remove('show'); });
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY;
+    pixel = !!(e.target instanceof Element && e.target.closest('[data-cursor=pixel], .lab-band, .lab-strip')); spawn(); }, { passive: true });
 
   const rnd = (a, b) => a + Math.random() * (b - a);
   function spawn() {

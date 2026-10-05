@@ -221,6 +221,18 @@
   @media (hover:hover) { .work:hover img { opacity:.92; } }
 
   /* about */
+  /* ---- about hover tips (phi.design style): underlined term -> outlined term + side card ---- */
+  .tip { text-decoration:underline 1px; text-underline-offset:3px; text-decoration-color:#b5b5b5; cursor:pointer; }
+  .tip.on { outline:1px solid var(--fg); outline-offset:1px; text-decoration-color:transparent; }
+  #tipcard { position:fixed; z-index:9000; width:300px; background:var(--bg); border:1px solid var(--fg); pointer-events:none; opacity:0; transform:translateX(6px); transition:opacity .18s, transform .18s; }
+  #tipcard.on { opacity:1; transform:none; }
+  #tipcard .tc-body { padding:16px 18px 18px; }
+  #tipcard b { display:block; font-size:14px; font-weight:600; margin-bottom:10px; }
+  #tipcard p { font-size:13px; line-height:1.65; word-break:keep-all; }
+  #tipcard img { display:block; width:100%; aspect-ratio:16/10; object-fit:cover; border-top:1px solid var(--fg); }
+  #tipline { position:fixed; z-index:9000; height:1px; background:var(--fg); pointer-events:none; opacity:0; transition:opacity .18s; }
+  #tipline.on { opacity:1; }
+  @media (hover:none) { #tipcard, #tipline { display:none; } }
   .about { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   .about p + p { margin-top:14px; }
   .about p, .cv p { word-break:keep-all; overflow-wrap:anywhere; }
@@ -584,6 +596,43 @@
     const onS=e=>{ const y=e.target.scrollTop ?? scrollY; rate=Math.min(8,1+Math.abs(y-last)*0.15); last=y; };
     sc.addEventListener('scroll',onS,{passive:true}); addEventListener('scroll',()=>onS({target:document.scrollingElement}),{passive:true}); })();
 </script>
-<script src="portfolio/cursor.js?v=1"></script>
+<script>
+  // About hover tips: terms are wrapped at runtime (survives KO/EN swaps); project terms reuse that card's own thumb/title/desc
+  (()=>{
+    const panel=document.getElementById('about-panel'); if(!panel) return;
+    const TERMS=[ // [match, key]  key = project data-key, or a custom entry below
+      ['번개장터','bunjang'],['Bunjang','bunjang'],['삐삐','bbibbi'],['BIBBI','bbibbi'],['SPOT!','spot'],['SPURT','spurt'],
+      ['Hotcake','hotcake'],['COMONG','comong'],['디프만','depromeet'],['DEPROMEET','depromeet'],['HYPHEN','hyphen'],
+      ['리서치·디자인시스템·유저테스트 툴','zerotoone'],['research, design system and user test tools','zerotoone'],
+      ['제품 시뮬레이터','newton'],['product simulators','newton'],['바이브코딩','lab'],['vibe coding','lab']];
+    const CUSTOM={
+      depromeet:{t:{ko:'디프만 (DEPROMEET)',en:'DEPROMEET'},d:{ko:'디자이너와 개발자가 함께 서비스를 만들어 출시하는 IT 연합동아리. 14–16기 프로덕트 디자이너로 삐삐, SPOT!, SPURT 3개 앱을 출시했습니다.',en:'An IT community where designers and developers build and ship services together. As a product designer in the 14th–16th cohorts, she shipped BIBBI, SPOT! and SPURT.'},img:'img/thumb/spot.webp'},
+      hyphen:{t:{ko:'HYPHEN 홍익대 UX/UI 학회',en:'HYPHEN, Hongik UX/UI Society'},d:{ko:'2024 공동 회장. 9주 연합전 SISO를 운영하고, GDSC Hongik과 함께하는 해커톤 하지톤을 새로 기획해 30명 규모로 총괄했습니다.',en:'Co-president in 2024. Ran the 9-week joint exhibition SISO and newly planned and led the 30-person hackathon HAJITHON with GDSC Hongik.'}},
+      lab:{t:{ko:'Vibe Coding Lab',en:'Vibe Coding Lab'},d:{ko:'직접 만들고 배포한 사이트 8개를 이 포트폴리오 안에서 바로 실행해 볼 수 있습니다.',en:'Eight sites she built and deployed, runnable right inside this portfolio.'},img:'img/lab/03.webp',href:'portfolio/lab.html'}};
+    const ko=()=>document.documentElement.lang!=='en' && !/KO\/<b>EN/.test(document.getElementById('lang-btn')?.innerHTML||'');
+    const card=document.createElement('div'); card.id='tipcard'; const line=document.createElement('div'); line.id='tipline'; document.body.append(card,line);
+    let marking=false;
+    const mark=()=>{ if(marking) return; marking=true;
+      const re=new RegExp(TERMS.map(t=>t[0].replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'g');
+      const w=document.createTreeWalker(panel,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement.closest('.tip, a')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}); const nodes=[]; while(w.nextNode()) nodes.push(w.currentNode);
+      const seen=new Set([...panel.querySelectorAll('.tip')].map(t=>t.dataset.k)); // one tip per term, at its first mention
+      nodes.forEach(n=>{ re.lastIndex=0; if(!re.test(n.data)) return; const f=document.createDocumentFragment(); let i=0; n.data.replace(re,(m,at)=>{ const k=TERMS.find(t=>t[0]===m)[1]; if(seen.has(k)) return m; seen.add(k); f.append(n.data.slice(i,at)); const sp=document.createElement('span'); sp.className='tip'; sp.dataset.k=TERMS.find(t=>t[0]===m)[1]; sp.textContent=m; f.append(sp); i=at+m.length; }); if(!i) return; f.append(n.data.slice(i)); n.replaceWith(f); });  // replace only when a tip was added (else the observer loops)
+      marking=false; };
+    mark(); new MutationObserver(()=>{ if(!marking) mark(); }).observe(panel,{childList:true,subtree:true});
+    const info=k=>{ const c=CUSTOM[k], L=ko()?'ko':'en'; if(c) return {t:c.t[L],d:c.d[L],img:c.img};
+      const w=document.querySelector(`#works-grid .work[data-key="${k}"]`); if(!w) return null; const m=w.querySelectorAll('.meta > p');
+      return {t:m[1].innerHTML.split('<br>').slice(0,2).join(' · '), d:w.querySelector('.desc')?.textContent||'', img:w.querySelector('img')?.getAttribute('src')}; };
+    let curTip=null;
+    panel.addEventListener('mouseover',e=>{ const t=e.target.closest('.tip'); if(!t||t===curTip) return; curTip?.classList.remove('on'); curTip=t; const d=info(t.dataset.k); if(!d) return;
+      card.innerHTML=`<div class="tc-body"><b>${d.t}</b><p>${d.d}</p></div>${d.img?`<img src="${d.img}" alt="">`:''}`; t.classList.add('on');
+      const r=t.getClientRects()[0], W=300, gap=48, h=card.offsetHeight; const left=Math.max(8,r.left-gap-W), top=Math.min(innerHeight-h-8,Math.max(8,r.top-12));
+      card.style.left=left+'px'; card.style.top=top+'px'; line.style.left=(left+W)+'px'; line.style.width=(r.left-2-(left+W))+'px'; line.style.top=(r.top+r.height/2)+'px';
+      card.classList.add('on'); line.classList.add('on'); });
+    panel.addEventListener('mouseout',e=>{ const t=e.target.closest('.tip'); if(!t||t.contains(e.relatedTarget)) return; t.classList.remove('on'); curTip=null; card.classList.remove('on'); line.classList.remove('on'); });
+    panel.addEventListener('click',e=>{ const t=e.target.closest('.tip'); if(!t) return; const c=CUSTOM[t.dataset.k]; if(c?.href){ location.href=c.href; return; }
+      const w=document.querySelector(`#works-grid .work[data-key="${t.dataset.k}"]`); if(w){ card.classList.remove('on'); line.classList.remove('on'); w.click(); } });
+  })();
+</script>
+<script src="portfolio/cursor.js?v=2"></script>
 </body>
 </html>
