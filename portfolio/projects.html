@@ -293,17 +293,17 @@
 </template>
 <template id="proj-zerotoone">
 <p class="plabel">0TO1</p>
-<div class="pcap"><p class="pt"><span class="muted">Research · Design · Validation Workflow</span><br>빌드 드리븐 디자이너를 위한 툴 3종</p><p class="pb">인텐시브 코스 개인 프로젝트입니다. 리서치, 디자인, 검증을 하나의 흐름으로 잇는 툴 3종을 Claude Code로 직접 만들었습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Research · Design · Validation Workflow</span><br>빌드 드리븐 디자이너를 위한 툴 3종</p><p class="pb">인텐시브 코스 개인 프로젝트(기여도 100%)입니다. 디자이너가 리서치, 디자인, 검증을 코드로 직접 이어 갈 수 있도록 어피니티, 디자인 시스템, 유저 테스트 툴 3종을 Claude Code로 만들었습니다. 5일 동안 200회 넘게 커밋했고, 3명이 실제로 써 본 피드백으로 세 툴을 다시 고쳤습니다.</p></div>
 <img width="1920" height="1080" decoding="async" fetchpriority="high" src="img/zerotoone/z01.webp?v=2" alt="">
 <p class="plabel">01 PROBLEM</p>
-<div class="pcap"><p class="pt"><span class="muted">Build-Driven Product Designer</span><br>디자이너의 역할이 코드까지 넓어진다</p><p class="pb">디자이너의 역할이 화면을 넘어 코드까지 넓어지는 흐름에서 문제를 정의했습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Build-Driven Product Designer</span><br>디자이너의 역할이 코드까지 넓어진다</p><p class="pb">닐슨 노먼 그룹은 AI 시대의 디자이너가 제너럴리스트가 되어야 한다고 말합니다. Figma 2026 조사(N=906)에서는 실무자의 54.2%가 바이브 코딩을 핵심 역량으로 꼽았고, 제작 흐름도 아이데이션, 디자인, 프로토타입에서 프롬프트, 빌드, 테스트로 바뀌고 있습니다. 이 흐름에서 0부터 1까지 제품을 코드로 직접 만드는 디자이너를 빌드 드리븐 프로덕트 디자이너로 정의하고, 이들이 더 쉽고 빠르고 정확하게 만들 수 있게 돕는 것을 목표로 잡았습니다.</p></div>
 <video src="img/zerotoone/z0405.mp4?v=2" poster="img/zerotoone/z0405.webp?v=2"></video>
 <video src="img/zerotoone/z0607.mp4?v=2" poster="img/zerotoone/z0607.webp?v=2"></video>
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/zerotoone/z08.webp?v=2" alt="">
 <video src="img/zerotoone/z09.mp4?v=2" poster="img/zerotoone/z09.webp?v=2"></video>
 <video src="img/zerotoone/z10.mp4?v=2" poster="img/zerotoone/z10.webp?v=2"></video>
 <p class="plabel">02 AFFINITY DIAGRAM</p>
-<div class="pcap"><p class="pt"><span class="muted">Research = accurate</span><br>리서치 정리를 정확하고 빠르게</p><p class="pb">인터뷰를 어피니티 다이어그램으로 정리하는 툴입니다. 정확도와 속도를 함께 잡는 것이 목표였습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Research = accurate</span><br>리서치 정리를 정확하고 빠르게</p><p class="pb">리서치 설문(N=300)에서 가장 큰 좌절은 시간을 잡아먹는 정리 작업(60.3%)이었고, 대량 데이터 종합(46.3%)과 흩어진 데이터 소스(41.3%)가 뒤를 이었습니다. 그래서 정리 단계를 5단계(종결어미 기반 발화 추출, 발화별 1:1 해석, 바텀업 그룹핑, 중복 후처리와 네이밍, 소·중·대 계층화)로 나누고 단계마다 다른 AI와 프롬프트를 썼습니다. 화자 인식으로 그룹 인터뷰도 그대로 넣을 수 있고, 말투나 오타가 섞인 원문도 맥락을 채워 해석합니다. 10명 인터뷰의 발화 1,000개 이상을 5~8분 안에 추출하고, FigJam 위젯으로 수백 장의 카드를 10초 안에 정리합니다. 실제 프로젝트에서는 4개 그룹, 14명의 인터뷰를 20분 만에 정리했습니다.</p></div>
 <video src="img/zerotoone/z14.mp4?v=2" poster="img/zerotoone/z14.webp?v=2"></video>
 <video src="img/zerotoone/z16.mp4?v=2" poster="img/zerotoone/z16.webp?v=2"></video>
 <video src="img/zerotoone/z17.mp4?v=2" poster="img/zerotoone/z17.webp?v=2"></video>
@@ -313,7 +313,7 @@
 <video src="img/zerotoone/z22.mp4?v=2" poster="img/zerotoone/z22.webp?v=2"></video>
 <video src="img/zerotoone/z23.mp4?v=2" poster="img/zerotoone/z23.webp?v=2"></video>
 <p class="plabel">03 DESIGN SYSTEM</p>
-<div class="pcap"><p class="pt"><span class="muted">Design System = accurate</span><br>이식과 확장을 함께</p><p class="pb">디자인 시스템을 바이브 코딩 결과물에 쉽게 이식하고, 이식한 뒤에도 계속 고칠 수 있게 하는 툴입니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Design System = accurate</span><br>이식과 확장을 함께</p><p class="pb">바이브 코딩에는 코드와 디자인을 즉시 오가는 동기화 구조가 없어 조율 비용, 유지보수, 동기화가 부담이 됩니다. 대안인 shadcn/ui는 이식성과 커스터마이징은 좋지만 유지보수가 힘들고 확장성이 낮았습니다. 그래서 직접 조작해 보는 디자인 시스템 문서에서 토큰을 바꾸고, 저장하면 토큰 URL이 만들어져 바이브 코딩 툴에 반자동으로 주입되게 했습니다. 이미 적용 중인 페이지는 0TO1에서 편집하는 즉시 실시간으로 바뀝니다. 제 프로젝트 3개에 이틀 만에 이식해 실제로 운영할 수 있는지 확인했습니다.</p></div>
 <video src="img/zerotoone/z27.mp4?v=2" poster="img/zerotoone/z27.webp?v=2"></video>
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/zerotoone/z30.webp?v=2" alt="">
 <video src="img/zerotoone/z31.mp4?v=2" poster="img/zerotoone/z31.webp?v=2"></video>
@@ -322,7 +322,7 @@
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/zerotoone/z35.webp?v=2" alt="">
 <video src="img/zerotoone/z37.mp4?v=2" poster="img/zerotoone/z37.webp?v=2"></video>
 <p class="plabel">04 USER TEST</p>
-<div class="pcap"><p class="pt"><span class="muted">User Test = fast</span><br>내 컴퓨터에서만 열리는 결과물</p><p class="pb">바이브 코딩 결과물을 바로 배포하고, AI와 사람으로 이어지는 테스트까지 돕는 유저 테스트 툴입니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">User Test = fast</span><br>내 컴퓨터에서만 열리는 결과물</p><p class="pb">바이브 코딩으로 만든 결과물은 localhost라 내 컴퓨터에서만 열리고, 그래서 공유도 피드백도 어렵습니다. 사용자는 작업 주소 입력과 코드 한 줄 붙여넣기 두 가지만 하고, 테스트방 생성, 정보 저장, 코드 업로드, 서버 실행은 플랫폼이 처리하는 원클릭 배포로 풀었습니다. 테스트는 AI 페르소나가 1차 가설 검증을 먼저 하고, 사람처럼 엄밀함을 낮춰 어디서 막혔는지 답하게 했습니다. AI가 찾은 문제마다 태스크를 배정해 사람과 하는 2차 테스트를 준비하고, 히트맵, 스크롤 도달률, 클릭률, 주관식 응답을 함께 봅니다. 이 툴로 나머지 두 툴을 테스트하며 반복해서 고쳤습니다.</p></div>
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/zerotoone/z41.webp?v=2" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/zerotoone/z45.webp?v=2" alt="">
 <video src="img/zerotoone/z46.mp4?v=2" poster="img/zerotoone/z46.webp?v=2"></video>
@@ -332,31 +332,33 @@
 <video src="img/zerotoone/z51.mp4?v=2" poster="img/zerotoone/z51.webp?v=2"></video>
 <video src="img/zerotoone/z52.mp4?v=2" poster="img/zerotoone/z52.webp?v=2"></video>
 <p class="plabel">05 LOOP</p>
+<div class="pcap"><p class="pt"><span class="muted">Repeatable Loop</span><br>흩어진 단계를 반복 가능한 루프로</p><p class="pb">리서치, 디자인, 검증이 따로 놀던 단계(Fragmented Stages)를 하나의 흐름(Connected Flow)으로 잇고, 검증 결과가 다음 반복으로 돌아가는 루프(Repeatable Loop)로 만들었습니다. 툴을 만들며 디자이너가 바이브 코딩을 반복하는 허들을 직접 낮춰 봤고, 기술적으로 생각하는 범위가 넓어지면서 문제를 푸는 방식도 달라졌습니다.</p></div>
 <video src="img/zerotoone/z53.mp4?v=2" poster="img/zerotoone/z53.webp?v=2"></video>
 <p class="plabel">06 VISUAL</p>
+<div class="pcap"><p class="pt"><span class="muted">Graphic Tool</span><br>발표 그래픽까지 직접 만든 툴로</p><p class="pb">0TO1의 비주얼도 그래픽 생성 웹사이트를 직접 만들어 제작했습니다. 픽셀 모티브 4가지와 메인 컬러를 조합해 발표용 그래픽과 모션 에셋을 빠르게 뽑았습니다.</p></div>
 <video src="img/zerotoone/z54.mp4?v=2" poster="img/zerotoone/z54.webp?v=2"></video>
 </template>
 <template id="proj-nextoneui">
 <p class="plabel">NEXT ONE UI WITH GALAXY AI</p>
-<div class="pcap"><p class="pt"><span class="muted">Samsung Electronics MX</span><br>AI 시대를 위한 One UI 개선 아이디어</p><p class="pb">삼성전자 MX사업부 과제입니다. Galaxy S25의 AI 기능과 기본 앱을 직접 써 보며 페인포인트를 찾고, 여러 앱과 화면에 공통으로 적용할 수 있는 One UI 개선 방향을 제안했습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Samsung Electronics MX</span><br>AI 시대를 위한 One UI 개선 아이디어</p><p class="pb">삼성전자 MX사업부 과제로 2025년 3월부터 5월까지 진행했습니다(기여도 30%, UX 리서치와 UI 설계). AI 기능이 들어간 모바일 경험이 보편화되면서, 갤럭시도 AI 사용 경험에서 경쟁력을 갖출 방법이 필요했습니다. Galaxy S25의 AI 기능과 기본 앱 5종을 Z세대 관점에서 직접 써 보고, 경쟁사의 AI 활용 사례와 AI 관련 컴포넌트를 조사해 여러 앱에 공통으로 적용할 수 있는 개선 방향을 찾았습니다.</p></div>
 <img width="1920" height="1080" decoding="async" fetchpriority="high" src="img/nextoneui/n01.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n02.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n06.webp?v=1" alt="">
 <p class="plabel">01 SEARCH</p>
-<div class="pcap"><p class="pt"><span class="muted">Search</span><br>검색 다음 행동까지 이어지는 검색</p><p class="pb">검색 결과를 본 뒤에도 다시 조작해야 하는 단계를 줄이기 위해, 검색 의도에 맞는 액션 칩과 필터를 설계했습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Search</span><br>검색 다음 행동까지 이어지는 검색</p><p class="pb">검색어를 입력한 뒤 앱을 실행하려면 화면 맨 위까지 손을 올려야 했고, 갤러리에서 인물을 검색하면 그 인물이 나온 사진과 이름이 적힌 사진이 섞여 나왔습니다. 검색 의도와 검색 후 행동이 이어지지 않아 결과 화면에서 다시 조작해야 하는 구조였습니다. 그래서 입력한 키워드에 맞는 후속 행동을 바로가기로 제안하고, 검색 결과를 분류하는 필터를 AI가 먼저 제안하며, 갤러리에서는 스마트 액션 칩으로 필터링 단계를 줄였습니다.</p></div>
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n08.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n10.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n11.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n12.webp?v=1" alt="">
 <p class="plabel">02 GENERATIVE AI</p>
-<div class="pcap"><p class="pt"><span class="muted">Generative AI</span><br>끊기지 않는 생성과 편집</p><p class="pb">생성형 AI로 결과를 얻기까지 반복과 흐름 단절이 생기는 구조를 보고, 입력값을 보여 주고 이어서 편집할 수 있는 흐름을 설계했습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Generative AI</span><br>끊기지 않는 생성과 편집</p><p class="pb">생성형 AI 편집에서 다시 생성하면 이전 작업이 초기화되어 편집 과정을 알 수 없었고, 결과를 이어서 고치려면 AI 기능을 다시 켜고 새 단계를 시작해야 했습니다. Adobe Firefly의 생성 내역, Apple Playground의 스타일 내역 패널을 참고해, 프롬프트와 스케치, 선택 대상을 하단 패널에 남겨 바로 고칠 수 있게 하고, AI로 편집한 이력을 순서대로 보여 주는 히스토리 흐름을 설계했습니다. 텍스트와 이미지 편집 기능은 하단 내비게이션 바 하나로 모아, 저장하고 다시 불러오지 않아도 연속으로 편집됩니다.</p></div>
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n15.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n17.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n18.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n20.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n21.webp?v=1" alt="">
 <p class="plabel">03 CROSS APP</p>
-<div class="pcap"><p class="pt"><span class="muted">Cross App</span><br>앱 사이의 맥락을 잇는 추천 카드</p><p class="pb">앱 중심 UI가 사용자의 다음 행동을 고려하지 못하는 문제를 보고, 상황에 맞는 정보를 카드와 칩으로 먼저 제안하는 흐름을 설계했습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Cross App</span><br>앱 사이의 맥락을 잇는 추천 카드</p><p class="pb">고정된 앱 중심 UI는 사용자의 다음 행동을 고려하지 못해, 필요한 정보를 찾으려면 앱을 오가야 했습니다. 그래서 상황에 맞는 정보를 카드와 칩으로 먼저 제안했습니다. 대화 맥락에 맞는 사진과 파일을 칩과 하단 패널로 추천해 바로 보내고, 답장이 필요한 메시지는 맥락에 맞춰 카드로 먼저 띄우며, 일정을 저장하면 경로와 주차장 정보, 운전 중 놓친 알림을 카드로 정리해 줍니다.</p></div>
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n24.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n25.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/nextoneui/n29.webp?v=1" alt="">
@@ -364,16 +366,16 @@
 </template>
 <template id="proj-aep">
 <p class="plabel">AGENT EXPERIENCE PARADIGM</p>
-<div class="pcap"><p class="pt"><span class="muted">Samsung Electronics CDO · Next-Gen UX Group</span><br>삼성 AI 에이전트의 Visual Identity와 UI</p><p class="pb">삼성전자 CDO 차세대UX그룹 과제로, 4인 팀의 PL을 맡아 11주 동안 진행했습니다. 흩어진 삼성 AI의 시각 자산을 하나의 시스템으로 묶고, 그 시스템이 AI의 상태 표현, 캐릭터, 멀티디바이스 화면까지 이어지도록 설계했습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Samsung Electronics CDO · Next-Gen UX Group</span><br>삼성 AI 에이전트의 Visual Identity와 UI</p><p class="pb">삼성전자 CDO 차세대UX그룹 과제로, 4인 팀의 PL을 맡아 2025년 9월부터 11주 동안 진행했습니다(기여도 40%). 초거대 AI와 멀티모달 인터랙션으로 앱 중심 UX가 에이전트 기반 상호작용으로 바뀌는 상황에서, 삼성 AI 에이전트가 사용자에게 어떻게 보이고 상태를 어떻게 전달해야 하는지를 다뤘습니다. 흩어진 AI 시각 자산을 하나의 시스템으로 묶고, AI의 상태 표현, 캐릭터, 멀티디바이스 화면까지 이어지게 설계해 최종 제안했습니다.</p></div>
 <img width="1920" height="1080" decoding="async" fetchpriority="high" src="img/aep/a01.webp?v=1" alt="">
 <p class="plabel">01 PROBLEM</p>
-<div class="pcap"><p class="pt"><span class="muted">Desk Research</span><br>서비스마다 다르게 보이는 삼성 AI</p><p class="pb">실제 서비스 화면에서 삼성 AI의 컬러, 심볼, 인터랙션을 분석했습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Desk Research</span><br>서비스마다 다르게 보이는 삼성 AI</p><p class="pb">삼성 공식 AI 컬러 가이드와 실제 서비스를 비교하니 블루와 민트 축 위에서 컬러가 서비스마다 미묘하게 달랐습니다. 네 개의 별이 회전하는 AI 심볼과 달리 빅스비는 검색창 중심 UI로 확장되고 있어 AI 정체성이 둘로 나뉘어 있었습니다. 냉장고는 식재료 코치, TV는 큐레이터, 워치는 헬스 코치처럼 기기마다 전문 AI 페르소나가 있었지만 이를 잇는 공통 시각 언어는 없었습니다. 고유 자산은 있지만 일관성, 직관성, 확장성이 부족하다는 결론을 냈습니다.</p></div>
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a06.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a07.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a09.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a10.webp?v=1" alt="">
 <p class="plabel">02 VISUAL SYSTEM</p>
-<div class="pcap"><p class="pt"><span class="muted">Dot Pixel</span><br>AI의 개입 정도를 밀도로 보여 주는 시스템</p><p class="pb">AI가 얼마나 깊이 개입하는지를 픽셀의 밀도로 표현하는 시스템을 만들고, 화면과 컴포넌트에 적용할 수 있는지를 기준으로 다듬었습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Dot Pixel</span><br>AI의 개입 정도를 밀도로 보여 주는 시스템</p><p class="pb">10개가 넘는 시각 방향을 실험한 끝에, 작은 단위에서 출발하는 시스템이 심볼에서 인터랙션과 UI까지 가장 안정적으로 확장된다고 판단해 Dot Pixel을 골랐습니다. 생성형 이미지가 노이즈에서 선명해지는 과정에서 착안해 밀도를 3단계로 나눴습니다. 탐지와 분석 같은 최소 작동은 도트, 맥락을 이해하고 수행하는 단계는 원형 라인, 루틴과 코칭, 감정 기반의 깊은 개입은 라인 픽셀로 표현합니다. 컬러는 은하에서 가져온 하늘색, 보라, 핑크 스펙트럼으로 정했습니다.</p></div>
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a24.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a27.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a31.webp?v=1" alt="">
@@ -381,7 +383,7 @@
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a33.webp?v=1" alt="">
 <video src="img/aep/a34.mp4?v=1" poster="img/aep/a34.webp?v=1"></video>
 <p class="plabel">03 AI STATE UI</p>
-<div class="pcap"><p class="pt"><span class="muted">Main Symbol</span><br>듣고, 생각하고, 말하고, 만드는 AI의 상태</p><p class="pb">생성형 AI가 지금 무엇을 하고 있는지 사용자가 바로 알 수 있도록, 상태마다 심볼의 움직임을 다르게 설계하고 실제 UI 흐름에 적용했습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Main Symbol</span><br>듣고, 생각하고, 말하고, 만드는 AI의 상태</p><p class="pb">생성형 AI 서비스에서 사용자가 가장 자주 묻는 것은 지금 AI가 무엇을 하고 있는지입니다. 그래서 상태마다 심볼의 움직임을 다르게 정의했습니다. 들을 때는 바깥에서 안쪽으로 수렴하고, 생각할 때는 흩어지고 모이며 유영하고, 말을 건넬 때는 바깥으로 퍼지고, 생성할 때는 하나의 유닛으로 뭉칩니다. 이 상태들을 "어제 공지 톡방에 올라온 파일" 찾기와 요약 시나리오에 적용해, 검색 중, 결과 제시, Now Bar의 실시간 요약까지 한 흐름으로 보여 줬습니다.</p></div>
 <video src="img/aep/a37.mp4?v=1" poster="img/aep/a37.webp?v=1"></video>
 <video src="img/aep/a38.mp4?v=1" poster="img/aep/a38.webp?v=1"></video>
 <video src="img/aep/a39.mp4?v=1" poster="img/aep/a39.webp?v=1"></video>
@@ -391,13 +393,13 @@
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a43.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a44.webp?v=1" alt="">
 <p class="plabel">04 CHARACTER</p>
-<div class="pcap"><p class="pt"><span class="muted">Dot Character</span><br>상황에 맞춰 바뀌는 AI 캐릭터</p><p class="pb">눈을 기준으로 한 캐릭터 구조를 만들고, 기기와 상황에 따라 화면 안에서 정보를 전달하도록 설계했습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">Dot Character</span><br>상황에 맞춰 바뀌는 AI 캐릭터</p><p class="pb">감정 표현의 최소 단위를 눈으로 보고, 일관된 눈 구조 위에 6가지 캐릭터를 만들었습니다. 시간대에 따라 아침 매니저(해), 집중(해파리), 수면(부엉이)이, 행동에 따라 셰프, 러닝메이트(토끼), 관람 가이드(의자)가 등장합니다. 캐릭터는 장식이 아니라 정보를 전달하도록 설계해, 조리 중에는 셰프의 눈이 타이머로, 러닝 중에는 토끼의 눈이 심박 숫자로 바뀝니다.</p></div>
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a49.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a50.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a51.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a52.webp?v=1" alt="">
 <p class="plabel">05 UX SCENARIO</p>
-<div class="pcap"><p class="pt"><span class="muted">User Experience</span><br>기기 사이를 잇고, 말 속 맥락을 읽는 AI</p><p class="pb">픽셀의 특성을 살려 멀티디바이스 흐름과 대화형 AI 화면을 설계했습니다.</p></div>
+<div class="pcap"><p class="pt"><span class="muted">User Experience</span><br>기기 사이를 잇고, 말 속 맥락을 읽는 AI</p><p class="pb">기기 간 AI 경험이 끊겨 보이는 문제에는 픽셀이 기기 사이를 이동하는 시나리오로 답했습니다. 운동을 시작하려 하면 시작 버튼이 픽셀로 흩어져 워치의 AI 코치로 이어지고, 냉장고에서 고른 레시피는 TV에서 바로 재생될 준비를 마칩니다. 지금의 빅스비가 문장을 사실 기반으로만 처리한다는 점에는, 문장 속 감정, 상태, 의도를 태그로 나눠 읽는 대화 UX를 제안했습니다. "I feel tired"라는 말에서 피로, 과부하, 휴식 필요 단서를 모아 취침 모드 전환을 먼저 제안하는 흐름입니다.</p></div>
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a55.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a56.webp?v=1" alt="">
 <img width="1920" height="1080" decoding="async" loading="lazy" src="img/aep/a57.webp?v=1" alt="">
