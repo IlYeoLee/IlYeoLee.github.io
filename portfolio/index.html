@@ -100,6 +100,8 @@
     .site.viewing #works .index { display:flex !important; overflow-x:auto; gap:var(--pad); padding:var(--pad); }
     .site.viewing #works .index .thumb { flex:0 0 64px; }
   }
+  .chip-lab { background:var(--fg); color:var(--bg) !important; border-color:var(--fg); margin-left:auto; text-decoration:none; }
+  .chip-lab:hover { opacity:.8; }
   .head-right { display:flex; gap:12px; align-items:center; }
   button.lang { background:none; border:0; font:inherit; font-size:var(--fs); color:var(--muted); cursor:pointer; padding:0; letter-spacing:0; }
   button.lang b { font-weight:400; color:var(--fg); }
@@ -251,6 +253,7 @@
       <button class="chip" data-f="uxui">App UX/UI</button>
       <button class="chip" data-f="product">Concept UX</button>
       <button class="chip" data-f="vibe">Vibe Coding UX/UI</button>
+      <a class="chip chip-lab" href="portfolio/lab.html">Vibe Coding Lab ↗</a>
     </div>
     <div class="col-body index" id="works-index" hidden>
       <a class="thumb" href="#" data-i="0" data-tags="uxui"><img width="960" height="752" decoding="async" src="img/thumb/bunjang.webp?v=3" alt="번개장터"></a>
@@ -548,8 +551,8 @@
   grid.addEventListener('click',e=>{ if(e.target.closest('a')) return; const c=e.target.closest('.work'); if(!c) return; e.preventDefault(); openProject(c); });
   // ---- filter chips ----
   const chips=document.getElementById('chips');
-  chips.addEventListener('click',e=>{ const b=e.target.closest('.chip'); if(!b) return;
-    chips.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===b)); const f=b.dataset.f;
+  chips.addEventListener('click',e=>{ const b=e.target.closest('button.chip'); if(!b) return;
+    chips.querySelectorAll('button.chip').forEach(c=>c.classList.toggle('on',c===b)); const f=b.dataset.f;
     document.querySelectorAll('#works-grid .work, #works-index .thumb').forEach(w=>{ w.hidden = f!=='all' && !(w.dataset.tags||'').split(' ').includes(f); }); document.querySelector('.other-head').hidden = f!=='all';
     col.scrollTop=0; stagger(open? index.querySelectorAll('.thumb:not([hidden])') : grid.querySelectorAll('.work:not([hidden])'), 45); });
   // ---- language (default ko; i18n.json holds ko->en) ----
