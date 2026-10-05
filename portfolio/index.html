@@ -607,16 +607,17 @@
       ['제품 시뮬레이터','newton'],['product simulators','newton'],['바이브코딩','lab'],['vibe coding','lab'],
       ['삼성디자인멤버십','sdm'],['Samsung Design Membership','sdm'],['홍익대학교','hongik'],['Hongik University','hongik'],
       ['IDEA 디자인 어워드','idea'],['IDEA Design Award','idea'],['Red Dot 디자인 컨셉','reddot'],['Red Dot Design Concept','reddot'],
-      ['제61회 대한민국디자인전람회','kde'],['Korea Design Exhibition, 61st','kde'],['Asia Design Prize','adp']];
+      ['제61회 대한민국디자인전람회','kde'],['Korea Design Exhibition, 61st','kde'],['Asia Design Prize','adp'],['Winner (COMONG)','adpc']];
     const CUSTOM={
       depromeet:{t:{ko:'디프만 (DEPROMEET)',en:'DEPROMEET'},d:{ko:'디자이너와 개발자가 함께 서비스를 만들어 출시하는 IT 연합동아리. 14–16기 프로덕트 디자이너로 삐삐, SPOT!, SPURT 3개 앱을 출시했습니다.',en:'An IT community where designers and developers build and ship services together. As a product designer in the 14th–16th cohorts, she shipped BIBBI, SPOT! and SPURT.'},img:'img/thumb/spot.webp'},
       hyphen:{t:{ko:'HYPHEN 홍익대 UX/UI 학회',en:'HYPHEN, Hongik UX/UI Society'},d:{ko:'2024 공동 회장. 9주 연합전 SISO를 운영하고, GDSC Hongik과 함께하는 해커톤 하지톤을 새로 기획해 30명 규모로 총괄했습니다.',en:'Co-president in 2024. Ran the 9-week joint exhibition SISO and newly planned and led the 30-person hackathon HAJITHON with GDSC Hongik.'}},
       sdm:{t:{ko:'삼성디자인멤버십 33기',en:'Samsung Design Membership, 33rd'},d:{ko:'삼성전자가 운영하는 디자인 인재 육성 프로그램. UX 디자이너로 활동하며 Hotcake와 COMONG 등 컨셉 제품의 UX를 맡았습니다. (2025–2026)',en:'A design talent program run by Samsung Electronics. As a UX designer she led the UX of concept products including Hotcake and COMONG. (2025–2026)'},img:'img/thumb/hotcake.webp'},
       hongik:{t:{ko:'홍익대학교 시각디자인과',en:'Hongik University, Visual Communication Design'},d:{ko:'2021년 입학해 재학 중이며, 교내 UX/UI 학회 HYPHEN에서 2024년 공동 회장을 맡았습니다.',en:'Enrolled in 2021. Co-president of the campus UX/UI society HYPHEN in 2024.'}},
-      idea:{t:{ko:'IDEA 디자인 어워드 · Gold',en:'IDEA Design Award · Gold'},d:{ko:'Hotcake로 학생 부문 Gold를 받았습니다. (2026)',en:'Gold in the Student category with Hotcake. (2026)'},img:'img/thumb/hotcake.webp',open:'hotcake'},
+      idea:{t:{ko:'IDEA 디자인 어워드 · Gold',en:'IDEA Design Award · Gold'},d:{ko:'Hotcake로 학생 부문 Gold를 받았습니다. (2026)',en:'Gold in the Student category with Hotcake. (2026)'},img:'img/award/idea_hotcake.webp',href:'https://www.idsa.org/awards-recognition/idea/idea-gallery/hotcake/'},
       reddot:{t:{ko:'Red Dot 디자인 컨셉 · Best of the Best',en:'Red Dot Design Concept · Best of the Best'},d:{ko:'Hotcake로 최고상인 Best of the Best를 받았습니다. (2026)',en:'Best of the Best, the top honour, with Hotcake. (2026)'},img:'img/thumb/hotcake.webp',open:'hotcake'},
       kde:{t:{ko:'제61회 대한민국디자인전람회 · 입선',en:'61st Korea Design Exhibition · Selected'},d:{ko:'Hotcake로 입선했습니다. (2026)',en:'Selected with Hotcake. (2026)'},img:'img/thumb/hotcake.webp',open:'hotcake'},
-      adp:{t:{ko:'Asia Design Prize',en:'Asia Design Prize'},d:{ko:'Hotcake로 Gold Winner, COMONG으로 Winner를 받았습니다. (2026)',en:'Gold Winner with Hotcake and Winner with COMONG. (2026)'},img:'img/thumb/comong.webp',open:'hotcake'},
+      adp:{t:{ko:'Asia Design Prize · Gold Winner',en:'Asia Design Prize · Gold Winner'},d:{ko:'Hotcake로 Gold Winner를 받았습니다. (2026)',en:'Gold Winner with Hotcake. (2026)'},img:'img/award/adp_hotcake.webp',href:'https://asiadesignprize.com/exhibition/332524'},
+      adpc:{t:{ko:'Asia Design Prize · Winner',en:'Asia Design Prize · Winner'},d:{ko:'COMONG으로 Winner를 받았습니다. (2026)',en:'Winner with COMONG. (2026)'},img:'img/award/adp_comong.webp',href:'https://asiadesignprize.com/exhibition/333307'},
       lab:{t:{ko:'Vibe Coding Lab',en:'Vibe Coding Lab'},d:{ko:'직접 만들고 배포한 사이트 8개를 이 포트폴리오 안에서 바로 실행해 볼 수 있습니다.',en:'Eight sites she built and deployed, runnable right inside this portfolio.'},img:'img/lab/03.webp',href:'portfolio/lab.html'}};
     const ko=()=>document.documentElement.lang!=='en' && !/KO\/<b>EN/.test(document.getElementById('lang-btn')?.innerHTML||'');
     const card=document.createElement('div'); card.id='tipcard'; const line=document.createElement('div'); line.id='tipline'; document.body.append(card,line);
@@ -628,17 +629,17 @@
       nodes.forEach(n=>{ re.lastIndex=0; if(!re.test(n.data)) return; const f=document.createDocumentFragment(); let i=0; n.data.replace(re,(m,at)=>{ const k=TERMS.find(t=>t[0]===m)[1]; if(seen.has(k)) return m; seen.add(k); f.append(n.data.slice(i,at)); const sp=document.createElement('span'); sp.className='tip'; sp.dataset.k=TERMS.find(t=>t[0]===m)[1]; sp.textContent=m; f.append(sp); i=at+m.length; }); if(!i) return; f.append(n.data.slice(i)); n.replaceWith(f); });  // replace only when a tip was added (else the observer loops)
       marking=false; };
     mark(); new MutationObserver(()=>{ if(!marking) mark(); }).observe(panel,{childList:true,subtree:true});
-    const info=k=>{ const c=CUSTOM[k], L=ko()?'ko':'en'; if(c) return {t:c.t[L],d:c.d[L],img:c.img};
+    const info=k=>{ const c=CUSTOM[k], L=ko()?'ko':'en'; if(c) return {t:c.t[L],d:c.d[L],img:c.img,ext:/^http/.test(c.href||'')};
       const w=document.querySelector(`#works-grid .work[data-key="${k}"]`); if(!w) return null; const m=w.querySelectorAll('.meta > p');
       return {t:m[1].innerHTML.split('<br>').slice(0,2).join(' · '), d:w.querySelector('.desc')?.textContent||'', img:w.querySelector('img')?.getAttribute('src')}; };
     let curTip=null;
     panel.addEventListener('mouseover',e=>{ const t=e.target.closest('.tip'); if(!t||t===curTip) return; curTip?.classList.remove('on'); curTip=t; const d=info(t.dataset.k); if(!d) return;
-      card.innerHTML=`<div class="tc-body"><b>${d.t}</b><p>${d.d}</p></div>${d.img?`<img src="${d.img}" alt="">`:''}`; t.classList.add('on');
+      card.innerHTML=`<div class="tc-body"><b>${d.t}</b><p>${d.d}</p>${d.ext?`<p class="muted" style="margin-top:8px">${ko()?'눌러서 공식 수상 페이지 보기 ↗':'Click for the official award page ↗'}</p>`:''}</div>${d.img?`<img src="${d.img}" alt="">`:''}`; t.classList.add('on');
       const r=t.getClientRects()[0], W=300, gap=48, h=card.offsetHeight; const left=Math.max(8,r.left-gap-W), top=Math.min(innerHeight-h-8,Math.max(8,r.top-12));
       card.style.left=left+'px'; card.style.top=top+'px'; line.style.left=(left+W)+'px'; line.style.width=(r.left-2-(left+W))+'px'; line.style.top=(r.top+r.height/2)+'px';
       card.classList.add('on'); line.classList.add('on'); });
     panel.addEventListener('mouseout',e=>{ const t=e.target.closest('.tip'); if(!t||t.contains(e.relatedTarget)) return; t.classList.remove('on'); curTip=null; card.classList.remove('on'); line.classList.remove('on'); });
-    panel.addEventListener('click',e=>{ const t=e.target.closest('.tip'); if(!t) return; const c=CUSTOM[t.dataset.k]; if(c?.href){ location.href=c.href; return; }
+    panel.addEventListener('click',e=>{ const t=e.target.closest('.tip'); if(!t) return; const c=CUSTOM[t.dataset.k]; if(c?.href){ if(/^http/.test(c.href)) open(c.href,'_blank','noopener'); else location.href=c.href; return; }
       const w=document.querySelector(`#works-grid .work[data-key="${c?.open||t.dataset.k}"]`); if(w){ card.classList.remove('on'); line.classList.remove('on'); w.click(); } });
   })();
 </script>
