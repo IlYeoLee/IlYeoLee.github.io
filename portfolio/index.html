@@ -518,6 +518,8 @@
   function closeProject(){ document.querySelector('.site').classList.remove('viewing'); setIndex(false); projPanel.hidden=true; projPanel.innerHTML=''; aboutPanel.hidden=false; projClose.hidden=true; swapText(aboutTitle,'About'); aboutCol.scrollTop=0;
     stagger(grid.querySelectorAll('.work:not([hidden])'), 45); stagger(aboutPanel.querySelectorAll('.about > *, .cv .row'), 60); }
   projClose.addEventListener('click',closeProject);
+  // portfolio/#key (from the Lab's case links) opens that project
+  const hashCard=location.hash && grid.querySelector(`.work[data-key="${CSS.escape(location.hash.slice(1))}"]`); if(hashCard) openProject(hashCard);
   // ---- lightbox ----
   const lb=document.getElementById('lb'), lbImg=lb.querySelector('img'), lbHead=lb.querySelector('.lb-head');
   const RM=matchMedia('(prefers-reduced-motion:reduce)').matches, EASE='cubic-bezier(.2,.7,.2,1)';
