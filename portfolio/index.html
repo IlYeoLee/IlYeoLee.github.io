@@ -604,10 +604,19 @@
       ['번개장터','bunjang'],['Bunjang','bunjang'],['삐삐','bbibbi'],['BIBBI','bbibbi'],['SPOT!','spot'],['SPURT','spurt'],
       ['Hotcake','hotcake'],['COMONG','comong'],['디프만','depromeet'],['DEPROMEET','depromeet'],['HYPHEN','hyphen'],
       ['리서치·디자인시스템·유저테스트 툴','zerotoone'],['research, design system and user test tools','zerotoone'],
-      ['제품 시뮬레이터','newton'],['product simulators','newton'],['바이브코딩','lab'],['vibe coding','lab']];
+      ['제품 시뮬레이터','newton'],['product simulators','newton'],['바이브코딩','lab'],['vibe coding','lab'],
+      ['삼성디자인멤버십','sdm'],['Samsung Design Membership','sdm'],['홍익대학교','hongik'],['Hongik University','hongik'],
+      ['IDEA 디자인 어워드','idea'],['IDEA Design Award','idea'],['Red Dot 디자인 컨셉','reddot'],['Red Dot Design Concept','reddot'],
+      ['제61회 대한민국디자인전람회','kde'],['Korea Design Exhibition, 61st','kde'],['Asia Design Prize','adp']];
     const CUSTOM={
       depromeet:{t:{ko:'디프만 (DEPROMEET)',en:'DEPROMEET'},d:{ko:'디자이너와 개발자가 함께 서비스를 만들어 출시하는 IT 연합동아리. 14–16기 프로덕트 디자이너로 삐삐, SPOT!, SPURT 3개 앱을 출시했습니다.',en:'An IT community where designers and developers build and ship services together. As a product designer in the 14th–16th cohorts, she shipped BIBBI, SPOT! and SPURT.'},img:'img/thumb/spot.webp'},
       hyphen:{t:{ko:'HYPHEN 홍익대 UX/UI 학회',en:'HYPHEN, Hongik UX/UI Society'},d:{ko:'2024 공동 회장. 9주 연합전 SISO를 운영하고, GDSC Hongik과 함께하는 해커톤 하지톤을 새로 기획해 30명 규모로 총괄했습니다.',en:'Co-president in 2024. Ran the 9-week joint exhibition SISO and newly planned and led the 30-person hackathon HAJITHON with GDSC Hongik.'}},
+      sdm:{t:{ko:'삼성디자인멤버십 33기',en:'Samsung Design Membership, 33rd'},d:{ko:'삼성전자가 운영하는 디자인 인재 육성 프로그램. UX 디자이너로 활동하며 Hotcake와 COMONG 등 컨셉 제품의 UX를 맡았습니다. (2025–2026)',en:'A design talent program run by Samsung Electronics. As a UX designer she led the UX of concept products including Hotcake and COMONG. (2025–2026)'},img:'img/thumb/hotcake.webp'},
+      hongik:{t:{ko:'홍익대학교 시각디자인과',en:'Hongik University, Visual Communication Design'},d:{ko:'2021년 입학해 재학 중이며, 교내 UX/UI 학회 HYPHEN에서 2024년 공동 회장을 맡았습니다.',en:'Enrolled in 2021. Co-president of the campus UX/UI society HYPHEN in 2024.'}},
+      idea:{t:{ko:'IDEA 디자인 어워드 · Gold',en:'IDEA Design Award · Gold'},d:{ko:'Hotcake로 학생 부문 Gold를 받았습니다. (2026)',en:'Gold in the Student category with Hotcake. (2026)'},img:'img/thumb/hotcake.webp',open:'hotcake'},
+      reddot:{t:{ko:'Red Dot 디자인 컨셉 · Best of the Best',en:'Red Dot Design Concept · Best of the Best'},d:{ko:'Hotcake로 최고상인 Best of the Best를 받았습니다. (2026)',en:'Best of the Best, the top honour, with Hotcake. (2026)'},img:'img/thumb/hotcake.webp',open:'hotcake'},
+      kde:{t:{ko:'제61회 대한민국디자인전람회 · 입선',en:'61st Korea Design Exhibition · Selected'},d:{ko:'Hotcake로 입선했습니다. (2026)',en:'Selected with Hotcake. (2026)'},img:'img/thumb/hotcake.webp',open:'hotcake'},
+      adp:{t:{ko:'Asia Design Prize',en:'Asia Design Prize'},d:{ko:'Hotcake로 Gold Winner, COMONG으로 Winner를 받았습니다. (2026)',en:'Gold Winner with Hotcake and Winner with COMONG. (2026)'},img:'img/thumb/comong.webp',open:'hotcake'},
       lab:{t:{ko:'Vibe Coding Lab',en:'Vibe Coding Lab'},d:{ko:'직접 만들고 배포한 사이트 8개를 이 포트폴리오 안에서 바로 실행해 볼 수 있습니다.',en:'Eight sites she built and deployed, runnable right inside this portfolio.'},img:'img/lab/03.webp',href:'portfolio/lab.html'}};
     const ko=()=>document.documentElement.lang!=='en' && !/KO\/<b>EN/.test(document.getElementById('lang-btn')?.innerHTML||'');
     const card=document.createElement('div'); card.id='tipcard'; const line=document.createElement('div'); line.id='tipline'; document.body.append(card,line);
@@ -630,7 +639,7 @@
       card.classList.add('on'); line.classList.add('on'); });
     panel.addEventListener('mouseout',e=>{ const t=e.target.closest('.tip'); if(!t||t.contains(e.relatedTarget)) return; t.classList.remove('on'); curTip=null; card.classList.remove('on'); line.classList.remove('on'); });
     panel.addEventListener('click',e=>{ const t=e.target.closest('.tip'); if(!t) return; const c=CUSTOM[t.dataset.k]; if(c?.href){ location.href=c.href; return; }
-      const w=document.querySelector(`#works-grid .work[data-key="${t.dataset.k}"]`); if(w){ card.classList.remove('on'); line.classList.remove('on'); w.click(); } });
+      const w=document.querySelector(`#works-grid .work[data-key="${c?.open||t.dataset.k}"]`); if(w){ card.classList.remove('on'); line.classList.remove('on'); w.click(); } });
   })();
 </script>
 <script src="portfolio/cursor.js?v=2"></script>
