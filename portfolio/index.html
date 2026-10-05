@@ -19,6 +19,21 @@
   .grid { display:grid; grid-template-columns:1fr 1fr; column-gap:var(--pad); }
   .grid .work:nth-last-child(-n+2) { border-bottom:0; }
   #works-grid .work:has(+ .other-head) { border-bottom:0; margin-bottom:0; }
+  .lab-band { grid-column:1/-1; display:block; margin-top:var(--pad); padding-top:var(--pad); border-top:1px solid var(--line); text-decoration:none; color:inherit; }
+  .lab-head { display:flex; justify-content:space-between; gap:12px; }
+  .lab-band:hover .muted { color:var(--fg); }
+  .lab-strip { grid-column:1/-1; overflow:hidden; margin:12px calc(-1 * var(--pad)) 0; padding-bottom:var(--pad); mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent); }
+  .lab-track { display:flex; gap:10px; width:max-content; animation:labflow 60s linear infinite; }
+  .lab-strip:hover .lab-track { animation-play-state:paused; }
+  @keyframes labflow { to { transform:translateX(calc(-50% - 5px)); } }
+  .lab-card { position:relative; flex:none; width:280px; aspect-ratio:16/10; border-radius:8px; overflow:hidden; border:1px solid var(--line); background:#f4f4f4; transition:transform .35s cubic-bezier(.2,.7,.2,1), width .35s cubic-bezier(.2,.7,.2,1); }
+  .lab-card img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s cubic-bezier(.2,.7,.2,1); }
+  .lab-card span { position:absolute; left:8px; bottom:8px; padding:4px 8px; font-size:12px; background:var(--bg); color:var(--fg); border-radius:999px; opacity:0; transform:translateY(6px); transition:.25s; }
+  .lab-card:hover { transform:translateY(-6px); }
+  .lab-card:hover img { transform:scale(1.06); }
+  .lab-card:hover span { opacity:1; transform:none; }
+  @media (prefers-reduced-motion:reduce) { .lab-track { animation:none; } .lab-strip { overflow-x:auto; } }
+  @media (max-width:900px) { .lab-card { width:200px; } }
   .other-head { grid-column:1/-1; margin:8px 0 20px; padding-top:var(--pad); border-top:1px solid var(--line); }
   .grid { grid-template-columns:repeat(4,1fr); }
   .grid .work { grid-column:span 2; }
@@ -100,8 +115,6 @@
     .site.viewing #works .index { display:flex !important; overflow-x:auto; gap:var(--pad); padding:var(--pad); }
     .site.viewing #works .index .thumb { flex:0 0 64px; }
   }
-  .chip-lab { background:var(--fg); color:var(--bg) !important; border-color:var(--fg); margin-left:auto; text-decoration:none; }
-  .chip-lab:hover { opacity:.8; }
   .head-right { display:flex; gap:12px; align-items:center; }
   button.lang { background:none; border:0; font:inherit; font-size:var(--fs); color:var(--muted); cursor:pointer; padding:0; letter-spacing:0; }
   button.lang b { font-weight:400; color:var(--fg); }
@@ -247,13 +260,12 @@
   
   <!-- CENTER : Selected Works -->
   <section class="col" id="works">
-    <div class="col-head"><span id="works-title" role="button">Selected Works</span><span class="head-right"><a class="lab-link" href="portfolio/lab.html">Vibe Coding Lab ↗</a><button class="menu" id="menu-btn" aria-label="Index">≡</button></span></div>
+    <div class="col-head"><span id="works-title" role="button">Selected Works</span><button class="menu" id="menu-btn" aria-label="Index">≡</button></div>
         <div class="chips" id="chips">
       <button class="chip on" data-f="all">All</button>
       <button class="chip" data-f="uxui">App UX/UI</button>
       <button class="chip" data-f="product">Concept UX</button>
       <button class="chip" data-f="vibe">Vibe Coding UX/UI</button>
-      <a class="chip chip-lab" href="portfolio/lab.html">Vibe Coding Lab ↗</a>
     </div>
     <div class="col-body index" id="works-index" hidden>
       <a class="thumb" href="#" data-i="0" data-tags="uxui"><img width="960" height="752" decoding="async" src="img/thumb/bunjang.webp?v=3" alt="번개장터"></a>
@@ -360,11 +372,10 @@
         </div>
         <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 (5인)" data-en="Team project (5 members)">팀 프로젝트 (5인)</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="ID 장우진(PL) · ID 장은혜 · UX 정혜령 · VD 이일여 · BX 김채은" data-en="ID Woojin Jang (PL) · ID Eunhye Jang · UX Hyeryoung Jeong · VD Ilyeo Lee · BX Chaeeun Kim">ID 장우진(PL) · ID 장은혜 · UX 정혜령 · VD 이일여 · BX 김채은</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="비주얼 디자이너로 합류, UX 담당 팀원 이탈 후 UI 비주얼과 UX 총괄" data-en="Joined as visual designer; led UI visuals and UX after the UX designer left">비주얼 디자이너로 합류, UX 담당 팀원 이탈 후 UI 비주얼과 UX 총괄</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="2025 삼성디자인멤버십 MEP 전시" data-en="Exhibited at 2025 Samsung Design Membership MEP">2025 삼성디자인멤버십 MEP 전시</p></div>
       </article>
-
-
-
-
-
+      <a class="lab-band" href="portfolio/lab.html">
+        <div class="lab-head"><span>Vibe Coding Lab</span><span class="muted">직접 만들고 배포한 사이트 11개, 바로 써 보기 ↗</span></div>
+      </a>
+      <div class="lab-strip" aria-label="Vibe Coding Lab"><div class="lab-track"><a class="lab-card" href="portfolio/lab.html#s1"><img src="img/lab/01.webp" alt="" loading="lazy" width="960" height="600"><span>멤보딩</span></a><a class="lab-card" href="portfolio/lab.html#s2"><img src="img/lab/02.webp" alt="" loading="lazy" width="960" height="600"><span>{affinityDiagram}</span></a><a class="lab-card" href="portfolio/lab.html#s3"><img src="img/lab/03.webp" alt="" loading="lazy" width="960" height="600"><span>DesignSync</span></a><a class="lab-card" href="portfolio/lab.html#s4"><img src="img/lab/04.webp" alt="" loading="lazy" width="960" height="600"><span>Usability Tester</span></a><a class="lab-card" href="portfolio/lab.html#s5"><img src="img/lab/05.webp" alt="" loading="lazy" width="960" height="600"><span>0TO1 Graphic Tool</span></a><a class="lab-card" href="portfolio/lab.html#s6"><img src="img/lab/06.webp" alt="" loading="lazy" width="960" height="600"><span>NEWTON Token Simulator</span></a><a class="lab-card" href="portfolio/lab.html#s7"><img src="img/lab/07.webp" alt="" loading="lazy" width="960" height="600"><span>NEWTON X Bot Simulator</span></a><a class="lab-card" href="portfolio/lab.html#s8"><img src="img/lab/08.webp" alt="" loading="lazy" width="960" height="600"><span>NEWTON UX Book</span></a><a class="lab-card" href="portfolio/lab.html#s9"><img src="img/lab/09.webp" alt="" loading="lazy" width="960" height="600"><span>AFTERSPACE Simulators</span></a><a class="lab-card" href="portfolio/lab.html#s10"><img src="img/lab/10.webp" alt="" loading="lazy" width="960" height="600"><span>PBV 룸 패키징</span></a><a class="lab-card" href="portfolio/lab.html#s11"><img src="img/lab/11.webp" alt="" loading="lazy" width="960" height="600"><span>Care Yard 배치도</span></a><a class="lab-card" aria-hidden="true" tabindex="-1" href="portfolio/lab.html#s1"><img src="img/lab/01.webp" alt="" loading="lazy" width="960" height="600"><span>멤보딩</span></a><a class="lab-card" aria-hidden="true" tabindex="-1" href="portfolio/lab.html#s2"><img src="img/lab/02.webp" alt="" loading="lazy" width="960" height="600"><span>{affinityDiagram}</span></a><a class="lab-card" aria-hidden="true" tabindex="-1" href="portfolio/lab.html#s3"><img src="img/lab/03.webp" alt="" loading="lazy" width="960" height="600"><span>DesignSync</span></a><a class="lab-card" aria-hidden="true" tabindex="-1" href="portfolio/lab.html#s4"><img src="img/lab/04.webp" alt="" loading="lazy" width="960" height="600"><span>Usability Tester</span></a><a class="lab-card" aria-hidden="true" tabindex="-1" href="portfolio/lab.html#s5"><img src="img/lab/05.webp" alt="" loading="lazy" width="960" height="600"><span>0TO1 Graphic Tool</span></a><a class="lab-card" aria-hidden="true" tabindex="-1" href="portfolio/lab.html#s6"><img src="img/lab/06.webp" alt="" loading="lazy" width="960" height="600"><span>NEWTON Token Simulator</span></a><a class="lab-card" aria-hidden="true" tabindex="-1" href="portfolio/lab.html#s7"><img src="img/lab/07.webp" alt="" loading="lazy" width="960" height="600"><span>NEWTON X Bot Simulator</span></a><a class="lab-card" aria-hidden="true" tabindex="-1" href="portfolio/lab.html#s8"><img src="img/lab/08.webp" alt="" loading="lazy" width="960" height="600"><span>NEWTON UX Book</span></a><a class="lab-card" aria-hidden="true" tabindex="-1" href="portfolio/lab.html#s9"><img src="img/lab/09.webp" alt="" loading="lazy" width="960" height="600"><span>AFTERSPACE Simulators</span></a><a class="lab-card" aria-hidden="true" tabindex="-1" href="portfolio/lab.html#s10"><img src="img/lab/10.webp" alt="" loading="lazy" width="960" height="600"><span>PBV 룸 패키징</span></a><a class="lab-card" aria-hidden="true" tabindex="-1" href="portfolio/lab.html#s11"><img src="img/lab/11.webp" alt="" loading="lazy" width="960" height="600"><span>Care Yard 배치도</span></a></div></div>
     </div>
   </section>
 
@@ -553,7 +564,7 @@
   const chips=document.getElementById('chips');
   chips.addEventListener('click',e=>{ const b=e.target.closest('button.chip'); if(!b) return;
     chips.querySelectorAll('button.chip').forEach(c=>c.classList.toggle('on',c===b)); const f=b.dataset.f;
-    document.querySelectorAll('#works-grid .work, #works-index .thumb').forEach(w=>{ w.hidden = f!=='all' && !(w.dataset.tags||'').split(' ').includes(f); }); document.querySelector('.other-head').hidden = f!=='all';
+    document.querySelectorAll('#works-grid .work, #works-index .thumb').forEach(w=>{ w.hidden = f!=='all' && !(w.dataset.tags||'').split(' ').includes(f); }); document.querySelector('.other-head').hidden = f!=='all'; document.querySelectorAll('.lab-band,.lab-strip').forEach(e=>e.hidden = f!=='all' && f!=='vibe');
     col.scrollTop=0; stagger(open? index.querySelectorAll('.thumb:not([hidden])') : grid.querySelectorAll('.work:not([hidden])'), 45); });
   // ---- language (default ko; i18n.json holds ko->en) ----
   let lang='ko', I18N={};
@@ -591,6 +602,13 @@
       requestAnimationFrame(loop);
     })();
   }
+</script>
+<script>
+  // scroll velocity nudges the lab strip
+  (()=>{ const t=document.querySelector('.lab-track'); if(!t||matchMedia('(prefers-reduced-motion:reduce)').matches) return; let a, last=0, rate=1;
+    const sc=document.querySelector('#works-grid'); const tick=()=>{ a=a||t.getAnimations()[0]; if(a){ rate+= (1-rate)*0.06; a.playbackRate=rate; } requestAnimationFrame(tick); }; tick();
+    const onS=e=>{ const y=e.target.scrollTop ?? scrollY; rate=Math.min(8,1+Math.abs(y-last)*0.15); last=y; };
+    sc.addEventListener('scroll',onS,{passive:true}); addEventListener('scroll',()=>onS({target:document.scrollingElement}),{passive:true}); })();
 </script>
 </body>
 </html>

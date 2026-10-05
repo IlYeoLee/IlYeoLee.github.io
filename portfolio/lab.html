@@ -16,7 +16,7 @@
   .intro { display:grid; grid-template-columns:1fr 2fr; gap:28px; padding-bottom:40px; border-bottom:1px solid var(--line); }
   .intro h1 { font-size:32px; line-height:1.2; font-weight:600; letter-spacing:-0.02em; }
   .intro p { font-size:16px; line-height:1.7; max-width:680px; word-break:keep-all; padding-top:6px; }
-  .item { display:grid; grid-template-columns:1fr 2fr; gap:28px; padding:40px 0; border-bottom:1px solid var(--line); }
+  .item { scroll-margin-top:24px; display:grid; grid-template-columns:1fr 2fr; gap:28px; padding:40px 0; border-bottom:1px solid var(--line); }
   .meta .no { color:var(--muted); display:block; margin-bottom:10px; }
   .meta h2 { font-size:24px; line-height:1.3; font-weight:600; letter-spacing:-0.02em; word-break:keep-all; text-wrap:balance; }
   .meta p { font-size:16px; line-height:1.7; margin-top:12px; word-break:keep-all; text-wrap:pretty; }
@@ -56,7 +56,7 @@ const SITES=[
 ];
 const list=document.getElementById('list');
 SITES.forEach((s,i)=>{
-  const el=document.createElement('section'); el.className='item';
+  const el=document.createElement('section'); el.className='item'; el.id='s'+(i+1);
   const frame=s.kind==='phone'?`<div class="phone"><iframe src="${s.url}" title="${s.name}" loading="lazy" allow="autoplay"></iframe></div>`:`<div class="frame"><iframe src="${s.url}" title="${s.name}" loading="lazy" allow="autoplay; fullscreen"></iframe></div>`;
   el.innerHTML=`<div class="meta"><span class="no">${String(i+1).padStart(2,'0')}</span><h2>${s.name}</h2><p>${s.desc}</p><p class="tags">${s.tags}</p><div class="links"><a class="chip" href="${s.url}" target="_blank" rel="noopener">새 창으로 열기 ↗</a>${s.case?`<a class="chip" href="portfolio/">${s.case} 케이스 보기</a>`:''}</div></div>${frame}`;
   list.appendChild(el);
@@ -64,6 +64,7 @@ SITES.forEach((s,i)=>{
 // scale desktop iframes (rendered at 1440x900) to frame width
 const fit=()=>document.querySelectorAll('.frame').forEach(f=>{ const i=f.querySelector('iframe'); i.style.transform=`scale(${f.clientWidth/1440})`; });
 addEventListener('resize',fit); fit();
+if(location.hash) document.querySelector(location.hash)?.scrollIntoView();
 </script>
 </body>
 </html>
