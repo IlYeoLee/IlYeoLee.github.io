@@ -138,8 +138,12 @@
   #project-panel .plabel:first-of-type { margin-top:0; padding-top:0; border-top:0; }
   #project-panel .pcap { display:grid; grid-template-columns:1fr 2fr; gap:16px; margin:22px 0 10px; }
   #project-panel .pcap p { margin:0; word-break:keep-all; overflow-wrap:anywhere; }
-  #project-panel .pcap .pt { font-weight:700; }
-  #project-panel .pcap .pt .muted { font-weight:500; }
+  #project-panel .pcap { gap:28px; margin:26px 0 22px; align-items:start; }
+  #project-panel .pcap .pt { font-size:24px; line-height:1.3; font-weight:600; letter-spacing:-0.02em; }
+  #project-panel .pcap .pt .muted { display:block; font-size:var(--fs); font-weight:500; letter-spacing:0; margin-bottom:8px; }
+  #project-panel .pcap .pt br { display:none; }
+  #project-panel .pcap .pb { font-size:16px; line-height:1.7; max-width:680px; }
+  @media (max-width:900px) { #project-panel .pcap .pt { font-size:20px; } #project-panel .pcap .pb { font-size:15px; } }
   /* ---- web-native project blocks (wb-*) ---- */
   #project-panel .wb { margin:18px 0 56px; }
   #project-panel .wb p { margin:0; word-break:keep-all; overflow-wrap:anywhere; }
@@ -151,14 +155,14 @@
   .wb-screens figcaption b, .wb-steps b, .wb-chars b, .wb-rows b { font-weight:500; display:block; }
   .wb-step-no { display:block; color:var(--muted); margin-bottom:6px; }
   .wb-quotes { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-  .wb-quotes blockquote { border-top:1px solid var(--fg); padding-top:12px; font-size:16px; line-height:1.45; }
+  .wb-quotes blockquote { border-top:1px solid var(--fg); padding-top:12px; font-size:15px; line-height:1.5; }
   .wb-quotes cite { display:block; margin-top:10px; font-style:normal; font-size:var(--fs); color:var(--muted); }
   .wb-2col { display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start; }
   .wb-2col img { width:100%; height:auto; border:1px solid var(--line); border-radius:10px; }
   .wb-table { width:100%; border-collapse:collapse; }
   .wb-table th, .wb-table td { text-align:left; padding:11px 12px 11px 0; border-bottom:1px solid var(--line); font-weight:400; vertical-align:top; }
   .wb-table th { color:var(--muted); border-bottom-color:var(--fg); }
-  .wb-hmw { font-size:20px; line-height:1.4; margin-bottom:18px !important; }
+  .wb-hmw { font-size:17px; line-height:1.5; margin-bottom:18px !important; padding-left:14px; border-left:2px solid var(--fg); }
   .wb-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:22px 14px; list-style:none; }
   .wb-steps li { border-top:1px solid var(--line); padding-top:10px; }
   .wb-group { color:var(--muted); margin:26px 0 12px !important; }
