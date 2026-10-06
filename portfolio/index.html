@@ -21,6 +21,7 @@
   #works-grid .work:has(+ .other-head) { border-bottom:0; margin-bottom:0; }
   .lab-band { grid-column:1/-1; display:block; margin-top:var(--pad); padding-top:var(--pad); border-top:1px solid var(--line); text-decoration:none; color:inherit; }
   .lab-head { display:flex; justify-content:space-between; gap:12px; }
+  .lab-head > span:first-child { white-space:nowrap; }
   .lab-band:hover .muted { color:var(--fg); }
   .lab-strip { grid-column:1/-1; overflow:hidden; margin:12px calc(-1 * var(--pad)) 0; padding-bottom:var(--pad); mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent); }
   .lab-track { display:flex; gap:10px; width:max-content; animation:labflow 60s linear infinite; }
@@ -92,6 +93,7 @@
   .site.viewing #chips { display:none !important; }
   /* ---- full-screen project view: left rail of thumbs + wide project ---- */
   .site.viewing { grid-template-columns:132px 1fr; }
+  .site > * { min-width:0; }  /* grid tracks must not grow to fit the horizontal thumb rail on mobile */
   .site.viewing #works .grid, .site.viewing #works #menu-btn { display:none !important; }
   .site.viewing #works-title { cursor:pointer; }
   .site.viewing #works .index { display:grid !important; grid-template-columns:1fr; gap:var(--pad); }
@@ -195,7 +197,8 @@
   .wb-rows audio { width:100%; height:32px; }
   .wb-hero img { width:100%; height:auto; }
   .wb-try { display:grid; grid-template-columns:375px 1fr; gap:32px; align-items:center; }
-  .wb-phone { width:375px; max-width:100%; height:760px; border:1px solid var(--line); border-radius:36px; overflow:hidden; background:#f6f5f8; }
+  .wb-try > * { min-width:0; }
+  .wb-phone { width:min(375px,100%); aspect-ratio:375/760; border:1px solid var(--line); border-radius:36px; overflow:hidden; background:#f6f5f8; }
   .wb-phone iframe { width:100%; height:100%; border:0; display:block; }
   .wb-phone button { font:inherit; padding:10px 16px; border-radius:999px; border:1px solid var(--fg); background:var(--bg); cursor:pointer; }
   @media (max-width:900px) { .wb-try { grid-template-columns:1fr; } }
@@ -225,14 +228,20 @@
   .tip { text-decoration:underline 1px; text-underline-offset:3px; text-decoration-color:#b5b5b5; cursor:pointer; }
   .tip.on { outline:1px solid var(--fg); outline-offset:1px; text-decoration-color:transparent; }
   #tipcard { position:fixed; z-index:9000; width:300px; background:var(--bg); border:1px solid var(--fg); pointer-events:none; opacity:0; transform:translateX(6px); transition:opacity .18s, transform .18s; }
-  #tipcard.on { opacity:1; transform:none; }
+  #tipcard.on { opacity:1; transform:none; pointer-events:auto; }
+  #tipcard.link { cursor:pointer; }
+  #tipcard .tc-go { margin-top:10px; font-size:12px; color:var(--muted); }
+  #tipcard.link:hover .tc-go { color:var(--fg); }
+  #tipcard.sheet { left:12px !important; right:12px; bottom:calc(12px + env(safe-area-inset-bottom)); top:auto !important; width:auto; max-height:70vh; overflow:auto; transform:translateY(12px); }
+  #tipcard.sheet.on { transform:none; }
+  #tipcard.sheet img { aspect-ratio:2/1; }
   #tipcard .tc-body { padding:16px 18px 18px; }
   #tipcard b { display:block; font-size:14px; font-weight:600; margin-bottom:10px; }
   #tipcard p { font-size:13px; line-height:1.65; word-break:keep-all; }
   #tipcard img { display:block; width:100%; aspect-ratio:16/10; object-fit:cover; border-top:1px solid var(--fg); }
   #tipline { position:fixed; z-index:9000; height:1px; background:var(--fg); pointer-events:none; opacity:0; transition:opacity .18s; }
   #tipline.on { opacity:1; }
-  @media (hover:none) { #tipcard, #tipline { display:none; } }
+  @media (hover:none) { #tipline { display:none; } }
   .about { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   .about p + p { margin-top:14px; }
   .about p, .cv p { word-break:keep-all; overflow-wrap:anywhere; }
@@ -254,8 +263,10 @@
     .col { overflow:visible; border-right:0; border-bottom:1px solid var(--line); }
     .col-head { position:static; }
     /* col-head가 static이라 24px 오프셋이 비어 본문이 비쳐 보였음 */
-    .chips { top:0; }
+    .chips { top:0; overflow-x:auto; scrollbar-width:none; } .chips::-webkit-scrollbar { display:none; } .chip { white-space:nowrap; flex:none; }
+    .lab-head .muted { text-align:right; }
   }
+  @media (hover:none) { button.menu, button.lang, #proj-close, #works-title, .about .links a { position:relative; } button.menu::after, button.lang::after, #proj-close::after, .about .links a::after { content:''; position:absolute; inset:-12px -10px; } }  /* bigger touch targets, same layout */
 </style>
 </head>
 <body>
@@ -614,7 +625,7 @@
       sdm:{t:{ko:'삼성디자인멤버십 33기',en:'Samsung Design Membership, 33rd'},d:{ko:'삼성전자가 운영하는 디자인 인재 육성 프로그램. UX 디자이너로 활동하며 Hotcake와 COMONG 등 컨셉 제품의 UX를 맡았습니다. (2025–2026)',en:'A design talent program run by Samsung Electronics. As a UX designer she led the UX of concept products including Hotcake and COMONG. (2025–2026)'},img:'img/thumb/hotcake.webp'},
       hongik:{t:{ko:'홍익대학교 시각디자인과',en:'Hongik University, Visual Communication Design'},d:{ko:'2021년 입학해 재학 중이며, 교내 UX/UI 학회 HYPHEN에서 2024년 공동 회장을 맡았습니다.',en:'Enrolled in 2021. Co-president of the campus UX/UI society HYPHEN in 2024.'}},
       idea:{t:{ko:'IDEA 디자인 어워드 · Gold',en:'IDEA Design Award · Gold'},d:{ko:'Hotcake로 학생 부문 Gold를 받았습니다. (2026)',en:'Gold in the Student category with Hotcake. (2026)'},img:'img/award/idea_hotcake.webp',href:'https://www.idsa.org/awards-recognition/idea/idea-gallery/hotcake/'},
-      reddot:{t:{ko:'Red Dot 디자인 컨셉 · Best of the Best',en:'Red Dot Design Concept · Best of the Best'},d:{ko:'Hotcake로 최고상인 Best of the Best를 받았습니다. (2026)',en:'Best of the Best, the top honour, with Hotcake. (2026)'},img:'img/thumb/hotcake.webp',open:'hotcake'},
+      reddot:{t:{ko:'Red Dot 디자인 컨셉 · Best of the Best',en:'Red Dot Design Concept · Best of the Best'},d:{ko:'Hotcake로 최고상인 Best of the Best를 받았습니다. (2026)',en:'Best of the Best, the top honour, with Hotcake. (2026)'},img:'img/thumb/hotcake.webp',href:'https://www.instagram.com/p/DZXaHH1mX7W/'},
       kde:{t:{ko:'제61회 대한민국디자인전람회 · 입선',en:'61st Korea Design Exhibition · Selected'},d:{ko:'Hotcake로 입선했습니다. (2026)',en:'Selected with Hotcake. (2026)'},img:'img/thumb/hotcake.webp',open:'hotcake'},
       adp:{t:{ko:'Asia Design Prize · Gold Winner',en:'Asia Design Prize · Gold Winner'},d:{ko:'Hotcake로 Gold Winner를 받았습니다. (2026)',en:'Gold Winner with Hotcake. (2026)'},img:'img/award/adp_hotcake.webp',href:'https://asiadesignprize.com/exhibition/332524'},
       adpc:{t:{ko:'Asia Design Prize · Winner',en:'Asia Design Prize · Winner'},d:{ko:'COMONG으로 Winner를 받았습니다. (2026)',en:'Winner with COMONG. (2026)'},img:'img/award/adp_comong.webp',href:'https://asiadesignprize.com/exhibition/333307'},
@@ -633,14 +644,29 @@
       const w=document.querySelector(`#works-grid .work[data-key="${k}"]`); if(!w) return null; const m=w.querySelectorAll('.meta > p');
       return {t:m[1].innerHTML.split('<br>').slice(0,2).join(' · '), d:w.querySelector('.desc')?.textContent||'', img:w.querySelector('img')?.getAttribute('src')}; };
     let curTip=null;
-    panel.addEventListener('mouseover',e=>{ const t=e.target.closest('.tip'); if(!t||t===curTip) return; curTip?.classList.remove('on'); curTip=t; const d=info(t.dataset.k); if(!d) return;
-      card.innerHTML=`<div class="tc-body"><b>${d.t}</b><p>${d.d}</p>${d.ext?`<p class="muted" style="margin-top:8px">${ko()?'눌러서 공식 수상 페이지 보기 ↗':'Click for the official award page ↗'}</p>`:''}</div>${d.img?`<img src="${d.img}" alt="">`:''}`; t.classList.add('on');
+    const touch=matchMedia('(hover:none)').matches; let hideT=0, curK=null;
+    const target=k=>{ const c=CUSTOM[k]; if(c?.href) return c.href; const w=document.querySelector(`#works-grid .work[data-key="${c?.open||k}"]`); return w?'#'+(c?.open||k):null; };
+    const hide=()=>{ clearTimeout(hideT); curTip?.classList.remove('on'); curTip=null; curK=null; card.classList.remove('on'); line.classList.remove('on'); };
+    const go=k=>{ const c=CUSTOM[k]; hide(); if(c?.href){ if(/^http/.test(c.href)) open(c.href,'_blank','noopener'); else location.href=c.href; return; }
+      document.querySelector(`#works-grid .work[data-key="${c?.open||k}"]`)?.click(); };
+    const show=t=>{ clearTimeout(hideT); curTip?.classList.remove('on'); curTip=t; curK=t.dataset.k; const d=info(curK); if(!d) return;
+      const tg=target(curK), L=ko(); const hint=!tg?'':/^http/.test(tg)?(/instagram/.test(tg)?(L?'수상 소식 보기 ↗':'See the announcement ↗'):(L?'공식 수상 페이지 보기 ↗':'Official award page ↗')):(L?'자세히 보기 →':'View project →');
+      card.innerHTML=`<div class="tc-body"><b>${d.t}</b><p>${d.d}</p>${hint?`<p class="tc-go">${hint}</p>`:''}</div>${d.img?`<img src="${d.img}" alt="">`:''}`; card.classList.toggle('link',!!tg); t.classList.add('on');
+      if(touch){ card.classList.add('sheet','on'); return; }
       const r=t.getClientRects()[0], W=300, gap=48, h=card.offsetHeight; const left=Math.max(8,r.left-gap-W), top=Math.min(innerHeight-h-8,Math.max(8,r.top-12));
       card.style.left=left+'px'; card.style.top=top+'px'; line.style.left=(left+W)+'px'; line.style.width=(r.left-2-(left+W))+'px'; line.style.top=(r.top+r.height/2)+'px';
-      card.classList.add('on'); line.classList.add('on'); });
-    panel.addEventListener('mouseout',e=>{ const t=e.target.closest('.tip'); if(!t||t.contains(e.relatedTarget)) return; t.classList.remove('on'); curTip=null; card.classList.remove('on'); line.classList.remove('on'); });
-    panel.addEventListener('click',e=>{ const t=e.target.closest('.tip'); if(!t) return; const c=CUSTOM[t.dataset.k]; if(c?.href){ if(/^http/.test(c.href)) open(c.href,'_blank','noopener'); else location.href=c.href; return; }
-      const w=document.querySelector(`#works-grid .work[data-key="${c?.open||t.dataset.k}"]`); if(w){ card.classList.remove('on'); line.classList.remove('on'); w.click(); } });
+      card.classList.add('on'); line.classList.add('on'); };
+    const later=()=>{ clearTimeout(hideT); hideT=setTimeout(hide,250); };  // grace period to move from the term onto the card
+    if(!touch){
+      panel.addEventListener('mouseover',e=>{ const t=e.target.closest('.tip'); if(t && t!==curTip) show(t); else if(t) clearTimeout(hideT); });
+      panel.addEventListener('mouseout',e=>{ const t=e.target.closest('.tip'); if(t && !t.contains(e.relatedTarget)) later(); });
+      card.addEventListener('mouseenter',()=>clearTimeout(hideT)); card.addEventListener('mouseleave',later);
+    }
+    // desktop: click the term or the card to go; touch: first tap opens a bottom sheet, tapping the sheet goes
+    panel.addEventListener('click',e=>{ const t=e.target.closest('.tip'); if(!t) return; e.preventDefault(); if(touch && curTip!==t){ show(t); return; } go(t.dataset.k); });
+    card.addEventListener('click',()=>{ if(curK && target(curK)) go(curK); });
+    document.addEventListener('click',e=>{ if(touch && curTip && !e.target.closest('.tip, #tipcard')) hide(); });
+    addEventListener('scroll',()=>{ if(!touch) hide(); },{capture:true,passive:true});
   })();
 </script>
 <script src="portfolio/cursor.js?v=2"></script>

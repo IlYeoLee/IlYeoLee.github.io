@@ -31,7 +31,8 @@
   .chip.on { background:var(--fg); color:var(--bg); }
   @media (hover:hover) { .chip:not(.on):hover { background:#f2f2f2; color:var(--fg); } }
   .live { position:relative; width:100%; aspect-ratio:16/10; overflow:hidden; background:#eee; }
-  .live.phone { width:375px; max-width:100%; aspect-ratio:auto; height:760px; }
+  .live.phone { width:min(375px,100%); aspect-ratio:430/932; }
+  .item > * { min-width:0; }
   .live img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s cubic-bezier(.2,.7,.2,1), filter .3s; }
   .live .run { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:none; border:0; font:inherit; cursor:pointer; }
   .live .run span { font-size:12px; line-height:1; padding:8px 14px; border-radius:999px; background:var(--fg); color:var(--bg); transition:transform .2s; }
@@ -44,6 +45,7 @@
   /* ---- full-screen project view: left rail of thumbs + wide project ---- */
 
   @media (max-width:900px) { .item { grid-template-columns:1fr; gap:16px; } .pcap { grid-template-columns:1fr; gap:12px; } .pt { font-size:20px; } .pb { font-size:15px; padding-top:0; } }
+  @media (hover:none) { .col-head a { position:relative; } .col-head a::after { content:''; position:absolute; inset:-12px -10px; } .chip { padding:9px 12px; } }
 </style>
 </head>
 <body data-cursor="pixel">
@@ -65,7 +67,8 @@ const SITES=[
  {name:'AFTERSPACE Simulator',url:'https://ilyeolee.github.io/afterspace/',label:'AFTERSPACE',desc:'PBV 차량 실내 배치와 Care Yard 주차 배치를 한곳에서 직접 바꿔 보며 검토한 시뮬레이터입니다.',tags:'Three.js'},
 ];
 const list=document.getElementById('list');
-SITES.forEach((s,i)=>{
+const small=matchMedia('(max-width:900px)').matches;  // desktop sites shrink to ~25% on phones, so open them in a new tab there
+SITES.forEach((s,i)=>{ if(small && !s.phone) s={...s,newtab:true,note:''};
   const n=String(i+1).padStart(2,'0'), el=document.createElement('section'); el.id='s'+(i+1);
   const thumb=s.thumb||`img/lab/${n}.webp`;
   el.className='item';
