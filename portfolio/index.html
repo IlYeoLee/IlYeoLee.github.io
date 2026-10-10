@@ -162,6 +162,11 @@
   #project-panel .gmarq img { height:100%; width:auto; margin:0; flex:none; }
   @keyframes gmarq { to { transform:translateX(calc(-50% - var(--pad) / 2)); } }
   @media (prefers-reduced-motion:reduce) { #project-panel .gmarq .tr { animation:none; } #project-panel .gmarq { overflow-x:auto; } }
+  /* collapsed appendix: hidden until the reader opens it */
+  #project-panel .pappx { margin:104px 0 0; }
+  #project-panel .pappx > summary { list-style:none; cursor:pointer; }
+  #project-panel .pappx > summary::-webkit-details-marker { display:none; }
+  #project-panel .pappx[open] > summary .chip::after { content:' (접기)'; }
   /* carousel for runs of similar guide slides: ‹ › to page through, height follows the current slide */
   #project-panel .pcar { position:relative; margin:0 0 var(--pad); }
   #project-panel .pcar .trk { display:flex; align-items:flex-start; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; transition:height .35s ease; }
