@@ -164,10 +164,8 @@
   #project-panel .pstage .dev { position:relative; height:88%; aspect-ratio:var(--ar); border-radius:26px; overflow:hidden; box-shadow:0 24px 60px rgba(20,24,40,.18); background:#fff; }
   #project-panel .pstage .dev img { width:100%; height:100%; object-fit:cover; margin:0; cursor:pointer; }
   #project-panel .pstage .dev iframe { position:absolute; border:0; }  /* sized in JS: Figma pads 52px x / 60px y, so we crop it off */
-  #project-panel .pstage .play { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:none; border:0; cursor:pointer; }
-  #project-panel .pstage .play span { font-size:13px; padding:10px 16px; border-radius:999px; background:var(--fg); color:var(--bg); }
   #project-panel .pstage .chip { position:absolute; right:16px; bottom:16px; background:var(--bg); }
-  @media (max-width:900px) { #project-panel .pstage .play { display:none; } #project-panel .pstage .chip { right:10px; bottom:10px; } }
+  @media (max-width:900px) { #project-panel .pstage .chip { right:10px; bottom:10px; } }
   #project-panel .pvimeo img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; margin:0; }
   #project-panel .pvimeo .play { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:none; border:0; cursor:pointer; }
   #project-panel .pvimeo .play span { font-size:13px; padding:10px 16px; border-radius:999px; background:var(--fg); color:var(--bg); }
@@ -743,12 +741,14 @@
   });
 </script>
 <script>
-  // Figma prototype facade: poster first (fast page), real prototype loads on click, padding cropped so only the UI shows
+  // Figma prototypes preload ~1.5 screens before they scroll into view, so they are already live when seen; poster covers the load, padding cropped so only the UI shows
   (()=>{ const PADX=52, PADY=60;
     const fit=d=>{ const f=d.querySelector('iframe'); if(!f) return; const w=d.clientWidth, h=d.clientHeight; Object.assign(f.style,{width:(w+2*PADX)+'px',height:(h+2*PADY)+'px',left:-PADX+'px',top:-PADY+'px'}); };
-    document.getElementById('project-panel').addEventListener('click',e=>{ const d=e.target.closest('.pstage .dev'); if(!d||d.querySelector('iframe')) return; e.stopPropagation();
-      const f=document.createElement('iframe'); f.src=d.dataset.src; f.title=d.dataset.title||'prototype'; f.allow='fullscreen'; d.appendChild(f); fit(d);
-      setTimeout(()=>{ d.querySelector('img')?.remove(); d.querySelector('.play')?.remove(); },1800); }, true);
+    const load=d=>{ if(d.querySelector('iframe')) return; const f=document.createElement('iframe'); f.src=d.dataset.src; f.title=d.dataset.title||'prototype'; f.allow='fullscreen';
+      f.style.opacity=0; f.style.transition='opacity .4s'; f.addEventListener('load',()=>setTimeout(()=>{ f.style.opacity=1; setTimeout(()=>d.querySelector('img')?.remove(),500); },1200)); d.appendChild(f); fit(d); };
+    // root must be the scrolling column (desktop); a viewport root would be clipped by the column and never fire early
+    const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ load(e.target); io.unobserve(e.target); } }),{root: innerWidth>900 ? document.getElementById('about') : null, rootMargin:'1400px 0px'});
+    new MutationObserver(()=>document.querySelectorAll('#project-panel .pstage .dev:not([data-obs])').forEach(d=>{ d.dataset.obs=1; io.observe(d); })).observe(document.getElementById('project-panel'),{childList:true});
     addEventListener('resize',()=>document.querySelectorAll('.pstage .dev').forEach(fit));
   })();
 </script>
