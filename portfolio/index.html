@@ -7,7 +7,7 @@
 <title>Ilyeo Lee</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://embed.figma.com"><link rel="preconnect" href="https://www.figma.com"><link rel="preconnect" href="https://static.figma.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
   @property --bg { syntax:'<color>'; inherits:true; initial-value:#fff; }
@@ -35,6 +35,11 @@
   @media (max-width:900px) { .work > img, .work .hv-wrap, .index .thumb { border-radius:28px; } }
   .lab-card { border-radius:36px; overflow:hidden; }
   .site.viewing #works .index .thumb { border-radius:24px; }
+  /* weight hierarchy: one step up for what readers scan first */
+  .col-head > span, .other-head, .lab-head > span:first-child, .cv .row > p:first-child { font-weight:600; }
+  .work .meta p:nth-child(2)::first-line { font-weight:600; }
+  #project-panel .phead p:nth-child(2)::first-line { font-weight:600; }
+  #project-panel .plabel { font-weight:600; }
   .hv-wrap { position:relative; }
   .hv-wrap video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .25s, transform .6s cubic-bezier(.2,.7,.2,1); pointer-events:none; background:#fff; }
   @media (hover:hover) { .work:hover .hv-wrap video { transform:scale(1.015); } }  /* grow with the poster image so no edge peeks out */
@@ -229,7 +234,7 @@
   #project-panel .pcap { margin-top:104px; }  /* content → next title: 4x the old 26px */
   #project-panel .plabel + .pcap, #project-panel .phead + .pcap, #project-panel .meta.info + .pcap { margin-top:26px; }
   @media (max-width:900px) { .site.viewing #about .col-head { position:fixed; top:0; left:0; right:0; z-index:50; height:44px; } .site.viewing #project-panel { padding-top:60px !important; } .site.viewing #proj-close { padding:10px 0 10px 12px; } #project-panel .pcap { margin-top:72px; } #project-panel .plabel + .pcap { margin-top:20px; } }
-  #project-panel .pcap .pt { font-size:24px; line-height:1.3; font-weight:600; letter-spacing:-0.02em; }
+  #project-panel .pcap .pt { font-size:24px; line-height:1.3; font-weight:700; letter-spacing:-0.02em; }
   #project-panel .pcap .pt { text-wrap:balance; word-break:keep-all; }
   #project-panel .pcap .pt .muted { display:block; font-size:var(--fs); line-height:18px; font-weight:500; letter-spacing:0; margin-bottom:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   #project-panel .pcap .pt > .muted + br { display:none; }
@@ -721,7 +726,7 @@
   const chips=document.getElementById('chips');
   chips.addEventListener('click',e=>{ const b=e.target.closest('button.chip'); if(!b) return;
     chips.querySelectorAll('button.chip').forEach(c=>c.classList.toggle('on',c===b)); const f=b.dataset.f;
-    document.querySelectorAll('#works-grid .work, #works-index .thumb').forEach(w=>{ w.hidden = f!=='all' && !(w.dataset.tags||'').split(' ').includes(f); }); document.querySelector('.other-head').hidden = f!=='all'; document.querySelectorAll('.lab-band,.lab-strip').forEach(e=>e.hidden = f!=='all' && f!=='vibe');
+    document.querySelectorAll('#works-grid .work, #works-index .thumb').forEach(w=>{ w.hidden = f!=='all' && !(w.dataset.tags||'').split(' ').includes(f); }); document.querySelector('.other-head').hidden = f!=='all'; document.querySelectorAll('.lab-band,.lab-strip').forEach(e=>e.hidden = f!=='all' && f!=='vibe'); stagger(document.querySelectorAll('#works-grid .work:not([hidden]), #works-index .thumb:not([hidden])'), 55);  // cascade in on every filter tap
     col.scrollTop=0; stagger(open? index.querySelectorAll('.thumb:not([hidden])') : grid.querySelectorAll('.work:not([hidden])'), 45); });
   // ---- language (default ko; i18n.json holds ko->en) ----
   let lang='ko', I18N={};
