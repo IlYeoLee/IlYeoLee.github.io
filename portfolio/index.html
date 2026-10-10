@@ -310,20 +310,21 @@
   /* about */
   /* ---- about hover tips (phi.design style): underlined term -> outlined term + side card ---- */
   .tip { text-decoration:underline 1px; text-underline-offset:3px; text-decoration-color:#b5b5b5; cursor:pointer; }
-  .tip.on { outline:1px solid var(--fg); outline-offset:1px; text-decoration-color:transparent; }
-  #tipcard { position:fixed; z-index:9000; width:300px; background:var(--bg); border:1px solid var(--fg); pointer-events:none; opacity:0; transform:translateX(6px); transition:opacity .18s, transform .18s; }
+  .tip.on { text-decoration-color:var(--fg); }
+  #tipcard { position:fixed; z-index:9000; width:300px; background:var(--bg); border-radius:28px; overflow:hidden; box-shadow:0 24px 60px -18px rgba(0,27,55,.22), 0 2px 8px rgba(0,27,55,.06); pointer-events:none; opacity:0; transform:translateX(6px) scale(.98); transition:opacity .2s, transform .28s cubic-bezier(.2,.8,.2,1); }
   #tipcard.on { opacity:1; transform:none; pointer-events:auto; }
+  :root.lightsout #tipcard { background:#1a1a1e; box-shadow:0 24px 60px -18px rgba(0,0,0,.6); }
   #tipcard.link { cursor:pointer; }
   #tipcard .tc-go { margin-top:10px; font-size:12px; color:var(--muted); }
   #tipcard.link:hover .tc-go { color:var(--fg); }
   #tipcard.sheet { left:12px !important; right:12px; max-width:420px; margin:0 auto; bottom:calc(12px + env(safe-area-inset-bottom)); top:auto !important; width:auto; max-height:70vh; overflow:auto; transform:translateY(12px); }
   #tipcard.sheet.on { transform:none; }
   #tipcard.sheet img { aspect-ratio:2/1; }
-  #tipcard .tc-body { padding:16px 18px 18px; }
+  #tipcard .tc-body { padding:20px 22px 20px; }
   #tipcard b { display:block; font-size:14px; font-weight:600; margin-bottom:10px; }
   #tipcard p { font-size:13px; line-height:1.65; word-break:keep-all; }
-  #tipcard img { display:block; width:100%; aspect-ratio:16/10; object-fit:cover; border-top:1px solid var(--fg); }
-  #tipline { position:fixed; z-index:9000; height:1px; background:var(--fg); pointer-events:none; opacity:0; transition:opacity .18s; }
+  #tipcard img { display:block; width:calc(100% - 16px); margin:0 8px 8px; border-radius:20px; aspect-ratio:16/10; object-fit:cover; }
+  #tipline { display:none !important; }
   #tipline.on { opacity:1; }
   @media (hover:none) { #tipline { display:none; } }
   .about { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
