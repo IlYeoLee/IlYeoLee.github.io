@@ -262,7 +262,7 @@
   #project-panel .plabel:first-of-type { margin-top:0; padding-top:0; border-top:0; }
   #project-panel .pcap { display:grid; grid-template-columns:1fr 2fr; gap:16px; margin:22px 0 10px; }
   #project-panel .pcap p { margin:0; word-break:keep-all; overflow-wrap:anywhere; }
-  #project-panel .pcap { gap:28px; margin:26px 0 22px; align-items:start; }
+  #project-panel .pcap { gap:28px; margin:26px 0 48px; align-items:start; }  /* text → its content: 48 (was 22, felt cramped) */
   #project-panel .pcap > * { min-width:0; }  /* long nowrap labels must not widen the grid on phones */
   #project-panel .pcap { margin-top:104px; }  /* content → next title: 4x the old 26px */
   #project-panel .plabel + .pcap, #project-panel .phead + .pcap, #project-panel .meta.info + .pcap { margin-top:26px; }
@@ -275,7 +275,7 @@
   #project-panel .pcap:has(.pt > .muted) .pb { padding-top:24px; }
   @media (max-width:900px) { #project-panel .pcap .pt { font-size:20px; } #project-panel .pcap .pb, #project-panel .pcap:has(.pt > .muted) .pb { font-size:16px; padding-top:0; } }
   /* ---- web-native project blocks (wb-*) ---- */
-  #project-panel .wb { margin:18px 0 56px; }
+  #project-panel .wb { margin:0 0 56px; }
   #project-panel .wb p { margin:0; word-break:keep-all; overflow-wrap:anywhere; }
   #project-panel .wb img { margin:0; cursor:zoom-in; background:none; }
   #project-panel .wb .muted { color:var(--muted); }
