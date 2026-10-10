@@ -906,7 +906,7 @@
       if(!free){ free={x:r.left,y:r.top,w:r.width,home:{x:r.left-x,y:r.top-y}}; b.insertAdjacentHTML('afterend','<i class="wm-hold" style="display:block;height:86px"></i>'); free.hold=b.nextElementSibling; document.body.appendChild(b); b.style.position='fixed'; b.style.left='0'; b.style.top='0'; b.style.zIndex='9400'; b.style.margin='0'; }
       free.ox=e.clientX-free.x; free.oy=e.clientY-free.y; drag={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,t:performance.now(),vx:0,vy:0,moved:false}; vs-=.25; });
     const release=()=>{ if(!drag) return; const d=drag; drag=null;
-      if(!d.moved){ vs-=.6; seeds(free.x+free.w/2,free.y+free.w*.45,5,-Math.PI/2,1.4,4.5); free.vx=0; free.vy=0; free.back=true; return; }
+      if(!d.moved){ vs-=.6; _seeds(free.x+free.w/2,free.y+free.w*.45,5,-Math.PI/2,1.4,4.5); free.vx=0; free.vy=0; free.back=true; return; }
       free.vx=d.vx; free.vy=d.vy; vr=d.vx*14; idle=0; free.back=false; };
     addEventListener('pointerup',release); addEventListener('pointercancel',release); addEventListener('blur',release);  // window-level: moving the node to <body> drops pointer capture
     // About terms: the watermelon just turns toward the hovered word with a small squish
