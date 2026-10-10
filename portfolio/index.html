@@ -167,7 +167,7 @@
   #project-panel .pcar .trk { display:flex; align-items:flex-start; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; transition:height .35s ease; }
   #project-panel .pcar .trk::-webkit-scrollbar { display:none; }
   #project-panel .pcar .trk > img { flex:0 0 100%; width:100%; margin:0; scroll-snap-align:start; }
-  #project-panel .pcar .nav { position:absolute; top:16px; right:16px; display:flex; gap:6px; align-items:center; }
+  #project-panel .pcar .nav { position:sticky; top:16px; z-index:3; height:0; display:flex; justify-content:flex-end; gap:6px; align-items:flex-start; padding-right:16px; transform:translateY(16px); }  /* sticky: stays reachable while scrolling a tall slide */
   #project-panel .pcar .nav button { width:36px; height:36px; border-radius:50%; border:0; background:rgba(20,20,24,.72); color:#fff; font-size:18px; line-height:36px; cursor:pointer; }
   #project-panel .pcar .nav button:disabled { opacity:.3; cursor:default; }
   #project-panel .pcar .nav span { font-size:12px; padding:0 8px; height:28px; line-height:28px; border-radius:999px; background:rgba(20,20,24,.72); color:#fff; }
@@ -785,7 +785,8 @@
   // .pcar carousels: wire ‹ › buttons + counter once the project template is inserted
   new MutationObserver(()=>document.querySelectorAll('#project-panel .pcar:not([data-on])').forEach(c=>{ c.dataset.on=1;
     const t=c.querySelector('.trk'), n=t.children.length;
-    c.insertAdjacentHTML('beforeend','<div class="nav"><button type="button" aria-label="이전">‹</button><span>1 / '+n+'</span><button type="button" aria-label="다음">›</button></div>');
+    if(n<2) return;
+    c.insertAdjacentHTML('afterbegin','<div class="nav"><button type="button" aria-label="이전">‹</button><span>1 / '+n+'</span><button type="button" aria-label="다음">›</button></div>');
     const [pv,nx]=c.querySelectorAll('.nav button'), cnt=c.querySelector('.nav span');
     const idx=()=>Math.round(t.scrollLeft/t.clientWidth);
     const sync=()=>{ const i=idx(); cnt.textContent=(i+1)+' / '+n; pv.disabled=i===0; nx.disabled=i===n-1; const im=t.children[i]; if(im&&im.offsetHeight) t.style.height=im.offsetHeight+'px'; };
