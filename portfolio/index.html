@@ -3,6 +3,8 @@
 <head>
 <base href="../">
 <meta charset="utf-8">
+<link rel="icon" type="image/png" sizes="32x32" href="img/icon/wm_32.png">
+<link rel="apple-touch-icon" href="img/icon/wm_180.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ilyeo Lee</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,6 +42,10 @@
   .work .meta p:nth-child(2)::first-line { font-weight:600; }
   #project-panel .phead p:nth-child(2)::first-line { font-weight:600; }
   #project-panel .plabel { font-weight:600; }
+  /* signature watermelon: leans toward the cursor, squishes and spits seeds on click */
+  .about .wm { display:block; margin-top:28px; width:112px; height:112px; padding:0; border:0; background:none; cursor:pointer; will-change:transform; }
+  .about .wm img { width:100%; height:100%; display:block; pointer-events:none; user-select:none; }
+  .wm-seed { position:fixed; z-index:9500; width:9px; height:13px; border-radius:50%; background:#111; pointer-events:none; }
   .hv-wrap { position:relative; }
   .hv-wrap video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .25s, transform .6s cubic-bezier(.2,.7,.2,1); pointer-events:none; background:#fff; }
   @media (hover:hover) { .work:hover .hv-wrap video { transform:scale(1.015); } }  /* grow with the poster image so no edge peeks out */
@@ -541,6 +547,7 @@
           <div class="gap"></div>
           <p><a href="https://www.instagram.com/leeilyeoo/" target="_blank" rel="noopener">Instagram</a></p>
           <p><a href="https://www.behance.net/leeilyeoo" target="_blank" rel="noopener">Behance</a></p>
+          <button class="wm" type="button" aria-label="watermelon"><img src="img/icon/wm_512.png" alt="" width="512" height="512"></button>
         </div>
         <div>
           <p data-en="Ilyeo Lee is a UI and product designer based in Seoul. She sets the standards of a product with design systems and developer guides, and builds with generative AI to test them for real. She designs when and how an AI service should step in, and makes that decision readable on screen." data-ko="이일여는 서울에서 활동하는 UI·프로덕트 디자이너입니다. 디자인 시스템과 개발 가이드로 화면의 기준을 세우고, 생성형 AI로 직접 만들어 확인합니다. AI 서비스가 언제 어떻게 개입해야 하는지 설계하고, 그 결정이 화면에서 읽히게 만듭니다.">Ilyeo Lee is a UI and product designer based in Seoul. She sets the standards of a product with design systems and developer guides, and builds with generative AI to test them for real. She designs when and how an AI service should step in, and makes that decision readable on screen.</p>
@@ -878,6 +885,25 @@
 <script>
   // warm the cache for cover motions once the home page is idle, so opening a project shows it instantly
   addEventListener('load',()=>(window.requestIdleCallback||setTimeout)(()=>document.querySelectorAll('#works-grid .work[data-hover-video]').forEach(w=>fetch(w.dataset.hoverVideo,{priority:'low'}).catch(()=>{})),{timeout:3000}));
+</script>
+<script>
+  (()=>{ const b=document.querySelector('.about .wm'); if(!b) return; const R=matchMedia('(prefers-reduced-motion:reduce)').matches;
+    let tx=0,ty=0,x=0,y=0,vx=0,vy=0, rot=0,vr=0,rt=0, sq=0,vs=0, t0=performance.now();
+    addEventListener('pointermove',e=>{ const r=b.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2, dx=e.clientX-cx, dy=e.clientY-cy, d=Math.hypot(dx,dy)||1, pull=Math.min(1,180/d);
+      tx=dx/d*Math.min(14,d*.08)*pull; ty=dy/d*Math.min(14,d*.08)*pull; },{passive:true});
+    b.addEventListener('pointerleave',()=>{});
+    b.addEventListener('click',e=>{ vs-=.9; rt+=360*(Math.random()<.5?-1:1); const r=b.getBoundingClientRect();
+      for(let i=0;i<9;i++){ const sd=document.createElement('i'); sd.className='wm-seed'; document.body.appendChild(sd);
+        let px=r.left+r.width/2, py=r.top+r.height*.45, a=-Math.PI/2+(Math.random()-.5)*2.2, sp=5+Math.random()*6, svx=Math.cos(a)*sp, svy=Math.sin(a)*sp, sr=Math.random()*360, life=0;
+        const step=()=>{ life++; svy+=.35; px+=svx; py+=svy; sr+=svx*4; sd.style.transform=`translate(${px}px,${py}px) rotate(${sr}deg)`; sd.style.opacity=Math.max(0,1-life/70);
+          if(life<70) requestAnimationFrame(step); else sd.remove(); }; requestAnimationFrame(step); } });
+    (function loop(now){ const dt=1/60, t=(now-t0)/1000;
+      vx+=(-170*(x-tx)-16*vx)*dt; vy+=(-170*(y-ty)-16*vy)*dt; x+=vx*dt; y+=vy*dt;
+      vr+=(-60*(rot-rt)-11*vr)*dt; rot+=vr*dt; vs+=(-260*sq-9*vs)*dt; sq+=vs*dt;
+      const bob=R?0:Math.sin(t*1.6)*3, s1=1+sq*.35, s2=1-sq*.35;
+      b.style.transform=`translate(${x}px,${y+bob}px) rotate(${rot+x*.8}deg) scale(${s2},${s1})`;
+      requestAnimationFrame(loop); })(t0);
+  })();
 </script>
 <script src="portfolio/jelly.js?v=5"></script>
 <script src="portfolio/cursor.js?v=3"></script>
