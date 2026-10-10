@@ -43,7 +43,8 @@
   #project-panel .phead p:nth-child(2)::first-line { font-weight:600; }
   #project-panel .plabel { font-weight:600; }
   /* signature watermelon: leans toward the cursor, squishes and spits seeds on click */
-  .about .wm { display:block; margin:0 0 14px; width:72px; height:72px; padding:0; border:0; background:none; cursor:pointer; will-change:transform; }
+  .about .wm { display:block; margin:0 0 14px; width:72px; height:72px; padding:0; border:0; background:none; cursor:grab; touch-action:none; will-change:transform; }
+  .about .links { position:relative; }
   .about .wm img { width:100%; height:100%; display:block; pointer-events:none; user-select:none; }
   .wm-seed { position:fixed; z-index:9500; width:9px; height:13px; border-radius:50%; background:#111; pointer-events:none; }
   .hv-wrap { position:relative; }
@@ -887,21 +888,40 @@
   addEventListener('load',()=>(window.requestIdleCallback||setTimeout)(()=>document.querySelectorAll('#works-grid .work[data-hover-video]').forEach(w=>fetch(w.dataset.hoverVideo,{priority:'low'}).catch(()=>{})),{timeout:3000}));
 </script>
 <script>
+  // signature watermelon: leans to the cursor at home; grab and throw it, it bounces around the screen with gravity and spin,
+  // seeds spill on every hard bounce, then it rolls back home. A plain click squishes it and spits seeds.
   (()=>{ const b=document.querySelector('.about .wm'); if(!b) return; const R=matchMedia('(prefers-reduced-motion:reduce)').matches;
     let tx=0,ty=0,x=0,y=0,vx=0,vy=0, rot=0,vr=0,rt=0, sq=0,vs=0, t0=performance.now();
-    addEventListener('pointermove',e=>{ const r=b.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2, dx=e.clientX-cx, dy=e.clientY-cy, d=Math.hypot(dx,dy)||1, pull=Math.min(1,180/d);
-      tx=dx/d*Math.min(14,d*.08)*pull; ty=dy/d*Math.min(14,d*.08)*pull; },{passive:true});
-    b.addEventListener('pointerleave',()=>{});
-    b.addEventListener('click',e=>{ vs-=.9; rt+=360*(Math.random()<.5?-1:1); const r=b.getBoundingClientRect();
-      for(let i=0;i<9;i++){ const sd=document.createElement('i'); sd.className='wm-seed'; document.body.appendChild(sd);
-        let px=r.left+r.width/2, py=r.top+r.height*.45, a=-Math.PI/2+(Math.random()-.5)*2.2, sp=5+Math.random()*6, svx=Math.cos(a)*sp, svy=Math.sin(a)*sp, sr=Math.random()*360, life=0;
-        const step=()=>{ life++; svy+=.35; px+=svx; py+=svy; sr+=svx*4; sd.style.transform=`translate(${px}px,${py}px) rotate(${sr}deg)`; sd.style.opacity=Math.max(0,1-life/70);
-          if(life<70) requestAnimationFrame(step); else sd.remove(); }; requestAnimationFrame(step); } });
+    let free=null, drag=null, idle=0;
+    const seeds=(px,py,n,dir=-Math.PI/2,spread=2.2,pow=6)=>{ for(let i=0;i<n;i++){ const sd=document.createElement('i'); sd.className='wm-seed'; document.body.appendChild(sd);
+        let a=dir+(Math.random()-.5)*spread, sp=pow*(.6+Math.random()*.8), svx=Math.cos(a)*sp, svy=Math.sin(a)*sp, sr=Math.random()*360, life=0, X=px, Y=py;
+        const step=()=>{ life++; svy+=.35; X+=svx; Y+=svy; sr+=svx*4; sd.style.transform=`translate(${X}px,${Y}px) rotate(${sr}deg)`; sd.style.opacity=Math.max(0,1-life/70);
+          if(life<70) requestAnimationFrame(step); else sd.remove(); }; requestAnimationFrame(step); } };
+    addEventListener('pointermove',e=>{ if(drag){ const now=performance.now(), dt=Math.max(8,now-drag.t); drag.vx=(e.clientX-drag.x)/dt*16; drag.vy=(e.clientY-drag.y)/dt*16; drag.x=e.clientX; drag.y=e.clientY; drag.t=now;
+        free.x=e.clientX-free.ox; free.y=e.clientY-free.oy; if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>6) drag.moved=true; return; }
+      if(free) return; const r=b.getBoundingClientRect(), dx=e.clientX-(r.left+r.width/2), dy=e.clientY-(r.top+r.height/2), d=Math.hypot(dx,dy)||1, pull=Math.min(1,180/d);
+      tx=dx/d*Math.min(12,d*.08)*pull; ty=dy/d*Math.min(12,d*.08)*pull; },{passive:true});
+    b.addEventListener('pointerdown',e=>{ e.preventDefault(); b.setPointerCapture(e.pointerId); const r=b.getBoundingClientRect();
+      if(!free){ free={x:r.left,y:r.top,w:r.width,home:{x:r.left-x,y:r.top-y}}; b.insertAdjacentHTML('afterend','<i class="wm-hold" style="display:block;height:86px"></i>'); b.style.position='fixed'; b.style.left='0'; b.style.top='0'; b.style.zIndex='9400'; b.style.margin='0'; }
+      free.ox=e.clientX-free.x; free.oy=e.clientY-free.y; drag={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,t:performance.now(),vx:0,vy:0,moved:false}; vs-=.25; });
+    const release=()=>{ if(!drag) return; const d=drag; drag=null;
+      if(!d.moved){ vs-=.9; rt+=360*(Math.random()<.5?-1:1); seeds(free.x+free.w/2,free.y+free.w*.45,9); free.vx=0; free.vy=0; free.back=true; return; }
+      free.vx=d.vx; free.vy=d.vy; vr=d.vx*14; idle=0; free.back=false; };
+    b.addEventListener('pointerup',release); b.addEventListener('pointercancel',release);
     (function loop(now){ const dt=1/60, t=(now-t0)/1000;
+      vr+=(-60*(rot-rt)-11*vr)*dt*(free&&!free.back&&!drag?0:1); rot+=vr*dt; vs+=(-260*sq-9*vs)*dt; sq+=vs*dt;
+      if(free){ const f=free, W=innerWidth, H=innerHeight, w=f.w;
+        if(!drag && !f.back){ f.vy+=0.55; f.vx*=.995; f.x+=f.vx; f.y+=f.vy; rot+=f.vx*1.6;
+          const hit=(v)=>{ if(Math.abs(v)>7){ vs+=Math.min(.8,Math.abs(v)*.04); seeds(f.x+w/2,f.y+w/2,Math.min(6,Math.abs(v)/3|0),Math.atan2(-Math.sign(f.vy||-1),0)); } };
+          if(f.x<0){ f.x=0; hit(f.vx); f.vx*=-.72; } if(f.x+w>W){ f.x=W-w; hit(f.vx); f.vx*=-.72; }
+          if(f.y<0){ f.y=0; hit(f.vy); f.vy*=-.72; } if(f.y+w>H){ f.y=H-w; hit(f.vy); f.vy*=-.62; f.vx*=.9; }
+          if(Math.abs(f.vx)+Math.abs(f.vy)<1.2 && f.y+w>=H-1){ if(++idle>90) f.back=true; } else idle=0; }
+        if(f.back && !drag){ const r=b.parentElement.getBoundingClientRect(), hx=r.left, hy=r.top; f.x+=(hx-f.x)*.12; f.y+=(hy-f.y)*.12; rt=Math.round(rot/360)*360;
+          if(Math.hypot(hx-f.x,hy-f.y)<1){ b.nextElementSibling?.classList.contains('wm-hold')&&b.nextElementSibling.remove(); free=null; b.style.position=''; b.style.left=''; b.style.top=''; b.style.zIndex=''; b.style.margin=''; x=y=vx=vy=0; } }
+        if(free){ b.style.transform=`translate(${f.x}px,${f.y}px) rotate(${rot}deg) scale(${1-sq*.35},${1+sq*.35})`; requestAnimationFrame(loop); return; } }
       vx+=(-170*(x-tx)-16*vx)*dt; vy+=(-170*(y-ty)-16*vy)*dt; x+=vx*dt; y+=vy*dt;
-      vr+=(-60*(rot-rt)-11*vr)*dt; rot+=vr*dt; vs+=(-260*sq-9*vs)*dt; sq+=vs*dt;
-      const bob=R?0:Math.sin(t*1.6)*3, s1=1+sq*.35, s2=1-sq*.35;
-      b.style.transform=`translate(${x}px,${y+bob}px) rotate(${rot+x*.8}deg) scale(${s2},${s1})`;
+      const bob=R?0:Math.sin(t*1.6)*3;
+      b.style.transform=`translate(${x}px,${y+bob}px) rotate(${rot+x*.8}deg) scale(${1-sq*.35},${1+sq*.35})`;
       requestAnimationFrame(loop); })(t0);
   })();
 </script>
