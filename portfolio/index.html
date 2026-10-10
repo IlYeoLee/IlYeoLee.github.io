@@ -908,7 +908,7 @@
       free.ox=e.clientX-free.x; free.oy=e.clientY-free.y; drag={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,t:performance.now(),vx:0,vy:0,moved:false}; vs-=.25; });
     const release=()=>{ if(!drag) return; const d=drag; drag=null;
       if(!d.moved){ vs-=.6; _seeds(free.x+free.w/2,free.y+free.w*.45,5,-Math.PI/2,1.4,4.5); free.vx=0; free.vy=0; free.back=true; return; }
-      free.vx=d.vx; free.vy=d.vy; vr=d.vx*14; idle=0; free.back=false; };
+      free.vx=d.vx; free.vy=d.vy; vr=d.vx*14; idle=0; free.age=0; free.back=false; };
     addEventListener('pointerup',release); addEventListener('mouseup',release); addEventListener('pointercancel',release); addEventListener('blur',release);  // window-level: moving the node to <body> drops pointer capture
     // About terms: the watermelon just turns toward the hovered word with a small squish
     addEventListener('tipshow',e=>{ if(free||R) return; const r=b.getBoundingClientRect(), q=e.detail, dx=q.left+Math.min(q.width,60)*.5-(r.left+r.width/2), dy=q.top+q.height*.5-(r.top+r.height/2), d=Math.hypot(dx,dy)||1; tx=dx/d*5; ty=dy/d*4; vs-=.22; });
@@ -928,8 +928,8 @@
               break; } }
           if(f.x<0){ f.x=0; hit(f.vx); f.vx*=-.72; } if(f.x+w>W){ f.x=W-w; hit(f.vx); f.vx*=-.72; }
           if(f.y<0){ f.y=0; hit(f.vy); f.vy*=-.72; } if(f.y+w>H){ f.y=H-w; hit(f.vy); f.vy*=-.62; f.vx*=.9; }
-          if(Math.abs(f.vx)+Math.abs(f.vy)<1.6){ if(++idle>90) f.back=true; } else idle=0; }
-        if(f.back && !drag){ const r=f.hold.getBoundingClientRect(), hx=r.left, hy=r.top; f.x+=(hx-f.x)*.12; f.y+=(hy-f.y)*.12; rt=Math.round(rot/360)*360;
+          if(Math.abs(f.vx)+Math.abs(f.vy)<2.4){ if(++idle>30) f.back=true; } else idle=0; if(++f.age>270) f.back=true; /* rest 0.5 s, or 4.5 s max in the air */ }
+        if(f.back && !drag){ const r=f.hold.getBoundingClientRect(), hx=r.left, hy=r.top; f.x+=(hx-f.x)*.2; f.y+=(hy-f.y)*.2; rt=Math.round(rot/360)*360;
           if(Math.hypot(hx-f.x,hy-f.y)<1){ free.hold.replaceWith(b); free=null; b.style.position=''; b.style.left=''; b.style.top=''; b.style.zIndex=''; b.style.margin=''; x=y=vx=vy=0; } }
         if(free){ b.style.transform=`translate(${f.x}px,${f.y}px) rotate(${rot}deg) scale(${1-sq*.35},${1+sq*.35})`; requestAnimationFrame(loop); return; } }
       vx+=(-170*(x-tx)-16*vx)*dt; vy+=(-170*(y-ty)-16*vy)*dt; x+=vx*dt; y+=vy*dt;
