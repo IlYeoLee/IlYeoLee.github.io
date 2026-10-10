@@ -592,7 +592,7 @@
       if(v.dataset.loopfrom){ v.loop=false; v.addEventListener('ended',()=>{ v.currentTime=+v.dataset.loopfrom; v.play().catch(()=>{}); }); }  // intro plays once, then only the idle part loops
       const wrap=document.createElement('div'); wrap.className='vwrap'; v.replaceWith(wrap); wrap.appendChild(v);
       const fmt=t=>{t=Math.floor(t||0); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
-      const addBar=()=>{ if(wrap.querySelector('.vbar, .sndonly')) return;
+      const addBar=()=>{ if(wrap.querySelector('.vbar, .sndonly') || v.dataset.auto) return;  // covers play like images: no bar
         if(!(v.duration>=20)){ if(v.dataset.audio){ const sb=document.createElement('button'); sb.type='button'; sb.className='sndonly'; sb.innerHTML=SND_OFF;
             sb.addEventListener('click',()=>{ v.muted=!v.muted; sb.innerHTML=v.muted?SND_OFF:SND_ON; }); wrap.appendChild(sb); } return; }
         const bar=document.createElement('div'); bar.className='vbar';
