@@ -53,10 +53,13 @@
   const TH = '#works-grid .work > img, #works-grid .work .hv-wrap, .index .thumb, .lab-card';
   const thumbOf = e => e.target instanceof Element ? e.target.closest(TH) : null;
   const swell = (el, k) => { const sp = spring(380, 0.9, 0.3); set(el, 'sx', k, spring(380 * 1.24, 0.8, 0.55), 0); set(el, 'sy', k, sp, 0.04); set(el, 'x', 0, sp, 0); };
-  document.addEventListener('pointerover', e => { const t = thumbOf(e); if (t && !t.contains(e.relatedTarget)) swell(t, 1.035); });
+  // grow exactly until the edges meet the neighbours (gap goes to 0, never overlaps)
+  const grow = t => { const box = t.closest('.work, .thumb, .lab-card') || t, host = box.parentElement.closest('.other-row, .grid, .index, .lab-track') || box.parentElement;
+    const gap = parseFloat(getComputedStyle(host).columnGap) || parseFloat(getComputedStyle(host).gap) || 7; return 1 + gap * 1.6 / t.offsetWidth; };  // each side grows ~0.8 gap; spring overshoot fills the rest, so edges just touch
+  document.addEventListener('pointerover', e => { const t = thumbOf(e); if (t && !t.contains(e.relatedTarget)) swell(t, grow(t)); });
   document.addEventListener('pointerout', e => { const t = thumbOf(e); if (t && !t.contains(e.relatedTarget)) swell(t, 1); });
   document.addEventListener('pointerdown', e => { const t = thumbOf(e); if (t) swell(t, 0.975); });
-  document.addEventListener('pointerup', e => { const t = thumbOf(e); if (t) swell(t, matchMedia('(hover:hover)').matches ? 1.035 : 1); });
+  document.addEventListener('pointerup', e => { const t = thumbOf(e); if (t) swell(t, matchMedia('(hover:hover)').matches ? grow(t) : 1); });
   // filter row: active chip swollen from the start
   const row = document.getElementById('chips'); if (row) requestAnimationFrame(() => rest(group(row.querySelector('.chip'))));
 })();
