@@ -807,7 +807,7 @@
     const hide=()=>{ clearTimeout(hideT); curTip?.classList.remove('on'); curTip=null; curK=null; card.classList.remove('on'); line.classList.remove('on'); };
     const go=k=>{ const c=CUSTOM[k]; hide(); if(c?.href){ if(/^http/.test(c.href)) open(c.href,'_blank','noopener'); else location.href=c.href; return; }
       document.querySelector(`#works-grid .work[data-key="${c?.open||k}"]`)?.click(); };
-    const show=t=>{ clearTimeout(hideT); curTip?.classList.remove('on'); curTip=t; curK=t.dataset.k; const d=info(curK); if(!d) return;
+    const show=t=>{ clearTimeout(hideT); curTip?.classList.remove('on'); curTip=t; curK=t.dataset.k; const d=info(curK); if(!d) return; dispatchEvent(new CustomEvent('tipshow',{detail:t.getBoundingClientRect()}));
       const tg=target(curK), L=ko(); const go=CUSTOM[curK]?.go, hint=!tg?'':go?(L?go[0]:go[1]):/^http/.test(tg)?(/instagram/.test(tg)?(L?'수상 소식 보기 ↗':'See the announcement ↗'):(L?'공식 수상 페이지 보기 ↗':'Official award page ↗')):(L?'자세히 보기 →':'View project →');
       card.innerHTML=`<div class="tc-body"><b>${d.t}</b><p>${d.d}</p>${hint?`<p class="tc-go">${hint}</p>`:''}</div>${d.img?`<img src="${d.img}" alt="">`:''}`; card.classList.toggle('link',!!tg); t.classList.add('on');
       if(touch){ card.classList.add('sheet','on'); return; }
@@ -908,6 +908,15 @@
       if(!d.moved){ vs-=.9; rt+=360*(Math.random()<.5?-1:1); seeds(free.x+free.w/2,free.y+free.w*.45,9); free.vx=0; free.vy=0; free.back=true; return; }
       free.vx=d.vx; free.vy=d.vy; vr=d.vx*14; idle=0; free.back=false; };
     b.addEventListener('pointerup',release); b.addEventListener('pointercancel',release);
+    // About terms: the watermelon turns to the hovered word and lobs a little arc of seeds that lands on it
+    let lastTip=0; addEventListener('tipshow',e=>{ if(free||R) return; const now=performance.now(); if(now-lastTip<220) return; lastTip=now;
+      const r=b.getBoundingClientRect(), sx=r.left+r.width/2, sy=r.top+r.height*.4, q=e.detail, ex=q.left+Math.min(q.width,60)*.5, ey=q.top+q.height*.5;
+      const dx=ex-sx, dy=ey-sy, d=Math.hypot(dx,dy)||1; tx=dx/d*14; ty=dy/d*10; vs-=.45; vr+=dx>0?-160:160;
+      const T=Math.max(22,Math.min(46,d/18));   // frames in flight, scaled to distance
+      for(let i=0;i<5;i++){ const sd=document.createElement('i'); sd.className='wm-seed'; document.body.appendChild(sd); const lag=i*3, g=.5, vy0=(dy-.5*g*T*T)/T, vx0=dx/T;
+        let k=-lag, sr=Math.random()*360; const step=()=>{ k++; if(k<0){ requestAnimationFrame(step); return; } const X=sx+vx0*k+(Math.random()-.5)*2, Y=sy+vy0*k+.5*g*k*k; sr+=9;
+          sd.style.transform=`translate(${X}px,${Y}px) rotate(${sr}deg) scale(${k>T?Math.max(0,1-(k-T)/10):1})`; sd.style.opacity=k>T?Math.max(0,1-(k-T)/10):1;
+          if(k<T+10) requestAnimationFrame(step); else sd.remove(); }; requestAnimationFrame(step); } });
     (function loop(now){ const dt=1/60, t=(now-t0)/1000;
       vr+=(-60*(rot-rt)-11*vr)*dt*(free&&!free.back&&!drag?0:1); rot+=vr*dt; vs+=(-260*sq-9*vs)*dt; sq+=vs*dt;
       if(free){ const f=free, W=innerWidth, H=innerHeight, w=f.w;
