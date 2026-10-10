@@ -582,7 +582,7 @@
   // videos: play only when scrolling has stopped with the video in view; pause when it leaves
   const visible=new Set(); let scrollTimer=null, scrolling=false;
   const playVisible=()=>{ visible.forEach(v=>{ if(!v.dataset.userPaused) v.play().catch(()=>{}); }); };
-  const vio=new IntersectionObserver(es=>{ for(const e of es){ const v=e.target; if(e.isIntersecting){ visible.add(v); if(!scrolling && !v.dataset.userPaused) v.play().catch(()=>{}); } else { visible.delete(v); if(!v.dataset.auto) v.pause(); } } }, {threshold:.5});
+  const vio=new IntersectionObserver(es=>{ for(const e of es){ const v=e.target; if(e.isIntersecting){ visible.add(v); if((v.dataset.auto || !scrolling) && !v.dataset.userPaused) v.play().catch(()=>{}); } else { visible.delete(v); v.pause(); } } }, {threshold:.5});
   document.addEventListener('scroll', ()=>{ scrolling=true; clearTimeout(scrollTimer); scrollTimer=setTimeout(()=>{ scrolling=false; playVisible(); }, 180); }, {passive:true, capture:true});
   const SND_ON='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 6h3l4-3v10l-4-3H2z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5" stroke-linecap="round"/><path d="M12.8 3.5a6 6 0 0 1 0 9" stroke-linecap="round"/></svg>', SND_OFF='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 6h3l4-3v10l-4-3H2z"/><path d="M11 6l3.5 3.5M14.5 6L11 9.5" stroke-linecap="round"/></svg>';
   function setupVideos(root){
@@ -807,9 +807,12 @@
     // one Figma boot at a time, in page order (8 at once would choke the CPU); only those within ~4 screens stay alive
     const near=new Set(); let busy=null;
     const next=()=>{ if(busy) return; const mid=innerHeight/2, dist=d=>{ const r=d.getBoundingClientRect(); return Math.abs(r.top+r.height/2-mid); };
-      const d=[...near].filter(d=>!d.querySelector('iframe')).sort((a,b)=>dist(a)-dist(b))[0];  // closest to the screen first, so jumping straight to a scenario loads that one
-      if(d){ busy=d; load(d); } };
-    const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting) near.add(e.target); else { near.delete(e.target); unload(e.target); } }); next(); },{root: innerWidth>900 ? document.getElementById('about') : null, rootMargin:'4000px 0px'});
+      const d=[...near].sort((a,b)=>dist(a)-dist(b)).slice(0,2).find(d=>!d.querySelector('iframe'));  // closest to the screen first, so jumping straight to a scenario loads that one
+      if(d){ busy=d; load(d); }
+      // at most 2 Figma runtimes alive (the two nearest the screen); every extra one costs CPU/GPU for the whole page
+      [...document.querySelectorAll('#project-panel .pstage .dev')].filter(x=>x.querySelector('iframe')&&x!==busy).sort((a,b)=>dist(a)-dist(b)).slice(2).forEach(unload); };
+    let st=0; (innerWidth>900?document.getElementById('about'):window).addEventListener('scroll',()=>{ clearTimeout(st); st=setTimeout(next,250); },{passive:true});
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting) near.add(e.target); else { near.delete(e.target); unload(e.target); } }); next(); },{root: innerWidth>900 ? document.getElementById('about') : null, rootMargin:'2600px 0px'});
     new MutationObserver(()=>document.querySelectorAll('#project-panel .pstage .dev:not([data-obs])').forEach(d=>{ d.dataset.obs=1; io.observe(d); })).observe(document.getElementById('project-panel'),{childList:true});
     // "영상으로 보기": swaps the stage to the scenario's screen recording (Vimeo, with controls) and back
     new MutationObserver(()=>document.querySelectorAll('#project-panel .pstage[data-video]:not([data-vsw])').forEach(st=>{ st.dataset.vsw=1;
