@@ -7,8 +7,8 @@
   const css = document.createElement('style');
   css.textContent = `.chip{transition:background .2s,color .2s,border-color .2s !important;transform-origin:50% 50%;will-change:transform}
     .chip:active{transform:none} a.chip{display:inline-block}
-    #works-grid .work > img, #works-grid .work .hv-wrap, .index .thumb{transform-origin:50% 50%;will-change:transform}
-    @media (hover:hover){ .work:hover img, .work:hover .hv-wrap video, .index .thumb:hover img{transform:none !important} }`;
+    #works-grid .work > img, #works-grid .work .hv-wrap, .index .thumb, .lab-card{transform-origin:50% 50%;will-change:transform}
+    @media (hover:hover){ .work:hover .hv-wrap img, .work:hover .hv-wrap video, .index .thumb:hover img{transform:none !important} }`;
   document.head.appendChild(css);
 
   const spring = (k, m, b) => ({ k, m, c: 2 * Math.sqrt(k * m) * (1 - b) });
@@ -50,7 +50,7 @@
   document.addEventListener('pointerdown', e => { const c = chipOf(e); if (!c) return; const sp = spring(900, 0.6, 0.2); set(c, 'sx', 0.94, sp, 0); set(c, 'sy', 0.94, sp, 0); });
   document.addEventListener('pointerup', e => { const c = chipOf(e); if (!c) return; requestAnimationFrame(() => { const g = group(c); matchMedia('(hover:hover)').matches ? apply(g, g.indexOf(c)) : rest(g); }); });
   // thumbnails: same jelly springs, one element at a time (swell on enter, squash back on leave, press on down)
-  const TH = '#works-grid .work > img, #works-grid .work .hv-wrap, .index .thumb';
+  const TH = '#works-grid .work > img, #works-grid .work .hv-wrap, .index .thumb, .lab-card';
   const thumbOf = e => e.target instanceof Element ? e.target.closest(TH) : null;
   const swell = (el, k) => { const sp = spring(380, 0.9, 0.3); set(el, 'sx', k, spring(380 * 1.24, 0.8, 0.55), 0); set(el, 'sy', k, sp, 0.04); set(el, 'x', 0, sp, 0); };
   document.addEventListener('pointerover', e => { const t = thumbOf(e); if (t && !t.contains(e.relatedTarget)) swell(t, 1.035); });

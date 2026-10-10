@@ -877,7 +877,7 @@
   // warm the cache for cover motions once the home page is idle, so opening a project shows it instantly
   addEventListener('load',()=>(window.requestIdleCallback||setTimeout)(()=>document.querySelectorAll('#works-grid .work[data-hover-video]').forEach(w=>fetch(w.dataset.hoverVideo,{priority:'low'}).catch(()=>{})),{timeout:3000}));
 </script>
-<script src="portfolio/jelly.js?v=3"></script>
+<script src="portfolio/jelly.js?v=4"></script>
 <script src="portfolio/cursor.js?v=3"></script>
 </body>
 </html>
