@@ -330,7 +330,7 @@
     </div>
     <div class="col-body index" id="works-index" hidden>
       <a class="thumb" href="#" data-i="0" data-tags="product"><img width="960" height="540" decoding="async" src="img/thumb/gha.webp?v=4" alt="Glance–Hint–Act"></a>
-      <a class="thumb" href="#" data-i="1" data-tags="product client"><img width="960" height="540" decoding="async" src="img/thumb/aep.webp?v=1" alt="Agent Experience Paradigm"></a>
+      <a class="thumb" href="#" data-i="1" data-tags="product client"><img width="960" height="540" decoding="async" src="img/thumb/aep.webp?v=2" alt="Agent Experience Paradigm"></a>
       <a class="thumb" href="#" data-i="2" data-tags="uxui client"><img width="960" height="540" decoding="async" src="img/thumb/nextoneui.webp?v=1" alt="Next One UI with Galaxy AI"></a>
       <a class="thumb" href="#" data-i="3" data-tags="uxui"><img width="960" height="752" decoding="async" src="img/thumb/bunjang.webp?v=3" alt="번개장터"></a>
       <a class="thumb" href="#" data-i="4" data-tags="vibe"><img width="960" height="540" decoding="async" src="img/thumb/zerotoone.webp?v=3" alt="0TO1"></a>
@@ -353,8 +353,8 @@
         </div>
         <div class="meta info" hidden><p class="muted">형태</p><p>개인 프로젝트 · 홍익대학교 시각디자인과 졸업 프로젝트</p><p class="muted">기간</p><p>2025</p><p class="muted">역할</p><p>UX, 비주얼, 인터랙션, 모션, 영상, 프로세스북</p><p class="muted">기여도</p><p>100%</p><p class="muted">결과</p><p>2025 홍익대학교 시각디자인과 졸업전시</p><p class="muted">링크</p><div class="plinks"><a class="chip" href="https://heyzine.com/flip-book/7421760ce8.html" target="_blank" rel="noopener">UX Book ↗</a></div></div>
       </article>
-      <article class="work" data-key="aep" data-tags="product client">
-        <img width="960" height="540" decoding="async" src="img/thumb/aep.webp?v=1" alt="Agent Experience Paradigm">
+      <article class="work" data-key="aep" data-tags="product client" data-hover-video="img/aep/cover.mp4?v=1">
+        <img width="960" height="540" decoding="async" src="img/thumb/aep.webp?v=2" alt="Agent Experience Paradigm">
         <div class="meta">
           <p>Visual Identity · UX<br><span class="muted">Team</span></p>
           <p>Agent Experience Paradigm<br>Samsung AI Agent Visual Identity<br>2025</p>
@@ -563,11 +563,12 @@
   // videos: play only when scrolling has stopped with the video in view; pause when it leaves
   const visible=new Set(); let scrollTimer=null, scrolling=false;
   const playVisible=()=>{ visible.forEach(v=>{ if(!v.dataset.userPaused) v.play().catch(()=>{}); }); };
-  const vio=new IntersectionObserver(es=>{ for(const e of es){ const v=e.target; if(e.isIntersecting){ visible.add(v); if(!scrolling && !v.dataset.userPaused) v.play().catch(()=>{}); } else { visible.delete(v); if(!v.hasAttribute('autoplay')) v.pause(); } } }, {threshold:.5});
+  const vio=new IntersectionObserver(es=>{ for(const e of es){ const v=e.target; if(e.isIntersecting){ visible.add(v); if(!scrolling && !v.dataset.userPaused) v.play().catch(()=>{}); } else { visible.delete(v); if(!v.dataset.auto) v.pause(); } } }, {threshold:.5});
   document.addEventListener('scroll', ()=>{ scrolling=true; clearTimeout(scrollTimer); scrollTimer=setTimeout(()=>{ scrolling=false; playVisible(); }, 180); }, {passive:true, capture:true});
   const SND_ON='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 6h3l4-3v10l-4-3H2z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5" stroke-linecap="round"/><path d="M12.8 3.5a6 6 0 0 1 0 9" stroke-linecap="round"/></svg>', SND_OFF='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 6h3l4-3v10l-4-3H2z"/><path d="M11 6l3.5 3.5M14.5 6L11 9.5" stroke-linecap="round"/></svg>';
   function setupVideos(root){
     root.querySelectorAll('video').forEach(v=>{
+      if(v.hasAttribute('autoplay')) v.dataset.auto=1;  // cover motions: play on open, regardless of scroll
       v.removeAttribute('autoplay'); v.muted=true; v.loop=true; v.playsInline=true;
       const wrap=document.createElement('div'); wrap.className='vwrap'; v.replaceWith(wrap); wrap.appendChild(v);
       const fmt=t=>{t=Math.floor(t||0); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
@@ -600,7 +601,7 @@
     const info=card.querySelector('.info'); if(info){ const c=info.cloneNode(true); c.hidden=false; projPanel.appendChild(c); }
     if(tpl) projPanel.appendChild(tpl.content.cloneNode(true)); else projPanel.insertAdjacentHTML('beforeend','<p class="muted">Coming soon.</p>');
     setupVideos(projPanel); applyLang(projPanel);
-    projPanel.querySelectorAll('video[autoplay]').forEach(v=>{ v.muted=true; v.play().catch(()=>{}); });  // cover motion starts on open, not on scroll
+    projPanel.querySelectorAll('video[data-auto]').forEach(v=>{ v.muted=true; v.play().catch(()=>{}); });  // cover motion starts on open, not on scroll
     projPanel.querySelectorAll('img').forEach((im,i)=>{ if(i<6) im.loading='eager'; });
     if(!reduce) projPanel.animate([{opacity:0},{opacity:1}],{duration:250,easing:'ease'});  // whole body at once, not per element
     aboutPanel.hidden=true; projPanel.hidden=false; projClose.hidden=false;
