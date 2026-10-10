@@ -44,6 +44,9 @@
   .grid { grid-template-columns:repeat(4,1fr); }
   .grid .work { grid-column:span 2; }
   .grid .work.other { grid-column:span 1; border-bottom:0; }
+  .other-row { grid-column:1/-1; display:grid; grid-auto-flow:column; grid-auto-columns:1fr; column-gap:var(--pad); align-items:start; }  /* Other Works always one row */
+  @media (max-width:900px) { .other-row { grid-auto-flow:row; grid-template-columns:1fr 1fr; } }
+  .other-row .work img { aspect-ratio:4/3; height:auto; object-fit:cover; }  /* same height across the row */
   .work.other .meta { grid-template-columns:1fr; gap:4px; margin-top:10px; }
   .work.other .meta p:empty, .work.other .meta .desc, .work.other .meta p:first-child { display:none; }
   .col { position:relative; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; border-right:1px solid var(--line); }
@@ -441,6 +444,7 @@
         <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 · DEPROMEET 15기" data-en="Team project · DEPROMEET 15th">팀 프로젝트 · DEPROMEET 15기</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2024.06 – 2024.09" data-en="Jun – Sep 2024">2024.06 – 2024.09</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="Design 3 · Android 4 · Server 3" data-en="Design 3 · Android 4 · Server 3">Design 3 · Android 4 · Server 3</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="Product Designer (디자이너 3인 중 1인)" data-en="Product Designer (1 of 3 designers)">Product Designer (디자이너 3인 중 1인)</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="디자인 40%" data-en="Design 40%">디자인 40%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="기획, 캐릭터 스케치, GUI 전담, 시야 찾기 화면 메인 디자이너" data-en="Planning, character sketches, all GUI, lead designer of the seat-view screen">기획, 캐릭터 스케치, GUI 전담, 시야 찾기 화면 메인 디자이너</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="Google Play 출시, DEPROMEET 15기 대상" data-en="Launched on Google Play, DEPROMEET 15th Grand Prize">Google Play 출시, DEPROMEET 15기 대상</p></div>
       </article>
       <p class="other-head">Other Works</p>
+      <div class="other-row">
       <article class="work other" data-key="teddybot" data-tags="uxui client">
         <img width="1920" height="1080" decoding="async" src="img/thumb/teddybot.webp?v=2" alt="TeddyBot">
         <div class="meta">
@@ -491,6 +495,7 @@
         </div>
         <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="팀 프로젝트 (5인)" data-en="Team project (5 members)">팀 프로젝트 (5인)</p><p class="muted" data-ko="팀 구성" data-en="Team">팀 구성</p><p data-ko="ID 장우진(PL) · ID 장은혜 · UX 정혜령 · VD 이일여 · BX 김채은" data-en="ID Woojin Jang (PL) · ID Eunhye Jang · UX Hyeryoung Jeong · VD Ilyeo Lee · BX Chaeeun Kim">ID 장우진(PL) · ID 장은혜 · UX 정혜령 · VD 이일여 · BX 김채은</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="비주얼 디자이너로 합류, UX 담당 팀원 이탈 후 UI 비주얼과 UX 총괄" data-en="Joined as visual designer; led UI visuals and UX after the UX designer left">비주얼 디자이너로 합류, UX 담당 팀원 이탈 후 UI 비주얼과 UX 총괄</p><p class="muted" data-ko="결과" data-en="Outcome">결과</p><p data-ko="2025 삼성디자인멤버십 MEP 전시" data-en="Exhibited at 2025 Samsung Design Membership MEP">2025 삼성디자인멤버십 MEP 전시</p></div>
       </article>
+      </div>
       <a class="lab-band" href="portfolio/lab.html">
         <div class="lab-head"><span>Vibe Coding Lab</span><span class="muted">직접 만들고 배포한 사이트 8개, 바로 써 보기 ↗</span></div>
       </a>
