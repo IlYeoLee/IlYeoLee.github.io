@@ -404,19 +404,19 @@
       <button class="chip" data-f="client">Client Work</button>
     </div>
     <div class="col-body index" id="works-index" hidden>
-      <a class="thumb" href="#" data-i="0" data-tags="product"><img width="960" height="540" decoding="async" src="img/thumb/gha.webp?v=5" alt="Glance–Hint–Act"></a>
-      <a class="thumb" href="#" data-i="1" data-tags="product client"><img width="960" height="540" decoding="async" src="img/thumb/aep.webp?v=4" alt="Agent Experience Paradigm"></a>
-      <a class="thumb" href="#" data-i="2" data-tags="uxui client"><img width="1920" height="1080" decoding="async" src="img/thumb/nextoneui.webp?v=2" alt="Next One UI with Galaxy AI"></a>
-      <a class="thumb" href="#" data-i="3" data-tags="uxui"><img width="1920" height="1080" decoding="async" src="img/thumb/bunjang.webp?v=4" alt="번개장터"></a>
-      <a class="thumb" href="#" data-i="4" data-tags="vibe"><img width="1920" height="1080" decoding="async" src="img/thumb/zerotoone.webp?v=4" alt="0TO1"></a>
-      <a class="thumb" href="#" data-i="5" data-tags="vibe"><img width="1920" height="1080" decoding="async" src="img/thumb/memboarding.webp?v=4" alt="멤보딩"></a>
-      <a class="thumb" href="#" data-i="6" data-tags="uxui"><img width="1920" height="1080" decoding="async" src="img/thumb/bbibbi.webp?v=7" alt="삐삐"></a>
-      <a class="thumb" href="#" data-i="7" data-tags="uxui"><img width="1920" height="1080" decoding="async" src="img/thumb/spot.webp?v=4" alt="SPOT!"></a>
-      <a class="thumb" href="#" data-i="8" data-tags="uxui client"><img width="1920" height="1080" decoding="async" src="img/thumb/teddybot.webp?v=3" alt="TeddyBot"></a>
-      <a class="thumb" href="#" data-i="9" data-tags="product"><img width="960" height="720" decoding="async" src="img/thumb/hotcake.webp?v=3" alt="Hotcake"></a>
-      <a class="thumb" href="#" data-i="10" data-tags="product"><img width="960" height="900" decoding="async" src="img/thumb/newton.webp?v=3" alt="NEWTON"></a>
-      <a class="thumb" href="#" data-i="11" data-tags="uxui"><img width="960" height="751" decoding="async" src="img/thumb/spurt.webp?v=3" alt="SPURT"></a>
-      <a class="thumb" href="#" data-i="12" data-tags="product"><img width="960" height="540" decoding="async" src="img/thumb/comong.webp?v=3" alt="COMONG"></a>
+      <a class="thumb" href="portfolio/#gha" data-i="0" data-tags="product"><img width="960" height="540" decoding="async" src="img/thumb/gha.webp?v=5" alt="Glance–Hint–Act"></a>
+      <a class="thumb" href="portfolio/#aep" data-i="1" data-tags="product client"><img width="960" height="540" decoding="async" src="img/thumb/aep.webp?v=4" alt="Agent Experience Paradigm"></a>
+      <a class="thumb" href="portfolio/#nextoneui" data-i="2" data-tags="uxui client"><img width="1920" height="1080" decoding="async" src="img/thumb/nextoneui.webp?v=2" alt="Next One UI with Galaxy AI"></a>
+      <a class="thumb" href="portfolio/#bunjang" data-i="3" data-tags="uxui"><img width="1920" height="1080" decoding="async" src="img/thumb/bunjang.webp?v=4" alt="번개장터"></a>
+      <a class="thumb" href="portfolio/#zerotoone" data-i="4" data-tags="vibe"><img width="1920" height="1080" decoding="async" src="img/thumb/zerotoone.webp?v=4" alt="0TO1"></a>
+      <a class="thumb" href="portfolio/#memboarding" data-i="5" data-tags="vibe"><img width="1920" height="1080" decoding="async" src="img/thumb/memboarding.webp?v=4" alt="멤보딩"></a>
+      <a class="thumb" href="portfolio/#bbibbi" data-i="6" data-tags="uxui"><img width="1920" height="1080" decoding="async" src="img/thumb/bbibbi.webp?v=7" alt="삐삐"></a>
+      <a class="thumb" href="portfolio/#spot" data-i="7" data-tags="uxui"><img width="1920" height="1080" decoding="async" src="img/thumb/spot.webp?v=4" alt="SPOT!"></a>
+      <a class="thumb" href="portfolio/#teddybot" data-i="8" data-tags="uxui client"><img width="1920" height="1080" decoding="async" src="img/thumb/teddybot.webp?v=3" alt="TeddyBot"></a>
+      <a class="thumb" href="portfolio/#hotcake" data-i="9" data-tags="product"><img width="960" height="720" decoding="async" src="img/thumb/hotcake.webp?v=3" alt="Hotcake"></a>
+      <a class="thumb" href="portfolio/#newton" data-i="10" data-tags="product"><img width="960" height="900" decoding="async" src="img/thumb/newton.webp?v=3" alt="NEWTON"></a>
+      <a class="thumb" href="portfolio/#spurt" data-i="11" data-tags="uxui"><img width="960" height="751" decoding="async" src="img/thumb/spurt.webp?v=3" alt="SPURT"></a>
+      <a class="thumb" href="portfolio/#comong" data-i="12" data-tags="product"><img width="960" height="540" decoding="async" src="img/thumb/comong.webp?v=3" alt="COMONG"></a>
     </div>
     <div class="col-body grid" id="works-grid">
       <article class="work" data-key="gha" data-tags="product" data-hover-video="img/gha/00.mp4?v=4">
@@ -717,6 +717,7 @@
     stagger(grid.querySelectorAll('.work:not([hidden])'), 45); stagger(aboutPanel.querySelectorAll('.about > *, .cv .row'), 60); }
   projClose.addEventListener('click',closeProject);
   // portfolio/#key (from the Lab's case links) opens that project
+  addEventListener('hashchange',()=>{ const c=location.hash && grid.querySelector(`.work[data-key="${CSS.escape(location.hash.slice(1))}"]`); if(c) openProject(c); });  // hash-only navigation (back/forward, pasted link in same tab)
   const hashCard=location.hash && grid.querySelector(`.work[data-key="${CSS.escape(location.hash.slice(1))}"]`); if(hashCard) openProject(hashCard);
   // ---- lightbox ----
   const lb=document.getElementById('lb'), lbImg=lb.querySelector('img'), lbHead=lb.querySelector('.lb-head');
