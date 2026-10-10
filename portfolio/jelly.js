@@ -56,6 +56,7 @@
   document.addEventListener('pointerover', e => { const t = thumbOf(e); if (t && !t.contains(e.relatedTarget)) swell(t, 1.035); });
   document.addEventListener('pointerout', e => { const t = thumbOf(e); if (t && !t.contains(e.relatedTarget)) swell(t, 1); });
   document.addEventListener('pointerdown', e => { const t = thumbOf(e); if (t) swell(t, 0.975); });
+  document.addEventListener('pointerup', e => { const t = thumbOf(e); if (t) swell(t, matchMedia('(hover:hover)').matches ? 1.035 : 1); });
   // filter row: active chip swollen from the start
   const row = document.getElementById('chips'); if (row) requestAnimationFrame(() => rest(group(row.querySelector('.chip'))));
 })();
