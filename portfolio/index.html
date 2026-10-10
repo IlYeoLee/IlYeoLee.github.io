@@ -46,7 +46,6 @@
   .grid .work.other { grid-column:span 1; border-bottom:0; }
   .other-row { grid-column:1/-1; display:grid; grid-auto-flow:column; grid-auto-columns:1fr; column-gap:var(--pad); align-items:start; }  /* Other Works always one row */
   @media (max-width:900px) { .other-row { grid-auto-flow:row; grid-template-columns:1fr 1fr; } }
-  .other-row .work img { aspect-ratio:4/3; height:auto; object-fit:cover; }  /* same height across the row */
   .work.other .meta { grid-template-columns:1fr; gap:4px; margin-top:10px; }
   .work.other .meta p:empty, .work.other .meta .desc, .work.other .meta p:first-child { display:none; }
   .col { position:relative; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; border-right:1px solid var(--line); }
