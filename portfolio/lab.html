@@ -35,7 +35,8 @@
   .chip { font:inherit; font-size:13px; line-height:1; padding:6px 10px; border:1px solid var(--fg); border-radius:999px; background:none; color:var(--fg); cursor:pointer; display:inline-block; transition:background .15s, color .15s; }
   .chip.on { background:var(--fg); color:var(--bg); }
   @media (hover:hover) { .chip:not(.on):hover { background:#f2f2f2; color:var(--fg); } }
-  .live { position:relative; width:100%; aspect-ratio:16/10; overflow:hidden; background:#eee; border-radius:36px; }
+  .live { position:relative; width:100%; aspect-ratio:16/10; overflow:hidden; background:var(--tint,#f1f2f5); border-radius:36px; }
+  .live:not(.phone) > img { position:absolute; left:7%; top:9%; width:86%; height:auto; aspect-ratio:16/10; object-fit:cover; object-position:top; border-radius:16px; box-shadow:0 24px 56px -20px rgba(0,27,55,.35), 0 2px 8px rgba(0,27,55,.08); }
   .col-head > a span, .item .pt { font-weight:700; }
   .live.phone { width:min(375px,100%); aspect-ratio:430/932; border-radius:44px; }
   .item > * { min-width:0; }
@@ -62,6 +63,7 @@
 </main>
 <div class="foot">© Ilyeo Lee 2026 All rights reserved. Designed and developed by Ilyeo Lee.</div>
 <script>
+  const TINT=["#F3E7EE", "#FBE3F3", "#FDEBDD", "#E1F0FC", "#E3F7E7", "#16181D", "#ECEDF1", "#1B2140"];
 const SITES=[
  {name:'멤보딩',phone:true,sound:true,url:'https://ilyeolee.github.io/gitsdm-vibecoding/',thumb:'img/lab/01p.webp',label:'',desc:'새 팀의 첫날을 협업 세팅 시간으로 바꾸는 온보딩 앱입니다. 이틀 동안 기획부터 배포까지 혼자 만들었습니다.',tags:'ChatGPT · 이미지·음악 생성',case:'memboarding'},
  {name:'{affinityDiagram}',newtab:true,url:'https://b1-saas.vercel.app',label:'0TO1',desc:'인터뷰 전사를 넣으면 단계마다 다른 AI로 발화를 추출하고 어피니티 다이어그램으로 묶는 리서치 툴입니다.',tags:'Next.js · Supabase · OpenAI',case:'zerotoone',note:'게스트 계정으로 바로 시작되도록 새 창에서 열립니다.'},
@@ -80,7 +82,7 @@ SITES.forEach((s,i)=>{ if(small && !s.phone) s={...s,newtab:true,note:''};
   el.className='item';
   el.innerHTML=`<div><span class="no">${n}</span><p class="pt">${s.label?`<span class="muted">${s.label}</span>`:""}${s.name}</p><div class="pb"><p>${s.desc}</p>${s.tags?`<p class="muted note">${s.tags}</p>`:""}
   <div class="links">${s.newtab?'':'<button class="chip run-btn" type="button">여기서 실행</button>'}${s.sound?'<button class="chip snd" type="button" hidden>소리 켜기</button>':''}<a class="chip" href="${s.url}" target="_blank" rel="noopener">새 창으로 열기 ↗</a>${s.case?`<a class="chip" href="portfolio/#${s.case}">케이스 보기</a>`:''}</div>${s.note?`<p class="muted note">${s.note}</p>`:''}</div></div>
-  <div class="live${s.phone?' phone':''}"><img src="${thumb}" alt="${s.name} 화면" loading="lazy">${s.newtab?`<a class="run" href="${s.url}" target="_blank" rel="noopener"><span>새 창에서 실행 ↗</span></a>`:'<button class="run" type="button"><span>▶ 여기서 실행</span></button>'}</div>`;
+  <div class="live${s.phone?' phone':''}" style="--tint:${TINT[i]}"><img src="${thumb}" alt="${s.name} 화면" loading="lazy">${s.newtab?`<a class="run" href="${s.url}" target="_blank" rel="noopener"><span>새 창에서 실행 ↗</span></a>`:'<button class="run" type="button"><span>▶ 여기서 실행</span></button>'}</div>`;
   list.appendChild(el);
   const live=el.querySelector('.live'), snd=el.querySelector('.snd');
   const src=muted=>s.sound?s.url+'?muted='+(muted?1:0):s.url;
