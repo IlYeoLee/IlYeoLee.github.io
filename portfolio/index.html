@@ -291,9 +291,11 @@
   .wb-rows > div { display:grid; grid-template-columns:120px 1fr 1fr; gap:14px; align-items:center; padding:12px 0; border-bottom:1px solid var(--line); border-image:linear-gradient(90deg,transparent,var(--line) 18%,var(--line) 82%,transparent) 1; }
   .wb-rows audio { width:100%; height:32px; }
   .wb-hero img { width:100%; height:auto; }
-  .wb-try { display:grid; grid-template-columns:375px 1fr; gap:32px; align-items:center; }
   .wb-try > * { min-width:0; }
-  .wb-phone { width:min(375px,100%); aspect-ratio:375/760; border:1px solid var(--line); border-radius:36px; overflow:hidden; background:#f6f5f8; }
+  /* try-it block: phone centred on a soft tinted stage, caption centred underneath */
+  #project-panel .wb-try { display:flex !important; flex-direction:column; align-items:center; gap:28px; padding:64px 24px 56px; background:#F3E7EE; border-radius:36px; text-align:center; }
+  #project-panel .wb-try > div:last-child { display:flex; flex-direction:column; align-items:center; }
+  .wb-phone { width:min(375px,100%); aspect-ratio:375/760; border-radius:44px; overflow:hidden; background:#f6f5f8; box-shadow:0 30px 70px -28px rgba(60,30,50,.45), 0 0 0 8px #fff; }
   .wb-phone iframe { width:100%; height:100%; border:0; display:block; }
   .wb-phone button { font:inherit; padding:10px 16px; border-radius:999px; border:1px solid var(--fg); background:var(--bg); cursor:pointer; }
   @media (max-width:900px) { .wb-try { grid-template-columns:1fr; } }
