@@ -323,7 +323,7 @@
   #tipcard { position:fixed; z-index:9000; width:300px; background:var(--bg); border-radius:28px; overflow:hidden; border:1px solid var(--fg); pointer-events:none; opacity:0; transform:translateX(6px) scale(.98); transition:opacity .2s, transform .28s cubic-bezier(.2,.8,.2,1); }
   #tipcard.on { opacity:1; transform:none; pointer-events:auto; }
   :root.lightsout #tipcard { background:#1a1a1e; }
-  #tipcard.link { cursor:pointer; }
+  #tipcard.link .tc-go { cursor:pointer; display:inline-block; text-decoration:underline 1px; text-underline-offset:3px; }
   #tipcard .tc-go { margin-top:10px; font-size:12px; color:var(--muted); }
   #tipcard.link:hover .tc-go { color:var(--fg); }
   #tipcard.sheet { left:12px !important; right:12px; max-width:420px; margin:0 auto; bottom:calc(12px + env(safe-area-inset-bottom)); top:auto !important; width:auto; max-height:70vh; overflow:auto; transform:translateY(12px); }
@@ -822,7 +822,7 @@
     }
     // desktop: click the term or the card to go; touch: first tap opens a bottom sheet, tapping the sheet goes
     panel.addEventListener('click',e=>{ const t=e.target.closest('.tip'); if(!t) return; e.preventDefault(); if(touch && curTip!==t){ show(t); return; } go(t.dataset.k); });
-    card.addEventListener('click',()=>{ if(curK && target(curK)) go(curK); });
+    card.addEventListener('click',e=>{ if(e.target.closest('.tc-go') && curK && target(curK)) go(curK); });  // only the '자세히 보기' line navigates
     document.addEventListener('click',e=>{ if(touch && curTip && !e.target.closest('.tip, #tipcard')) hide(); });
     addEventListener('scroll',()=>{ if(!touch) hide(); },{capture:true,passive:true});
   })();
