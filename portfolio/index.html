@@ -161,10 +161,16 @@
   @keyframes gmarq { to { transform:translateX(calc(-50% - var(--pad) / 2)); } }
   @media (prefers-reduced-motion:reduce) { #project-panel .gmarq .tr { animation:none; } #project-panel .gmarq { overflow-x:auto; } }
   #project-panel .pstage { position:relative; width:100%; aspect-ratio:16/9; background:#eceef3; display:flex; align-items:center; justify-content:center; margin:0 0 var(--pad); }
-  #project-panel .pstage .dev { height:90%; aspect-ratio:691/803; border-radius:34px; overflow:hidden; background:#000; box-shadow:0 30px 70px rgba(20,24,40,.22); }
-  #project-panel .pstage iframe { width:100%; height:100%; border:0; display:block; }
+  #project-panel .pstage .dev { position:relative; height:88%; aspect-ratio:var(--ar); border-radius:26px; overflow:hidden; box-shadow:0 24px 60px rgba(20,24,40,.18); background:#fff; }
+  #project-panel .pstage .dev img { width:100%; height:100%; object-fit:cover; margin:0; cursor:pointer; }
+  #project-panel .pstage .dev iframe { position:absolute; border:0; }  /* sized in JS: Figma pads 52px x / 60px y, so we crop it off */
+  #project-panel .pstage .play { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:none; border:0; cursor:pointer; }
+  #project-panel .pstage .play span { font-size:13px; padding:10px 16px; border-radius:999px; background:var(--fg); color:var(--bg); }
   #project-panel .pstage .chip { position:absolute; right:16px; bottom:16px; background:var(--bg); }
-  @media (max-width:900px) { #project-panel .pstage .dev { display:none; } #project-panel .pstage { aspect-ratio:16/10; } #project-panel .pstage .chip { position:static; } }
+  @media (max-width:900px) { #project-panel .pstage .play { display:none; } #project-panel .pstage .chip { right:10px; bottom:10px; } }
+  #project-panel .pvimeo img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; margin:0; }
+  #project-panel .pvimeo .play { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:none; border:0; cursor:pointer; }
+  #project-panel .pvimeo .play span { font-size:13px; padding:10px 16px; border-radius:999px; background:var(--fg); color:var(--bg); }
   #project-panel .plabel { color:var(--muted); margin:160px 0 18px; padding-top:18px; border-top:1px solid var(--line); }
   #project-panel .plabel:first-of-type { margin-top:0; padding-top:0; border-top:0; }
   #project-panel .pcap { display:grid; grid-template-columns:1fr 2fr; gap:16px; margin:22px 0 10px; }
@@ -323,7 +329,7 @@
       <a class="thumb" href="#" data-i="11" data-tags="product"><img width="960" height="720" decoding="async" src="img/thumb/hotcake.webp?v=3" alt="Hotcake"></a>
     </div>
     <div class="col-body grid" id="works-grid">
-      <article class="work" data-key="gha" data-tags="product" data-hover-video="img/gha/00.mp4?v=1">
+      <article class="work" data-key="gha" data-tags="product" data-hover-video="img/gha/00.mp4?v=2">
         <img width="960" height="540" decoding="async" src="img/thumb/gha.webp?v=4" alt="Glance–Hint–Act">
         <div class="meta">
           <p>Concept UX · Interaction<br><span class="muted">Personal</span></p>
@@ -565,7 +571,7 @@
         v.addEventListener('timeupdate',sync); v.addEventListener('play',sync); v.addEventListener('pause',sync);
         const snd=bar.querySelector('.snd'); if(snd){ snd.addEventListener('click',()=>{ v.muted=!v.muted; snd.innerHTML=v.muted?SND_OFF:SND_ON; }); }
         wrap.appendChild(bar); sync(); };
-      if(v.getAttribute('preload')!=='auto') v.preload='metadata';
+      if(v.getAttribute('preload')!=='auto') v.preload='none';  // poster first; the in-view observer starts loading
       if(v.readyState>=1) addBar(); else v.addEventListener('loadedmetadata', addBar, {once:true});
       vio.observe(v);
     });
@@ -735,6 +741,21 @@
     w.addEventListener('mouseenter',()=>{ v.currentTime=0; v.play().then(()=>wrap.classList.add('on')).catch(()=>{}); });
     w.addEventListener('mouseleave',()=>{ wrap.classList.remove('on'); v.pause(); });
   });
+</script>
+<script>
+  // Figma prototype facade: poster first (fast page), real prototype loads on click, padding cropped so only the UI shows
+  (()=>{ const PADX=52, PADY=60;
+    const fit=d=>{ const f=d.querySelector('iframe'); if(!f) return; const w=d.clientWidth, h=d.clientHeight; Object.assign(f.style,{width:(w+2*PADX)+'px',height:(h+2*PADY)+'px',left:-PADX+'px',top:-PADY+'px'}); };
+    document.getElementById('project-panel').addEventListener('click',e=>{ const d=e.target.closest('.pstage .dev'); if(!d||d.querySelector('iframe')) return; e.stopPropagation();
+      const f=document.createElement('iframe'); f.src=d.dataset.src; f.title=d.dataset.title||'prototype'; f.allow='fullscreen'; d.appendChild(f); fit(d);
+      setTimeout(()=>{ d.querySelector('img')?.remove(); d.querySelector('.play')?.remove(); },1800); }, true);
+    addEventListener('resize',()=>document.querySelectorAll('.pstage .dev').forEach(fit));
+  })();
+</script>
+<script>
+  // Vimeo facade: thumbnail + play, the player (≈1MB of JS) loads only on click
+  document.getElementById('project-panel').addEventListener('click',e=>{ const d=e.target.closest('.pvimeo[data-src]'); if(!d||d.querySelector('iframe')) return; e.stopPropagation();
+    const f=document.createElement('iframe'); f.src=d.dataset.src+'&autoplay=1'; f.title=d.dataset.title||'video'; f.allow='autoplay; fullscreen; picture-in-picture'; f.allowFullscreen=true; d.replaceChildren(f); }, true);
 </script>
 <script src="portfolio/cursor.js?v=2"></script>
 </body>
