@@ -83,7 +83,7 @@
   .col-head .menu { font-size:15px; line-height:1; }
   .col-body { padding:var(--pad); }
 
-  .foot { height:24px; display:flex; align-items:center; padding:0 var(--pad); border-top:1px solid var(--line); font-size:13px; }
+  .foot { min-height:24px; display:flex; align-items:center; padding:4px var(--pad) calc(4px + env(safe-area-inset-bottom)); border-top:1px solid var(--line); font-size:13px; }
 
   /* project card */
   .work { padding-bottom:28px; margin-bottom:28px; }  /* no divider: spacing alone separates the cards */
