@@ -557,7 +557,7 @@
         v.addEventListener('timeupdate',sync); v.addEventListener('play',sync); v.addEventListener('pause',sync);
         const snd=bar.querySelector('.snd'); if(snd){ snd.addEventListener('click',()=>{ v.muted=!v.muted; snd.innerHTML=v.muted?SND_OFF:SND_ON; }); }
         wrap.appendChild(bar); sync(); };
-      v.preload='metadata';
+      if(v.getAttribute('preload')!=='auto') v.preload='metadata';
       if(v.readyState>=1) addBar(); else v.addEventListener('loadedmetadata', addBar, {once:true});
       vio.observe(v);
     });
