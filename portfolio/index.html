@@ -164,6 +164,9 @@
   #project-panel .gmarq img { height:100%; width:auto; margin:0; flex:none; }
   @keyframes gmarq { to { transform:translateX(calc(-50% - var(--pad) / 2)); } }
   @media (prefers-reduced-motion:reduce) { #project-panel .gmarq .tr { animation:none; } #project-panel .gmarq { overflow-x:auto; } }
+  /* per-scene caption above each scenario video */
+  #project-panel .scap { margin:36px 0 12px; max-width:760px; font-size:15px; line-height:1.65; color:var(--fg); text-wrap:pretty; word-break:keep-all; }
+  #project-panel .scap span { display:block; margin-bottom:4px; font-size:12px; color:var(--muted, #8a8a8a); letter-spacing:.02em; }
   /* collapsed appendix: hidden until the reader opens it */
   #project-panel .pappx { margin:104px 0 0; }
   #project-panel .pappx > summary { list-style:none; cursor:pointer; }
