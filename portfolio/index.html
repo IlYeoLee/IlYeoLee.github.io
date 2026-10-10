@@ -678,7 +678,7 @@
     head.innerHTML=`<p>${meta[0].innerHTML}</p><p>${meta[1].innerHTML}</p>`; projPanel.appendChild(head);
     const info=card.querySelector('.info'); if(info){ const c=info.cloneNode(true); c.hidden=false; projPanel.appendChild(c); }
     if(tpl) projPanel.appendChild(tpl.content.cloneNode(true)); else projPanel.insertAdjacentHTML('beforeend','<p class="muted">Coming soon.</p>');
-    history.replaceState(null,'','#'+key);  // every project has its own shareable address
+    history.replaceState(null,'',location.pathname+location.search+'#'+key);  // absolute path: <base href="../"> would otherwise resolve '#key' to the site root
     document.documentElement.classList.toggle('lightsout', ['zerotoone','aep','spurt'].includes(key));
     setupVideos(projPanel); applyLang(projPanel);
     projPanel.querySelectorAll('video[data-auto]').forEach(v=>{ v.muted=true; v.play().catch(()=>{}); });  // cover motion starts on open, not on scroll
