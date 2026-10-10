@@ -757,6 +757,7 @@
   document.getElementById('project-panel').addEventListener('click',e=>{ const d=e.target.closest('.pvimeo[data-src]'); if(!d||d.querySelector('iframe')) return; e.stopPropagation();
     const f=document.createElement('iframe'); f.src=d.dataset.src+'&autoplay=1'; f.title=d.dataset.title||'video'; f.allow='autoplay; fullscreen; picture-in-picture'; f.allowFullscreen=true; d.replaceChildren(f); }, true);
 </script>
+<script src="portfolio/jelly.js?v=1"></script>
 <script src="portfolio/cursor.js?v=2"></script>
 </body>
 </html>
