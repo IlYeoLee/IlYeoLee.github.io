@@ -109,7 +109,7 @@
     .site.viewing #works { position:sticky; top:0; z-index:3; background:var(--bg); }
     .site.viewing #works .col-head { display:none; }
     .site.viewing #works .index { display:flex !important; overflow-x:auto; gap:var(--pad); padding:var(--pad); }
-    .site.viewing #works .index .thumb { flex:0 0 64px; }
+    .site.viewing #works { display:none; }  /* mobile: no thumb rail, the title/Close bar is the top of the screen */
   }
   .head-right { display:flex; gap:12px; align-items:center; }
   button.lang { background:none; border:0; font:inherit; font-size:var(--fs); color:var(--muted); cursor:pointer; padding:0; letter-spacing:0; }
@@ -162,9 +162,10 @@
   #project-panel .pcap { display:grid; grid-template-columns:1fr 2fr; gap:16px; margin:22px 0 10px; }
   #project-panel .pcap p { margin:0; word-break:keep-all; overflow-wrap:anywhere; }
   #project-panel .pcap { gap:28px; margin:26px 0 22px; align-items:start; }
+  #project-panel .pcap > * { min-width:0; }  /* long nowrap labels must not widen the grid on phones */
   #project-panel .pcap { margin-top:104px; }  /* content → next title: 4x the old 26px */
   #project-panel .plabel + .pcap, #project-panel .phead + .pcap, #project-panel .meta.info + .pcap { margin-top:26px; }
-  @media (max-width:900px) { #project-panel .pcap { margin-top:72px; } #project-panel .plabel + .pcap { margin-top:20px; } }
+  @media (max-width:900px) { .site.viewing #about .col-head { position:fixed; top:0; left:0; right:0; z-index:50; height:44px; } .site.viewing #project-panel { padding-top:60px !important; } .site.viewing #proj-close { padding:10px 0 10px 12px; } #project-panel .pcap { margin-top:72px; } #project-panel .plabel + .pcap { margin-top:20px; } }
   #project-panel .pcap .pt { font-size:24px; line-height:1.3; font-weight:600; letter-spacing:-0.02em; }
   #project-panel .pcap .pt { text-wrap:balance; }
   #project-panel .pcap .pt .muted { display:block; font-size:var(--fs); line-height:18px; font-weight:500; letter-spacing:0; margin-bottom:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -247,7 +248,7 @@
   #tipcard.link { cursor:pointer; }
   #tipcard .tc-go { margin-top:10px; font-size:12px; color:var(--muted); }
   #tipcard.link:hover .tc-go { color:var(--fg); }
-  #tipcard.sheet { left:12px !important; right:12px; bottom:calc(12px + env(safe-area-inset-bottom)); top:auto !important; width:auto; max-height:70vh; overflow:auto; transform:translateY(12px); }
+  #tipcard.sheet { left:12px !important; right:12px; max-width:420px; margin:0 auto; bottom:calc(12px + env(safe-area-inset-bottom)); top:auto !important; width:auto; max-height:70vh; overflow:auto; transform:translateY(12px); }
   #tipcard.sheet.on { transform:none; }
   #tipcard.sheet img { aspect-ratio:2/1; }
   #tipcard .tc-body { padding:16px 18px 18px; }
@@ -693,7 +694,7 @@
       const w=document.querySelector(`#works-grid .work[data-key="${k}"]`); if(!w) return null; const m=w.querySelectorAll('.meta > p');
       return {t:m[1].innerHTML.split('<br>').slice(0,2).join(' · '), d:w.querySelector('.desc')?.textContent||'', img:w.querySelector('img')?.getAttribute('src')}; };
     let curTip=null;
-    const touch=matchMedia('(hover:none)').matches; let hideT=0, curK=null;
+    const touch=matchMedia('(hover:none) and (pointer:coarse)').matches && innerWidth<=900;  // bottom sheet only on real phones let hideT=0, curK=null;
     const target=k=>{ const c=CUSTOM[k]; if(c?.href) return c.href; const w=document.querySelector(`#works-grid .work[data-key="${c?.open||k}"]`); return w?'#'+(c?.open||k):null; };
     const hide=()=>{ clearTimeout(hideT); curTip?.classList.remove('on'); curTip=null; curK=null; card.classList.remove('on'); line.classList.remove('on'); };
     const go=k=>{ const c=CUSTOM[k]; hide(); if(c?.href){ if(/^http/.test(c.href)) open(c.href,'_blank','noopener'); else location.href=c.href; return; }
