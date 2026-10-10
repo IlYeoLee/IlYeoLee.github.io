@@ -162,6 +162,15 @@
   #project-panel .gmarq img { height:100%; width:auto; margin:0; flex:none; }
   @keyframes gmarq { to { transform:translateX(calc(-50% - var(--pad) / 2)); } }
   @media (prefers-reduced-motion:reduce) { #project-panel .gmarq .tr { animation:none; } #project-panel .gmarq { overflow-x:auto; } }
+  /* carousel for runs of similar guide slides: ‹ › to page through, height follows the current slide */
+  #project-panel .pcar { position:relative; margin:0 0 var(--pad); }
+  #project-panel .pcar .trk { display:flex; align-items:flex-start; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; transition:height .35s ease; }
+  #project-panel .pcar .trk::-webkit-scrollbar { display:none; }
+  #project-panel .pcar .trk > img { flex:0 0 100%; width:100%; margin:0; scroll-snap-align:start; }
+  #project-panel .pcar .nav { position:absolute; top:16px; right:16px; display:flex; gap:6px; align-items:center; }
+  #project-panel .pcar .nav button { width:36px; height:36px; border-radius:50%; border:0; background:rgba(20,20,24,.72); color:#fff; font-size:18px; line-height:36px; cursor:pointer; }
+  #project-panel .pcar .nav button:disabled { opacity:.3; cursor:default; }
+  #project-panel .pcar .nav span { font-size:12px; padding:0 8px; height:28px; line-height:28px; border-radius:999px; background:rgba(20,20,24,.72); color:#fff; }
   #project-panel .pstage { position:relative; width:100%; aspect-ratio:16/9; background:#eceef3; display:flex; align-items:center; justify-content:center; margin:0 0 var(--pad); }
   #project-panel .pstage .dev { position:relative; height:88%; aspect-ratio:var(--ar); border-radius:26px; overflow:hidden; box-shadow:0 24px 60px rgba(20,24,40,.18); background:#fff; }
   #project-panel .pstage .dev img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; margin:0; z-index:1; pointer-events:none; }
@@ -761,6 +770,18 @@
   });
 </script>
 <script>
+  // .pcar carousels: wire ‹ › buttons + counter once the project template is inserted
+  new MutationObserver(()=>document.querySelectorAll('#project-panel .pcar:not([data-on])').forEach(c=>{ c.dataset.on=1;
+    const t=c.querySelector('.trk'), n=t.children.length;
+    c.insertAdjacentHTML('beforeend','<div class="nav"><button type="button" aria-label="이전">‹</button><span>1 / '+n+'</span><button type="button" aria-label="다음">›</button></div>');
+    const [pv,nx]=c.querySelectorAll('.nav button'), cnt=c.querySelector('.nav span');
+    const idx=()=>Math.round(t.scrollLeft/t.clientWidth);
+    const sync=()=>{ const i=idx(); cnt.textContent=(i+1)+' / '+n; pv.disabled=i===0; nx.disabled=i===n-1; const im=t.children[i]; if(im&&im.offsetHeight) t.style.height=im.offsetHeight+'px'; };
+    pv.onclick=e=>{ e.stopPropagation(); t.scrollBy({left:-t.clientWidth,behavior:'smooth'}); };
+    nx.onclick=e=>{ e.stopPropagation(); t.scrollBy({left:t.clientWidth,behavior:'smooth'}); };
+    t.addEventListener('scroll',()=>{ clearTimeout(t._s); t._s=setTimeout(sync,80); },{passive:true});
+    [...t.children].forEach(im=>im.addEventListener('load',sync)); addEventListener('resize',sync); sync();
+  })).observe(document.getElementById('project-panel'),{childList:true});
   // Figma prototypes: load ~1 screen before view (already live when seen), unload once far away so the heavy Figma runtime
   // never runs off-screen (scroll stays smooth); poster image covers load/unload; Figma's fixed 52/60px padding is cropped off
   (()=>{ const PADX=52, PADY=60;
