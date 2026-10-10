@@ -459,8 +459,8 @@
           <p class="muted">leeilyeoo@gmail.com</p>
           <p class="muted">+82 10 8581 9554</p>
           <div class="gap"></div>
-          <p><a href="#">Instagram</a></p>
-          <p><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></p>
+          <p><a href="https://www.instagram.com/leeilyeoo/" target="_blank" rel="noopener">Instagram</a></p>
+          <p><a href="https://www.behance.net/leeilyeoo" target="_blank" rel="noopener">Behance</a></p>
         </div>
         <div>
           <p data-en="Ilyeo Lee is a UI and product designer based in Seoul. She sets the standards of a product with design systems and developer guides, and builds with generative AI to test them for real. She designs when and how an AI service should step in, and makes that decision readable on screen." data-ko="이일여는 서울에서 활동하는 UI·프로덕트 디자이너입니다. 디자인 시스템과 개발 가이드로 화면의 기준을 세우고, 생성형 AI로 직접 만들어 확인합니다. AI 서비스가 언제 어떻게 개입해야 하는지 설계하고, 그 결정이 화면에서 읽히게 만듭니다.">Ilyeo Lee is a UI and product designer based in Seoul. She sets the standards of a product with design systems and developer guides, and builds with generative AI to test them for real. She designs when and how an AI service should step in, and makes that decision readable on screen.</p>
@@ -697,7 +697,7 @@
       const w=document.querySelector(`#works-grid .work[data-key="${k}"]`); if(!w) return null; const m=w.querySelectorAll('.meta > p');
       return {t:m[1].innerHTML.split('<br>').slice(0,2).join(' · '), d:w.querySelector('.desc')?.textContent||'', img:w.querySelector('img')?.getAttribute('src')}; };
     let curTip=null;
-    const touch=matchMedia('(hover:none) and (pointer:coarse)').matches && innerWidth<=900;  // bottom sheet only on real phones let hideT=0, curK=null;
+    const touch=matchMedia('(hover:none) and (pointer:coarse)').matches && innerWidth<=900; let hideT=0, curK=null;  // bottom sheet only on real phones
     const target=k=>{ const c=CUSTOM[k]; if(c?.href) return c.href; const w=document.querySelector(`#works-grid .work[data-key="${c?.open||k}"]`); return w?'#'+(c?.open||k):null; };
     const hide=()=>{ clearTimeout(hideT); curTip?.classList.remove('on'); curTip=null; curK=null; card.classList.remove('on'); line.classList.remove('on'); };
     const go=k=>{ const c=CUSTOM[k]; hide(); if(c?.href){ if(/^http/.test(c.href)) open(c.href,'_blank','noopener'); else location.href=c.href; return; }
