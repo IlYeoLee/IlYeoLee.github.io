@@ -16,6 +16,8 @@
   .muted { color:var(--muted); }
   [hidden] { display:none !important; }
   .col-head { position:sticky; top:0; z-index:5; display:flex; justify-content:space-between; align-items:center; height:24px; padding:0 var(--pad); background:var(--bg); border-bottom:1px solid var(--line); }
+  .back { display:inline-flex; align-items:center; gap:6px; }
+  .back svg { flex:none; }
   main { padding:40px clamp(16px,6vw,96px) 96px; }
   .foot { height:24px; display:flex; align-items:center; padding:0 var(--pad); border-top:1px solid var(--line); font-size:12px; }
   .pcap { display:grid; grid-template-columns:1fr 2fr; gap:28px; margin:26px 0 22px; align-items:start; }
@@ -49,7 +51,7 @@
 </style>
 </head>
 <body data-cursor="pixel">
-<div class="col-head"><span>Vibe Coding Lab</span><a href="portfolio/">(Close)</a></div>
+<div class="col-head"><a class="back" href="portfolio/" aria-label="뒤로 가기"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2 4 7l5 5"/></svg><span>Vibe Coding Lab</span></a><a href="portfolio/">(Close)</a></div>
 <main>
   <div class="pcap" style="margin-top:0;padding-bottom:40px"><p class="pt"><span class="muted">Vibe Coding Lab</span>직접 만들고 배포한 사이트</p><p class="pb">2026년에 Claude Code로 기획부터 배포까지 직접 만든 사이트를 모았습니다. 썸네일을 누르면 이 페이지 안에서 실제 사이트가 실행됩니다.</p></div>
   <div id="list"></div>
