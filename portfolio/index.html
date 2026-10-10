@@ -893,7 +893,8 @@
   (()=>{ const b=document.querySelector('.about .wm'); if(!b) return; const R=matchMedia('(prefers-reduced-motion:reduce)').matches;
     let tx=0,ty=0,x=0,y=0,vx=0,vy=0, rot=0,vr=0,rt=0, sq=0,vs=0, t0=performance.now();
     let free=null, drag=null, idle=0;
-    const seeds=(px,py,n,dir=-Math.PI/2,spread=2.2,pow=6)=>{ for(let i=0;i<n;i++){ const sd=document.createElement('i'); sd.className='wm-seed'; document.body.appendChild(sd);
+    const seeds=()=>{};  // seeds removed (felt messy to readers); kept as a no-op so callers stay simple
+    const _seeds=(px,py,n,dir=-Math.PI/2,spread=2.2,pow=6)=>{ for(let i=0;i<n;i++){ const sd=document.createElement('i'); sd.className='wm-seed'; document.body.appendChild(sd);
         let a=dir+(Math.random()-.5)*spread, sp=pow*(.6+Math.random()*.8), svx=Math.cos(a)*sp, svy=Math.sin(a)*sp, sr=Math.random()*360, life=0, X=px, Y=py;
         const step=()=>{ life++; svy+=.35; X+=svx; Y+=svy; sr+=svx*4; sd.style.transform=`translate(${X}px,${Y}px) rotate(${sr}deg)`; sd.style.opacity=Math.max(0,1-life/70);
           if(life<70) requestAnimationFrame(step); else sd.remove(); }; requestAnimationFrame(step); } };
@@ -908,15 +909,8 @@
       if(!d.moved){ vs-=.6; seeds(free.x+free.w/2,free.y+free.w*.45,5,-Math.PI/2,1.4,4.5); free.vx=0; free.vy=0; free.back=true; return; }
       free.vx=d.vx; free.vy=d.vy; vr=d.vx*14; idle=0; free.back=false; };
     b.addEventListener('pointerup',release); b.addEventListener('pointercancel',release);
-    // About terms: the watermelon turns to the hovered word and lobs a little arc of seeds that lands on it
-    let lastTip=0; addEventListener('tipshow',e=>{ if(free||R) return; const now=performance.now(); if(now-lastTip<220) return; lastTip=now;
-      const r=b.getBoundingClientRect(), sx=r.left+r.width/2, sy=r.top+r.height*.4, q=e.detail, ex=q.left+Math.min(q.width,60)*.5, ey=q.top+q.height*.5;
-      const dx=ex-sx, dy=ey-sy, d=Math.hypot(dx,dy)||1; tx=dx/d*5; ty=dy/d*4; vs-=.22;
-      const T=Math.max(22,Math.min(46,d/18));   // frames in flight, scaled to distance
-      for(let i=0;i<3;i++){ const sd=document.createElement('i'); sd.className='wm-seed'; document.body.appendChild(sd); const lag=i*3, g=.5, vy0=(dy-.5*g*T*T)/T, vx0=dx/T;
-        let k=-lag, sr=Math.random()*360; const step=()=>{ k++; if(k<0){ requestAnimationFrame(step); return; } const X=sx+vx0*k+(Math.random()-.5)*2, Y=sy+vy0*k+.5*g*k*k; sr+=9;
-          sd.style.transform=`translate(${X}px,${Y}px) rotate(${sr}deg) scale(${k>T?Math.max(0,1-(k-T)/10):1})`; sd.style.opacity=k>T?Math.max(0,1-(k-T)/10):1;
-          if(k<T+10) requestAnimationFrame(step); else sd.remove(); }; requestAnimationFrame(step); } });
+    // About terms: the watermelon just turns toward the hovered word with a small squish
+    addEventListener('tipshow',e=>{ if(free||R) return; const r=b.getBoundingClientRect(), q=e.detail, dx=q.left+Math.min(q.width,60)*.5-(r.left+r.width/2), dy=q.top+q.height*.5-(r.top+r.height/2), d=Math.hypot(dx,dy)||1; tx=dx/d*5; ty=dy/d*4; vs-=.22; });
     (function loop(now){ const dt=1/60, t=(now-t0)/1000;
       vr+=(-60*(rot-rt)-11*vr)*dt*(free&&!free.back&&!drag?0:1); rot+=vr*dt; vs+=(-260*sq-9*vs)*dt; sq+=vs*dt;
       if(free){ const f=free, W=innerWidth, H=innerHeight, w=f.w;
