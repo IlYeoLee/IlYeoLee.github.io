@@ -922,9 +922,15 @@
       if(free){ const f=free, W=innerWidth, H=innerHeight, w=f.w;
         if(!drag && !f.back){ f.vy+=0.55; f.vx*=.995; f.x+=f.vx; f.y+=f.vy; rot+=f.vx*1.6;
           const hit=(v)=>{ if(Math.abs(v)>7){ vs+=Math.min(.8,Math.abs(v)*.04); seeds(f.x+w/2,f.y+w/2,Math.min(6,Math.abs(v)/3|0),Math.atan2(-Math.sign(f.vy||-1),0)); } };
+          // collide with the page itself: text lines, images, cards act as solid blocks; the block it hits gives a little jolt
+          if(!f.solids || (f.tick=(f.tick||0)+1)%12===0) f.solids=[...document.querySelectorAll('p, h1, h2, h3, img, video, .chip, .col-head, .lab-card, .work .meta')].filter(n=>!b.contains(n)&&n.offsetParent!==null).map(n=>[n,n.getBoundingClientRect()]).filter(([n,q])=>q.width>16&&q.height>8&&q.bottom>0&&q.top<H&&q.right>0&&q.left<W);
+          for(const [n,q] of f.solids){ const cx=f.x+w/2, cy=f.y+w/2, rr=w*.46, nx=Math.max(q.left,Math.min(cx,q.right)), ny=Math.max(q.top,Math.min(cy,q.bottom)), ddx=cx-nx, ddy=cy-ny, dd=Math.hypot(ddx,ddy);
+            if(dd<rr && dd>0){ const ux=ddx/dd, uy=ddy/dd, vn=f.vx*ux+f.vy*uy; f.x+=ux*(rr-dd); f.y+=uy*(rr-dd);
+              if(vn<0){ f.vx-=1.65*vn*ux; f.vy-=1.65*vn*uy; f.vx*=.92; if(Math.abs(vn)>4){ vs+=Math.min(.6,Math.abs(vn)*.035); hit(vn);
+                if(!n._jolt){ n._jolt=1; n.animate([{transform:'none'},{transform:`translate(${-ux*Math.min(8,Math.abs(vn))}px,${-uy*Math.min(8,Math.abs(vn))}px)`},{transform:'none'}],{duration:320,easing:'cubic-bezier(.3,1.6,.5,1)'}).onfinish=()=>{n._jolt=0;}; } } } } }
           if(f.x<0){ f.x=0; hit(f.vx); f.vx*=-.72; } if(f.x+w>W){ f.x=W-w; hit(f.vx); f.vx*=-.72; }
           if(f.y<0){ f.y=0; hit(f.vy); f.vy*=-.72; } if(f.y+w>H){ f.y=H-w; hit(f.vy); f.vy*=-.62; f.vx*=.9; }
-          if(Math.abs(f.vx)+Math.abs(f.vy)<1.2 && f.y+w>=H-1){ if(++idle>90) f.back=true; } else idle=0; }
+          if(Math.abs(f.vx)+Math.abs(f.vy)<1.6){ if(++idle>90) f.back=true; } else idle=0; }
         if(f.back && !drag){ const r=f.hold.getBoundingClientRect(), hx=r.left, hy=r.top; f.x+=(hx-f.x)*.12; f.y+=(hy-f.y)*.12; rt=Math.round(rot/360)*360;
           if(Math.hypot(hx-f.x,hy-f.y)<1){ free.hold.replaceWith(b); free=null; b.style.position=''; b.style.left=''; b.style.top=''; b.style.zIndex=''; b.style.margin=''; x=y=vx=vy=0; } }
         if(free){ b.style.transform=`translate(${f.x}px,${f.y}px) rotate(${rot}deg) scale(${1-sq*.35},${1+sq*.35})`; requestAnimationFrame(loop); return; } }
