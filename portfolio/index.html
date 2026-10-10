@@ -900,20 +900,20 @@
     addEventListener('pointermove',e=>{ if(drag){ const now=performance.now(), dt=Math.max(8,now-drag.t); drag.vx=(e.clientX-drag.x)/dt*16; drag.vy=(e.clientY-drag.y)/dt*16; drag.x=e.clientX; drag.y=e.clientY; drag.t=now;
         free.x=e.clientX-free.ox; free.y=e.clientY-free.oy; if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>6) drag.moved=true; return; }
       if(free) return; const r=b.getBoundingClientRect(), dx=e.clientX-(r.left+r.width/2), dy=e.clientY-(r.top+r.height/2), d=Math.hypot(dx,dy)||1, pull=Math.min(1,180/d);
-      tx=dx/d*Math.min(12,d*.08)*pull; ty=dy/d*Math.min(12,d*.08)*pull; },{passive:true});
+      tx=dx/d*Math.min(5,d*.04)*pull; ty=dy/d*Math.min(5,d*.04)*pull; },{passive:true});
     b.addEventListener('pointerdown',e=>{ e.preventDefault(); b.setPointerCapture(e.pointerId); const r=b.getBoundingClientRect();
       if(!free){ free={x:r.left,y:r.top,w:r.width,home:{x:r.left-x,y:r.top-y}}; b.insertAdjacentHTML('afterend','<i class="wm-hold" style="display:block;height:86px"></i>'); free.hold=b.nextElementSibling; document.body.appendChild(b); b.style.position='fixed'; b.style.left='0'; b.style.top='0'; b.style.zIndex='9400'; b.style.margin='0'; }
       free.ox=e.clientX-free.x; free.oy=e.clientY-free.y; drag={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,t:performance.now(),vx:0,vy:0,moved:false}; vs-=.25; });
     const release=()=>{ if(!drag) return; const d=drag; drag=null;
-      if(!d.moved){ vs-=.9; rt+=360*(Math.random()<.5?-1:1); seeds(free.x+free.w/2,free.y+free.w*.45,9); free.vx=0; free.vy=0; free.back=true; return; }
+      if(!d.moved){ vs-=.6; seeds(free.x+free.w/2,free.y+free.w*.45,5,-Math.PI/2,1.4,4.5); free.vx=0; free.vy=0; free.back=true; return; }
       free.vx=d.vx; free.vy=d.vy; vr=d.vx*14; idle=0; free.back=false; };
     b.addEventListener('pointerup',release); b.addEventListener('pointercancel',release);
     // About terms: the watermelon turns to the hovered word and lobs a little arc of seeds that lands on it
     let lastTip=0; addEventListener('tipshow',e=>{ if(free||R) return; const now=performance.now(); if(now-lastTip<220) return; lastTip=now;
       const r=b.getBoundingClientRect(), sx=r.left+r.width/2, sy=r.top+r.height*.4, q=e.detail, ex=q.left+Math.min(q.width,60)*.5, ey=q.top+q.height*.5;
-      const dx=ex-sx, dy=ey-sy, d=Math.hypot(dx,dy)||1; tx=dx/d*14; ty=dy/d*10; vs-=.45; vr+=dx>0?-160:160;
+      const dx=ex-sx, dy=ey-sy, d=Math.hypot(dx,dy)||1; tx=dx/d*5; ty=dy/d*4; vs-=.22;
       const T=Math.max(22,Math.min(46,d/18));   // frames in flight, scaled to distance
-      for(let i=0;i<5;i++){ const sd=document.createElement('i'); sd.className='wm-seed'; document.body.appendChild(sd); const lag=i*3, g=.5, vy0=(dy-.5*g*T*T)/T, vx0=dx/T;
+      for(let i=0;i<3;i++){ const sd=document.createElement('i'); sd.className='wm-seed'; document.body.appendChild(sd); const lag=i*3, g=.5, vy0=(dy-.5*g*T*T)/T, vx0=dx/T;
         let k=-lag, sr=Math.random()*360; const step=()=>{ k++; if(k<0){ requestAnimationFrame(step); return; } const X=sx+vx0*k+(Math.random()-.5)*2, Y=sy+vy0*k+.5*g*k*k; sr+=9;
           sd.style.transform=`translate(${X}px,${Y}px) rotate(${sr}deg) scale(${k>T?Math.max(0,1-(k-T)/10):1})`; sd.style.opacity=k>T?Math.max(0,1-(k-T)/10):1;
           if(k<T+10) requestAnimationFrame(step); else sd.remove(); }; requestAnimationFrame(step); } });
@@ -929,8 +929,8 @@
           if(Math.hypot(hx-f.x,hy-f.y)<1){ free.hold.replaceWith(b); free=null; b.style.position=''; b.style.left=''; b.style.top=''; b.style.zIndex=''; b.style.margin=''; x=y=vx=vy=0; } }
         if(free){ b.style.transform=`translate(${f.x}px,${f.y}px) rotate(${rot}deg) scale(${1-sq*.35},${1+sq*.35})`; requestAnimationFrame(loop); return; } }
       vx+=(-170*(x-tx)-16*vx)*dt; vy+=(-170*(y-ty)-16*vy)*dt; x+=vx*dt; y+=vy*dt;
-      const bob=R?0:Math.sin(t*1.6)*3;
-      b.style.transform=`translate(${x}px,${y+bob}px) rotate(${rot+x*.8}deg) scale(${1-sq*.35},${1+sq*.35})`;
+      const bob=0;
+      b.style.transform=`translate(${x}px,${y+bob}px) rotate(${rot+x*.3}deg) scale(${1-sq*.35},${1+sq*.35})`;
       requestAnimationFrame(loop); })(t0);
   })();
 </script>
