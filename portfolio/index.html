@@ -902,13 +902,13 @@
         free.x=e.clientX-free.ox; free.y=e.clientY-free.oy; if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>6) drag.moved=true; return; }
       if(free) return; const r=b.getBoundingClientRect(), dx=e.clientX-(r.left+r.width/2), dy=e.clientY-(r.top+r.height/2), d=Math.hypot(dx,dy)||1, pull=Math.min(1,180/d);
       tx=dx/d*Math.min(5,d*.04)*pull; ty=dy/d*Math.min(5,d*.04)*pull; },{passive:true});
-    b.addEventListener('pointerdown',e=>{ e.preventDefault(); b.setPointerCapture(e.pointerId); const r=b.getBoundingClientRect();
+    b.addEventListener('pointerdown',e=>{ e.preventDefault(); const r=b.getBoundingClientRect();
       if(!free){ free={x:r.left,y:r.top,w:r.width,home:{x:r.left-x,y:r.top-y}}; b.insertAdjacentHTML('afterend','<i class="wm-hold" style="display:block;height:86px"></i>'); free.hold=b.nextElementSibling; document.body.appendChild(b); b.style.position='fixed'; b.style.left='0'; b.style.top='0'; b.style.zIndex='9400'; b.style.margin='0'; }
       free.ox=e.clientX-free.x; free.oy=e.clientY-free.y; drag={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,t:performance.now(),vx:0,vy:0,moved:false}; vs-=.25; });
     const release=()=>{ if(!drag) return; const d=drag; drag=null;
       if(!d.moved){ vs-=.6; seeds(free.x+free.w/2,free.y+free.w*.45,5,-Math.PI/2,1.4,4.5); free.vx=0; free.vy=0; free.back=true; return; }
       free.vx=d.vx; free.vy=d.vy; vr=d.vx*14; idle=0; free.back=false; };
-    b.addEventListener('pointerup',release); b.addEventListener('pointercancel',release);
+    addEventListener('pointerup',release); addEventListener('pointercancel',release); addEventListener('blur',release);  // window-level: moving the node to <body> drops pointer capture
     // About terms: the watermelon just turns toward the hovered word with a small squish
     addEventListener('tipshow',e=>{ if(free||R) return; const r=b.getBoundingClientRect(), q=e.detail, dx=q.left+Math.min(q.width,60)*.5-(r.left+r.width/2), dy=q.top+q.height*.5-(r.top+r.height/2), d=Math.hypot(dx,dy)||1; tx=dx/d*5; ty=dy/d*4; vs-=.22; });
     (function loop(now){ const dt=1/60, t=(now-t0)/1000;
@@ -918,10 +918,13 @@
           const hit=(v)=>{ if(Math.abs(v)>7){ vs+=Math.min(.8,Math.abs(v)*.04); seeds(f.x+w/2,f.y+w/2,Math.min(6,Math.abs(v)/3|0),Math.atan2(-Math.sign(f.vy||-1),0)); } };
           // collide with the page itself: text lines, images, cards act as solid blocks; the block it hits gives a little jolt
           if(!f.solids || (f.tick=(f.tick||0)+1)%12===0) f.solids=[...document.querySelectorAll('p, h1, h2, h3, img, video, .chip, .col-head, .lab-card, .work .meta')].filter(n=>!b.contains(n)&&n.offsetParent!==null).map(n=>[n,n.getBoundingClientRect()]).filter(([n,q])=>q.width>16&&q.height>8&&q.bottom>0&&q.top<H&&q.right>0&&q.left<W);
-          for(const [n,q] of f.solids){ const cx=f.x+w/2, cy=f.y+w/2, rr=w*.46, nx=Math.max(q.left,Math.min(cx,q.right)), ny=Math.max(q.top,Math.min(cy,q.bottom)), ddx=cx-nx, ddy=cy-ny, dd=Math.hypot(ddx,ddy);
-            if(dd<rr && dd>0){ const ux=ddx/dd, uy=ddy/dd, vn=f.vx*ux+f.vy*uy; f.x+=ux*(rr-dd); f.y+=uy*(rr-dd);
-              if(vn<0){ f.vx-=1.65*vn*ux; f.vy-=1.65*vn*uy; f.vx*=.92; if(Math.abs(vn)>4){ vs+=Math.min(.6,Math.abs(vn)*.035); hit(vn);
-                if(!n._jolt){ n._jolt=1; n.animate([{transform:'none'},{transform:`translate(${-ux*Math.min(8,Math.abs(vn))}px,${-uy*Math.min(8,Math.abs(vn))}px)`},{transform:'none'}],{duration:320,easing:'cubic-bezier(.3,1.6,.5,1)'}).onfinish=()=>{n._jolt=0;}; } } } } }
+          // one-way platforms: it only lands on TOP edges while falling, so throws pass through from below or the side and never get stuck
+          const bot=f.y+w*.96, prev=bot-f.vy;
+          if(f.vy>0) for(const [n,q] of f.solids){ if(f.x+w*.75<q.left||f.x+w*.25>q.right) continue;
+            if(prev<=q.top+1 && bot>=q.top){ f.y=q.top-w*.96; const vn=f.vy; f.vy*=-.55; f.vx*=.94;
+              if(vn>3){ vs+=Math.min(.6,vn*.035);
+                if(!n._jolt){ n._jolt=1; n.animate([{transform:'none'},{transform:`translateY(${Math.min(7,vn*.5)}px)`},{transform:'none'}],{duration:320,easing:'cubic-bezier(.3,1.6,.5,1)'}).onfinish=()=>{n._jolt=0;}; } }
+              break; } }
           if(f.x<0){ f.x=0; hit(f.vx); f.vx*=-.72; } if(f.x+w>W){ f.x=W-w; hit(f.vx); f.vx*=-.72; }
           if(f.y<0){ f.y=0; hit(f.vy); f.vy*=-.72; } if(f.y+w>H){ f.y=H-w; hit(f.vy); f.vy*=-.62; f.vx*=.9; }
           if(Math.abs(f.vx)+Math.abs(f.vy)<1.6){ if(++idle>90) f.back=true; } else idle=0; }
