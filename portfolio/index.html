@@ -19,7 +19,7 @@
   .site { display:grid; grid-template-columns: 2fr 1fr; height:calc(100vh - 24px); height:calc(100dvh - 24px); }
   .grid { display:grid; grid-template-columns:1fr 1fr; column-gap:var(--pad); }
   .grid .work:nth-last-child(-n+2) { border-bottom:0; }
-  #works-grid .work:has(+ .other-head) { border-bottom:0; margin-bottom:0; }
+  #works-grid .work:has(+ .other-head), #works-grid .work:has(+ .work + .other-head) { border-bottom:0; margin-bottom:0; }
   .hv-wrap { position:relative; }
   .hv-wrap video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .25s, transform .6s cubic-bezier(.2,.7,.2,1); pointer-events:none; background:#fff; }
   @media (hover:hover) { .work:hover .hv-wrap video { transform:scale(1.015); } }  /* grow with the poster image so no edge peeks out */
@@ -336,7 +336,7 @@
       <a class="thumb" href="#" data-i="3" data-tags="uxui"><img width="1920" height="1080" decoding="async" src="img/thumb/bunjang.webp?v=4" alt="번개장터"></a>
       <a class="thumb" href="#" data-i="4" data-tags="vibe"><img width="960" height="540" decoding="async" src="img/thumb/zerotoone.webp?v=3" alt="0TO1"></a>
       <a class="thumb" href="#" data-i="5" data-tags="vibe"><img width="1920" height="1080" decoding="async" src="img/thumb/memboarding.webp?v=4" alt="멤보딩"></a>
-      <a class="thumb" href="#" data-i="6" data-tags="uxui"><img width="1920" height="1080" decoding="async" src="img/thumb/bbibbi.webp?v=5" alt="삐삐"></a>
+      <a class="thumb" href="#" data-i="6" data-tags="uxui"><img width="1920" height="1080" decoding="async" src="img/thumb/bbibbi.webp?v=6" alt="삐삐"></a>
       <a class="thumb" href="#" data-i="7" data-tags="uxui"><img width="1920" height="1080" decoding="async" src="img/thumb/spot.webp?v=4" alt="SPOT!"></a>
       <a class="thumb" href="#" data-i="8" data-tags="uxui"><img width="960" height="751" decoding="async" src="img/thumb/spurt.webp?v=3" alt="SPURT"></a>
       <a class="thumb" href="#" data-i="9" data-tags="product"><img width="960" height="900" decoding="async" src="img/thumb/newton.webp?v=3" alt="NEWTON"></a>
@@ -406,8 +406,8 @@
         </div>
         <div class="meta info" hidden><p class="muted" data-ko="형태" data-en="Type">형태</p><p data-ko="개인 프로젝트" data-en="Personal project">개인 프로젝트</p><p class="muted" data-ko="기간" data-en="Period">기간</p><p data-ko="2026.05.01 – 2026.05.02 (2일)" data-en="May 1 – 2, 2026 (2 days)">2026.05.01 – 2026.05.02 (2일)</p><p class="muted" data-ko="역할" data-en="Role">역할</p><p data-ko="기획, 디자인, 개발" data-en="Planning, design, development">기획, 디자인, 개발</p><p class="muted" data-ko="기여도" data-en="Contribution">기여도</p><p data-ko="100%" data-en="100%">100%</p><p class="muted" data-ko="내 작업" data-en="My work">내 작업</p><p data-ko="팀원 인터뷰, IA, 5단계 온보딩·팀 대시보드 UI, Claude Code로 기능과 UI 구현, AI로 캐릭터·에셋·효과음 제작" data-en="Team interviews, IA, 5-step onboarding and team dashboard UI, built features and UI with Claude Code, characters, assets and sound made with AI">팀원 인터뷰, IA, 5단계 온보딩·팀 대시보드 UI, Claude Code로 기능과 UI 구현, AI로 캐릭터·에셋·효과음 제작</p><p class="muted" data-ko="사용 도구" data-en="Tools">사용 도구</p><p data-ko="ChatGPT, Pinterest, Gemini Canvas, 이미지 생성, Claude Code" data-en="ChatGPT, Pinterest, Gemini Canvas, image generation, Claude Code">ChatGPT, Pinterest, Gemini Canvas, 이미지 생성, Claude Code</p><p class="muted" data-ko="링크" data-en="Links">링크</p><div class="plinks"><a class="chip" href="https://ilyeolee.github.io/gitsdm-vibecoding/" target="_blank" rel="noopener">멤보딩 ↗</a></div></div>
       </article>
-      <article class="work" data-key="bbibbi" data-tags="uxui" data-hover-video="img/bbibbi/cover.mp4?v=2">
-        <img width="1920" height="1080" decoding="async" src="img/thumb/bbibbi.webp?v=5" alt="삐삐">
+      <article class="work" data-key="bbibbi" data-tags="uxui" data-hover-video="img/bbibbi/cover.mp4?v=3">
+        <img width="1920" height="1080" decoding="async" src="img/thumb/bbibbi.webp?v=6" alt="삐삐">
         <div class="meta">
           <p>UX/UI<br><span class="muted">Team</span></p>
           <p>삐삐<br>Family Widget Service<br>2024</p>
