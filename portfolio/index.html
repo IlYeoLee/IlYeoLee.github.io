@@ -19,6 +19,9 @@
   .grid { display:grid; grid-template-columns:1fr 1fr; column-gap:var(--pad); }
   .grid .work:nth-last-child(-n+2) { border-bottom:0; }
   #works-grid .work:has(+ .other-head) { border-bottom:0; margin-bottom:0; }
+  .hv-wrap { position:relative; }
+  .hv-wrap video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .25s; pointer-events:none; background:#fff; }
+  .hv-wrap.on video { opacity:1; }
   .lab-band { grid-column:1/-1; display:block; margin-top:var(--pad); padding-top:var(--pad); border-top:1px solid var(--line); text-decoration:none; color:inherit; }
   .lab-head { display:flex; justify-content:space-between; gap:12px; }
   .lab-head > span:first-child { white-space:nowrap; }
@@ -315,7 +318,7 @@
       <a class="thumb" href="#" data-i="11" data-tags="product"><img width="960" height="720" decoding="async" src="img/thumb/hotcake.webp?v=3" alt="Hotcake"></a>
     </div>
     <div class="col-body grid" id="works-grid">
-      <article class="work" data-key="gha" data-tags="product">
+      <article class="work" data-key="gha" data-tags="product" data-hover-video="img/gha/00.mp4?v=1">
         <img width="960" height="540" decoding="async" src="img/thumb/gha.webp?v=4" alt="Glance–Hint–Act">
         <div class="meta">
           <p>Concept UX · Interaction<br><span class="muted">Personal</span></p>
@@ -718,6 +721,15 @@
     document.addEventListener('click',e=>{ if(touch && curTip && !e.target.closest('.tip, #tipcard')) hide(); });
     addEventListener('scroll',()=>{ if(!touch) hide(); },{capture:true,passive:true});
   })();
+</script>
+<script>
+  // cards with data-hover-video: play the cover motion from the start on hover (mouse only)
+  if(matchMedia('(hover:hover) and (pointer:fine)').matches) document.querySelectorAll('#works-grid .work[data-hover-video]').forEach(w=>{
+    const img=w.querySelector('img'); const wrap=document.createElement('div'); wrap.className='hv-wrap'; img.replaceWith(wrap); wrap.appendChild(img);
+    const v=document.createElement('video'); Object.assign(v,{muted:true,loop:true,playsInline:true,preload:'none'}); v.src=w.dataset.hoverVideo; wrap.appendChild(v);
+    w.addEventListener('mouseenter',()=>{ v.currentTime=0; v.play().then(()=>wrap.classList.add('on')).catch(()=>{}); });
+    w.addEventListener('mouseleave',()=>{ wrap.classList.remove('on'); v.pause(); });
+  });
 </script>
 <script src="portfolio/cursor.js?v=2"></script>
 </body>
