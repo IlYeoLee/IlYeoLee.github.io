@@ -759,9 +759,12 @@
     const load=d=>{ if(d.querySelector('iframe')) return; const img=d.querySelector('img'); if(img){ img.style.transition='opacity .4s'; img.style.opacity=1; }
       const f=document.createElement('iframe'); f.src=d.dataset.src; f.title=d.dataset.title||'prototype'; f.allow='fullscreen'; f.style.opacity=0; f.style.transition='opacity .4s';
       if(!d.querySelector('.ld')) d.insertAdjacentHTML('beforeend','<span class="ld"><i></i>프로토타입 불러오는 중</span>');
-      let t; f.addEventListener('load',()=>{ clearTimeout(t); t=setTimeout(()=>{ f.style.opacity=1; if(img) img.style.opacity=0; d.classList.add('live'); },2200); }); d.appendChild(f); fit(d); };  // Figma fires load twice and paints ~2s after the last one
-    const unload=d=>{ const f=d.querySelector('iframe'); if(!f) return; const img=d.querySelector('img'); if(img) img.style.opacity=1; d.classList.remove('live'); f.remove(); };
-    const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?load(e.target):unload(e.target)),{root: innerWidth>900 ? document.getElementById('about') : null, rootMargin:'30000px 0px'});  // boot as soon as the project opens: Figma needs ~5s, readers take longer to scroll there
+      let t; f.addEventListener('load',()=>{ clearTimeout(t); t=setTimeout(()=>{ f.style.opacity=1; if(img) img.style.opacity=0; d.classList.add('live'); busy=null; next(); },2200); }); d.appendChild(f); fit(d); setTimeout(()=>{ if(busy===d){ busy=null; next(); } },15000); };  // Figma fires load twice and paints ~2s after the last one
+    const unload=d=>{ const f=d.querySelector('iframe'); if(!f) return; const img=d.querySelector('img'); if(img) img.style.opacity=1; d.classList.remove('live'); f.remove(); if(busy===d){ busy=null; next(); } };
+    // one Figma boot at a time, in page order (8 at once would choke the CPU); only those within ~4 screens stay alive
+    const near=new Set(); let busy=null;
+    const next=()=>{ if(busy) return; const d=[...document.querySelectorAll('#project-panel .pstage .dev')].find(d=>near.has(d) && !d.querySelector('iframe')); if(d){ busy=d; load(d); } };
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting) near.add(e.target); else { near.delete(e.target); unload(e.target); } }); next(); },{root: innerWidth>900 ? document.getElementById('about') : null, rootMargin:'4000px 0px'});
     new MutationObserver(()=>document.querySelectorAll('#project-panel .pstage .dev:not([data-obs])').forEach(d=>{ d.dataset.obs=1; io.observe(d); })).observe(document.getElementById('project-panel'),{childList:true});
     addEventListener('resize',()=>document.querySelectorAll('.pstage .dev').forEach(fit));
   })();
