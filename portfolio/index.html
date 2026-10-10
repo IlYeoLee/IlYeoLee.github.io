@@ -174,8 +174,14 @@
   #project-panel .pstage .ld i { width:10px; height:10px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:pspin .8s linear infinite; }
   @keyframes pspin { to{transform:rotate(360deg)} }
   #project-panel .pstage .dev.live .ld { opacity:0; }  /* sized in JS: Figma pads 52px x / 60px y, so we crop it off */
-  #project-panel .pstage .chip { display:none; position:absolute; right:16px; bottom:16px; background:var(--bg); }
-  @media (max-width:900px) { #project-panel .pstage .chip { display:inline-block; right:10px; bottom:10px; } }
+  #project-panel .pstage > a.chip { display:none; position:absolute; right:16px; bottom:16px; background:var(--bg); }
+  @media (max-width:900px) { #project-panel .pstage .dev { border-radius:12px; } }
+  @media (max-width:900px) { #project-panel .pstage > a.chip { display:inline-block; width:auto; right:10px; bottom:10px; } }
+  /* prototype ⇄ video switch: same 16:9 gray stage, the recording's own background matches it */
+  #project-panel .pstage .vsw { position:absolute; left:16px; bottom:16px; z-index:5; display:inline-block; width:auto; background:var(--bg); }
+  #project-panel .pstage > iframe.vid { position:absolute; inset:0; width:100%; height:100%; border:0; z-index:4; }
+  #project-panel .pstage.video .dev { visibility:hidden; }
+  @media (max-width:900px) { #project-panel .pstage .vsw { left:10px; bottom:10px; } }
   #project-panel .pvimeo img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; margin:0; }
   #project-panel .pvimeo .play { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:none; border:0; cursor:pointer; }
   #project-panel .pvimeo .play span { font-size:13px; padding:10px 16px; border-radius:999px; background:var(--fg); color:var(--bg); }
@@ -763,9 +769,17 @@
     const unload=d=>{ const f=d.querySelector('iframe'); if(!f) return; const img=d.querySelector('img'); if(img) img.style.opacity=1; d.classList.remove('live'); f.remove(); if(busy===d){ busy=null; next(); } };
     // one Figma boot at a time, in page order (8 at once would choke the CPU); only those within ~4 screens stay alive
     const near=new Set(); let busy=null;
-    const next=()=>{ if(busy) return; const d=[...document.querySelectorAll('#project-panel .pstage .dev')].find(d=>near.has(d) && !d.querySelector('iframe')); if(d){ busy=d; load(d); } };
+    const next=()=>{ if(busy) return; const mid=innerHeight/2, dist=d=>{ const r=d.getBoundingClientRect(); return Math.abs(r.top+r.height/2-mid); };
+      const d=[...near].filter(d=>!d.querySelector('iframe')).sort((a,b)=>dist(a)-dist(b))[0];  // closest to the screen first, so jumping straight to a scenario loads that one
+      if(d){ busy=d; load(d); } };
     const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting) near.add(e.target); else { near.delete(e.target); unload(e.target); } }); next(); },{root: innerWidth>900 ? document.getElementById('about') : null, rootMargin:'4000px 0px'});
     new MutationObserver(()=>document.querySelectorAll('#project-panel .pstage .dev:not([data-obs])').forEach(d=>{ d.dataset.obs=1; io.observe(d); })).observe(document.getElementById('project-panel'),{childList:true});
+    // "영상으로 보기": swaps the stage to the scenario's screen recording (Vimeo, with controls) and back
+    new MutationObserver(()=>document.querySelectorAll('#project-panel .pstage[data-video]:not([data-vsw])').forEach(st=>{ st.dataset.vsw=1;
+      st.insertAdjacentHTML('beforeend','<button type="button" class="chip vsw">▶ 영상으로 보기</button>'); })).observe(document.getElementById('project-panel'),{childList:true});
+    document.getElementById('project-panel').addEventListener('click',e=>{ const b=e.target.closest('.pstage .vsw'); if(!b) return; e.stopPropagation(); const st=b.parentElement;
+      if(st.classList.toggle('video')){ st.insertAdjacentHTML('beforeend',`<iframe class="vid" src="https://player.vimeo.com/video/${st.dataset.video}?autoplay=1&muted=0&title=0&byline=0&portrait=0&dnt=1${st.dataset.vt?'#t='+st.dataset.vt+'s':''}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="시나리오 영상"></iframe>`); b.textContent='직접 체험하기'; }
+      else { st.querySelector('iframe.vid')?.remove(); b.textContent='▶ 영상으로 보기'; } }, true);
     addEventListener('resize',()=>document.querySelectorAll('.pstage .dev').forEach(fit));
   })();
 </script>
