@@ -327,7 +327,7 @@
       <a class="thumb" href="#" data-i="11" data-tags="product"><img width="960" height="720" decoding="async" src="img/thumb/hotcake.webp?v=3" alt="Hotcake"></a>
     </div>
     <div class="col-body grid" id="works-grid">
-      <article class="work" data-key="gha" data-tags="product" data-hover-video="img/gha/00.mp4?v=2">
+      <article class="work" data-key="gha" data-tags="product" data-hover-video="img/gha/00.mp4?v=3">
         <img width="960" height="540" decoding="async" src="img/thumb/gha.webp?v=4" alt="Glance–Hint–Act">
         <div class="meta">
           <p>Concept UX · Interaction<br><span class="muted">Personal</span></p>
@@ -584,6 +584,7 @@
     const info=card.querySelector('.info'); if(info){ const c=info.cloneNode(true); c.hidden=false; projPanel.appendChild(c); }
     if(tpl) projPanel.appendChild(tpl.content.cloneNode(true)); else projPanel.insertAdjacentHTML('beforeend','<p class="muted">Coming soon.</p>');
     setupVideos(projPanel); applyLang(projPanel);
+    projPanel.querySelectorAll('video[autoplay]').forEach(v=>{ v.muted=true; v.play().catch(()=>{}); });  // cover motion starts on open, not on scroll
     projPanel.querySelectorAll('img').forEach((im,i)=>{ if(i<6) im.loading='eager'; });
     if(!reduce) projPanel.animate([{opacity:0},{opacity:1}],{duration:250,easing:'ease'});  // whole body at once, not per element
     aboutPanel.hidden=true; projPanel.hidden=false; projClose.hidden=false;
@@ -756,6 +757,10 @@
   // Vimeo facade: thumbnail + play, the player (≈1MB of JS) loads only on click
   document.getElementById('project-panel').addEventListener('click',e=>{ const d=e.target.closest('.pvimeo[data-src]'); if(!d||d.querySelector('iframe')) return; e.stopPropagation();
     const f=document.createElement('iframe'); f.src=d.dataset.src+'&autoplay=1'; f.title=d.dataset.title||'video'; f.allow='autoplay; fullscreen; picture-in-picture'; f.allowFullscreen=true; d.replaceChildren(f); }, true);
+</script>
+<script>
+  // warm the cache for cover motions once the home page is idle, so opening a project shows it instantly
+  addEventListener('load',()=>(window.requestIdleCallback||setTimeout)(()=>document.querySelectorAll('#works-grid .work[data-hover-video]').forEach(w=>fetch(w.dataset.hoverVideo,{priority:'low'}).catch(()=>{})),{timeout:3000}));
 </script>
 <script src="portfolio/jelly.js?v=1"></script>
 <script src="portfolio/cursor.js?v=2"></script>
