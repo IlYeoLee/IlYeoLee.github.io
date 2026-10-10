@@ -898,7 +898,8 @@
         let a=dir+(Math.random()-.5)*spread, sp=pow*(.6+Math.random()*.8), svx=Math.cos(a)*sp, svy=Math.sin(a)*sp, sr=Math.random()*360, life=0, X=px, Y=py;
         const step=()=>{ life++; svy+=.35; X+=svx; Y+=svy; sr+=svx*4; sd.style.transform=`translate(${X}px,${Y}px) rotate(${sr}deg)`; sd.style.opacity=Math.max(0,1-life/70);
           if(life<70) requestAnimationFrame(step); else sd.remove(); }; requestAnimationFrame(step); } };
-    addEventListener('pointermove',e=>{ if(drag){ const now=performance.now(), dt=Math.max(8,now-drag.t); drag.vx=(e.clientX-drag.x)/dt*16; drag.vy=(e.clientY-drag.y)/dt*16; drag.x=e.clientX; drag.y=e.clientY; drag.t=now;
+    addEventListener('pointermove',e=>{ if(drag && e.pointerType==='mouse' && e.buttons===0){ release(); return; }  // button already up but the up event was lost: let go
+      if(drag){ const now=performance.now(), dt=Math.max(8,now-drag.t); drag.vx=(e.clientX-drag.x)/dt*16; drag.vy=(e.clientY-drag.y)/dt*16; drag.x=e.clientX; drag.y=e.clientY; drag.t=now;
         free.x=e.clientX-free.ox; free.y=e.clientY-free.oy; if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>6) drag.moved=true; return; }
       if(free) return; const r=b.getBoundingClientRect(), dx=e.clientX-(r.left+r.width/2), dy=e.clientY-(r.top+r.height/2), d=Math.hypot(dx,dy)||1, pull=Math.min(1,180/d);
       tx=dx/d*Math.min(5,d*.04)*pull; ty=dy/d*Math.min(5,d*.04)*pull; },{passive:true});
@@ -908,7 +909,7 @@
     const release=()=>{ if(!drag) return; const d=drag; drag=null;
       if(!d.moved){ vs-=.6; _seeds(free.x+free.w/2,free.y+free.w*.45,5,-Math.PI/2,1.4,4.5); free.vx=0; free.vy=0; free.back=true; return; }
       free.vx=d.vx; free.vy=d.vy; vr=d.vx*14; idle=0; free.back=false; };
-    addEventListener('pointerup',release); addEventListener('pointercancel',release); addEventListener('blur',release);  // window-level: moving the node to <body> drops pointer capture
+    addEventListener('pointerup',release); addEventListener('mouseup',release); addEventListener('pointercancel',release); addEventListener('blur',release);  // window-level: moving the node to <body> drops pointer capture
     // About terms: the watermelon just turns toward the hovered word with a small squish
     addEventListener('tipshow',e=>{ if(free||R) return; const r=b.getBoundingClientRect(), q=e.detail, dx=q.left+Math.min(q.width,60)*.5-(r.left+r.width/2), dy=q.top+q.height*.5-(r.top+r.height/2), d=Math.hypot(dx,dy)||1; tx=dx/d*5; ty=dy/d*4; vs-=.22; });
     (function loop(now){ const dt=1/60, t=(now-t0)/1000;
