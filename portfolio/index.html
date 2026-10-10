@@ -876,6 +876,18 @@
   // warm the cache for cover motions once the home page is idle, so opening a project shows it instantly
   addEventListener('load',()=>(window.requestIdleCallback||setTimeout)(()=>document.querySelectorAll('#works-grid .work[data-hover-video]').forEach(w=>fetch(w.dataset.hoverVideo,{priority:'low'}).catch(()=>{})),{timeout:3000}));
 </script>
+<script>
+  // ambient glow: each thumbnail casts a faint, wide shadow tinted by its own colours, as if lit by reflected light
+  (()=>{ const cv=document.createElement('canvas'); cv.width=6; cv.height=4; const g=cv.getContext('2d',{willReadFrequently:true});
+    const pick=(d,x,y)=>{ let r=0,gg=0,b=0,n=0; for(let j=y;j<y+2;j++) for(let i=x;i<x+2;i++){ const k=(j*6+i)*4; r+=d[k]; gg+=d[k+1]; b+=d[k+2]; n++; } r/=n; gg/=n; b/=n;
+      const m=(r+gg+b)/3, sat=1.35; return [r,gg,b].map(c=>Math.round(Math.max(0,Math.min(255,m+(c-m)*sat)))); };   // a touch more saturated, so the tint reads as colour, not grey
+    const glow=img=>{ const host=img.closest('.hv-wrap')||img; try{ g.drawImage(img,0,0,6,4); }catch(e){ return; }
+      let d; try{ d=g.getImageData(0,0,6,4).data; }catch(e){ return; }
+      const [a,b,c]=[pick(d,0,2),pick(d,2,2),pick(d,4,2)], rgba=(v,o)=>`rgba(${v[0]},${v[1]},${v[2]},${o})`;
+      host.style.boxShadow=`0 36px 90px -36px ${rgba(b,.28)}, -46px 34px 120px -52px ${rgba(a,.22)}, 46px 34px 120px -52px ${rgba(c,.22)}`; };
+    document.querySelectorAll('#works-grid .work > img, #works-grid .work .hv-wrap > img').forEach(img=>{ if(img.complete&&img.naturalWidth) glow(img); else img.addEventListener('load',()=>glow(img),{once:true}); });
+  })();
+</script>
 <script src="portfolio/jelly.js?v=1"></script>
 <script src="portfolio/cursor.js?v=3"></script>
 </body>
